@@ -17,7 +17,3 @@ Customers can pre-pay for goods.
 records are in two: farm products and other goods that were bought, Each has its own records and the total for each is shown and combined.
 
 Recorsds include sales made, money made, money lost and so on...(include all records that are required)
-
-0758316225: Geofrey
-
-
