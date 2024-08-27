@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class CreditsalesConfig(AppConfig):
+class PurchasesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'credit_sales'
+    name = 'purchases'
 
     def ready(self):
-        import credit_sales.signals
+        import purchases.signals
