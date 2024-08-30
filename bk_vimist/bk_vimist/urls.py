@@ -5,12 +5,16 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.documentation import include_docs_urls
+from rest_framework.documentation import get_schema_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('inventory.urls')),
-    path('api/', include('customers.urls')),
+    path('api/', include([
+        path('inventory/', include('inventory.urls')),
+        path('customers/', include('customers.urls')),
+        path('sales/', include('sales.urls')),
+    ])),
     # DRF's Built-in Documentation
-    path('docs/', include_docs_urls(title='Products API Documentation'))
+    path('docs/', get_schema_view(title='V-APIs', version=1.0, description='API for all views'),
+         name='Vimist-schema')
 ]
