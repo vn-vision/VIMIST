@@ -4,10 +4,11 @@ from sales.models import Sale
 from sales.pagination import SalesPagination
 from sales.filters import SaleFilter
 from django_filters.rest_framework import DjangoFilterBackend
-
+# custom permissions to apply to the viewset
+from users.mixins import RoleBasedAccessMixin
 
 # Create your views here.
-class SaleViewSet(viewsets.ModelViewSet):
+class SaleViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
     """
     create view for the sale app
     """

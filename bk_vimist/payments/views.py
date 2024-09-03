@@ -4,6 +4,10 @@ from payments.serializer import PaymentSerializer
 from payments.pagination import PaymentsPagination
 from payments.filters import PaymentFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from users.permissions import IsAdmin, IsManager, IsCashier, IsCustomer
+# custom permissions to apply to the viewset
+from users.mixins import RoleBasedAccessMixin
+
 # Create your views here.
 class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
