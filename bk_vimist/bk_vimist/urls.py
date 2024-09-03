@@ -13,6 +13,10 @@ urlpatterns = [
         path('inventory/', include('inventory.urls')),
         path('customers/', include('customers.urls')),
         path('sales/', include('sales.urls')),
+        path('credit_sales/', include('credit_sales.urls')),
+        path('notifications/', include('notifications.urls')),
+        path('payments/', include('payments.urls')),
+        path('purchases/', include('purchases.urls')),
     ])),
     # DRF's Built-in Documentation
     path('docs/', get_schema_view(title='V-APIs', version=1.0, description='API for all views'),

@@ -1,14 +1,24 @@
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
 from .models import Product
-
-class ProductAPITests(APITestCase):
+from django.contrib.auth.models import User
+from config.users import UserAPITests
+import base64
+class ProductAPITests(UserAPITests):
     """Test suite for the Product API endpoints."""
 
     def setUp(self):
         """Set up a test product and a valid payload for use in tests."""
-        # Create a test product
+            # Create a test user
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+
+        # Authenticate with Basic Authentication
+        credentials = base64.b64encode(b'testuser:testpassword').decode('utf-8')
+        self.client.credentials(HTTP_AUTHORIZATION='Basic ' + credentials)
+
+        # Log in the user using Session Authentication
+        self.client.login(username='testuser', password='testpassword')
+            # Create a test product
         self.product = Product.objects.create(
             name="Test Product",
             category="Test Category",
