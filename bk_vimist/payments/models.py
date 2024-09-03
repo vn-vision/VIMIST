@@ -12,11 +12,11 @@ class Payment(models.Model):
     ]
 
     def_key = int(uuid4())
+    related = models.IntegerField(default=def_key)
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateField(default=now)
     payment_method = models.CharField(max_length=20, choices=[('Cash', 'Cash'), ('Mpesa', 'Mpesa'), ('Credit', 'Credit')])
     payment_for = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='Unknown')
-    related = models.IntegerField(default=def_key)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

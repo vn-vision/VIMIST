@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'config',
     # rest framework
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    # django filters
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -106,7 +108,16 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly', 
-    ]
+    ],
+
+    # configure pagination
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+
+    # configure filtering
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        ],
 }
 
 # Password validation
