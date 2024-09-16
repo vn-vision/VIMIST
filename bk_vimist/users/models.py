@@ -12,6 +12,8 @@ class User(AbstractUser):
         ('Customer', 'Customer'),
     )
     role = models.CharField(choices=ROLE_CHOICES, max_length=10, default='Customer')
+    contact = models.CharField(max_length=15, blank=False, null=False)
+    is_superadmin = models.BooleanField(default=False)
 
     groups = models.ManyToManyField(
         Group,
@@ -27,6 +29,11 @@ class User(AbstractUser):
         help_text='Specific permissions for this user.',
         verbose_name='user permissions',
     )
+
+    def save(self, *args, **kwargs):
+        if self.is_superadmin and User.objects.filter(is_superadmin=True).exists():
+            raise ValueError("There is an existing Superadmin")
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.username

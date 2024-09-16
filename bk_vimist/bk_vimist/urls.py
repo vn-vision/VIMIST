@@ -9,7 +9,7 @@ from rest_framework.documentation import get_schema_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include([
+    path('api/', include([
         path('inventory/', include('inventory.urls')),
         path('customers/', include('customers.urls')),
         path('sales/', include('sales.urls')),
