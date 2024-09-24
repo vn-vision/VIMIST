@@ -12,7 +12,7 @@ from django.db.models.functions import TruncDay, TruncMonth, TruncYear
 
 # Create your views here.
 class PurchaseViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
-    queryset = Purchases.objects.all()
+    queryset = Purchases.objects.all().order_by('id')
     serializer_class = PurchaseSerializer
 
     # pagination

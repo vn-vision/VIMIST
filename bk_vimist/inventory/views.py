@@ -16,7 +16,7 @@ class ProductViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
     Provides the basic CRUD operations out of the box
     """
     # Defines the data that all ViewSet will operate on
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by('id')
 
     # define which serializer tp use for data validation and serialization
     serializer_class = ProductSerializer
