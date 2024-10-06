@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from os import getenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'vn_app',
+    # additional apps
+    'inventory',
+    'sales',
+    'customers',
+    'payments',
+    'credit_sales',
+    'notifications'
 ]
 
 MIDDLEWARE = [
@@ -76,8 +83,12 @@ WSGI_APPLICATION = 'bk_vimist.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': getenv('VIMIST_DB_NAME'),
+        'USER': getenv('VIMIST_DB_USER'),
+        'PASSWORD': getenv('VIMIST_DB_PASS'),
+        'HOST': getenv('VIMIST_DB_HOST', 'localhost'),
+        'PORT': getenv('VIMIST_DB_PORT', '3306'),
     }
 }
 
@@ -106,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
@@ -119,3 +130,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
