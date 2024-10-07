@@ -39,12 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # additional apps
-    'inventory',
-    'sales',
-    'customers',
-    'payments',
-    'credit_sales',
-    'notifications'
+    'inventory.apps.InventoryConfig',
+    'sales.apps.SalesConfig',
+    'customers.apps.CustomersConfig',
+    'payments.apps.PaymentsConfig',
+    'credit_sales.apps.CreditsalesConfig',
+    'notifications.apps.NotificationsConfig',
+    'purchases.apps.PurchasesConfig',
+    'config'
 ]
 
 MIDDLEWARE = [
@@ -110,6 +112,30 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'sales': {  # Your app's logger
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 
 # Internationalization

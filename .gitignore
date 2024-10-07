@@ -44,4 +44,4 @@ Thumbs.db
 
 # ignore general sql files but keep those in db directory
 *.sql
-!db/*.sql
+!_db/*.sql
