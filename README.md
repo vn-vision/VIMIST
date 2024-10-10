@@ -17,3 +17,9 @@ Customers can pre-pay for goods.
 records are in two: farm products and other goods that were bought, Each has its own records and the total for each is shown and combined.
 
 Recorsds include sales made, money made, money lost and so on...(include all records that are required)
+
+Credit sales:
+    the buyer should agree to the terms of services { include payment means: cash, mpesa }
+    If the buyer's option is cash, they should enter token provided on cash payment,
+    if the buyer pay's using mpesa, confirm payment and provide balance or refund if any.
+    if the credit goes beyond payday, cancel all services to customer (including cash) until debt is paid.
