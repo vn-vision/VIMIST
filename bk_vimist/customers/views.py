@@ -4,9 +4,11 @@ from customers.serializer import CustomerSerializer
 from customers.pagination import CustomersPagination
 from customers.filters import CustomerFilter
 from django_filters.rest_framework import DjangoFilterBackend
+# custom permissions to apply to the viewset
+from users.mixins import RoleBasedAccessMixin
 
 # Create your views here.
-class CustomerViewSet(viewsets.ModelViewSet):
+class CustomerViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
 

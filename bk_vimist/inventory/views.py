@@ -4,9 +4,10 @@ from inventory.serializer import ProductSerializer
 from inventory.pagination import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from inventory.filters import ProductFilter
-
+# Custom permissions to apply to the viewset
+from users.mixins import RoleBasedAccessMixin
 # Create your views here.
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
     """
     Provides the basic CRUD operations out of the box
     """
