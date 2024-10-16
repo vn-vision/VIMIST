@@ -6,3 +6,7 @@ router = DefaultRouter()
 router.register(r'credit_sales', CreditSaleViewSet)
 
 urlpatterns = router.urls
+urlpatterns += [
+    path('outstanding_credit_sales/', CreditSaleViewSet.as_view({'get': 'outstanding_credit_sales'})),
+    path('debt_trend/', CreditSaleViewSet.as_view({'get': 'debt_trend'})),
+]

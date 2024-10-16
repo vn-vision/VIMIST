@@ -8,8 +8,14 @@ This setup will automatically create the following endpoints:
 """
 from rest_framework.routers import DefaultRouter
 from customers.views import CustomerViewSet
+from django.urls import path
 
 router = DefaultRouter()
 router.register(r"customers", CustomerViewSet)
 
 urlpatterns = router.urls
+urlpatterns += [
+    path('customers_in_debt/', CustomerViewSet.as_view({'get': 'customers_in_debt'}), name='customers_in_debt'),
+    path('top_customers/', CustomerViewSet.as_view({'get': 'top_customers'}), name='top_customers'),
+    path('customer_behaviour/', CustomerViewSet.as_view({'get': 'customer_behaviour'}), name='customer_behaviour'),
+]

@@ -14,8 +14,8 @@ class Purchases(models.Model):
     purchase_date = models.DateField(default=timezone.now)
     supplier = models.CharField(max_length=255)
     payment_type = models.CharField(max_length=7, choices=[('Cash', 'Cash'), ('Mpesa', 'Mpesa'), ('Credit', 'Credit')])
-    created_at = models.TimeField(auto_now_add=True)
-    updated_at = models.TimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return(f"{self.quantity_purchased} of {self.product.name} purchased from {self.supplier}")
