@@ -2,23 +2,31 @@ from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from users.models import User
-from users.serializers import UserSerializer
+from users.serializers import UserRegSerializer, UserLogSerializer, SuperAdminRegSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
-class RegisterView(generics.CreateAPIView):
+class SuperAdminRegisterView(generics.CreateAPIView):
     """
     APIView to register a new user
     """
     queryset = User.objects.all()
-    permission_classes = (permissions.AllowAny,)
-    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny,]
+    serializer_class = SuperAdminRegSerializer
 
+
+class UserRegisterView(generics.CreateAPIView):
+    """
+    APIView to register a new user
+    """
+    queryset = User.objects.all()
+    permission_classes = [permissions.AllowAny,]
+    serializer_class = UserRegSerializer
 class LoginView(APIView):
     """
     APIView to login a user
     """
+    serializer_class = UserLogSerializer
     permission_classes = []
-    serializer_class = UserSerializer
 
 
     def post(self, request, *args, **kwargs):
