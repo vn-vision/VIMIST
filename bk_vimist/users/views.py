@@ -2,6 +2,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from users.models import User
+from django.contrib.auth import authenticate, get_user_model
 from users.serializers import UserRegSerializer, UserLogSerializer, SuperAdminRegSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -26,25 +27,27 @@ class LoginView(APIView):
     APIView to login a user
     """
     serializer_class = UserLogSerializer
-    permission_classes = []
+    permission_classes = [permissions.AllowAny,]
 
 
     def post(self, request, *args, **kwargs):
         """
         Method to login a user
         """
-        username = request.data.get('username')
-        password = request.data.get('password')
 
-        try:
-            user = User.objects.get(username=username)
-            if not user.check_password(password):
-                return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-            
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        username = serializer.validated_data.get('username')
+        password = serializer.validated_data.get('password')
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            # Generate JWT token for the user
             refresh = RefreshToken.for_user(user)
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)
-            })
-        except User.DoesNotExist:
-            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
