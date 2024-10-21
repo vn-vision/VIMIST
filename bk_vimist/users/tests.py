@@ -31,7 +31,7 @@ class RegistrationTests(TestCase):
         self.assertEqual(User.objects.filter(username='testAdmin', is_superadmin=True).exists(), True)
 
     def test_existing_admin(self):
-        admin = User.objects.create(username='testAdmin2', email='test2@admin.com', is_superadmin=True, password='SecurePass')
+        User.objects.create(username='testAdmin2', email='test2@admin.com', is_superadmin=True, password='SecurePass')
 
         with self.assertRaises(ValueError) as context:
             second_admin = User(username='testAdmin2', email='test2@admin.com', is_superadmin=True, password='SecurePass')

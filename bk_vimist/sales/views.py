@@ -15,7 +15,7 @@ class SaleViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
     """
     create view for the sale app
     """
-    queryset = Sale.objects.all()
+    queryset = Sale.objects.all().order_by('id')
     serializer_class = SaleSerializer
 
     # custom pagination
