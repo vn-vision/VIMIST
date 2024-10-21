@@ -7,7 +7,7 @@ import Customers from "./pages/Customers";
 import Payments from "./pages/Payments";
 import Dashboard from "./pages/Dashboard";
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import store from "./store/store";
 
 const App: React.FC = () => {
   return (
