@@ -68,6 +68,7 @@ class RegistrationTests(TestCase):
         })
         self.assertEqual(response.status_code, 400)
         self.assertIn('Enter a valid email address', response.content.decode())
+
 class LoginTests(TestCase):
     """
     Test cases for login
@@ -99,13 +100,178 @@ class LoginTests(TestCase):
             'username': 'nonexistentuser',
             'password': 'SecurePass',
         })
-        self.assertEqual(response.status_code, 404) 
-        self.assertIn('User does not exist', response.content.decode())
+        self.assertEqual(response.status_code, 401) 
+        self.assertIn('Invalid credentials', response.content.decode())
 
     def test_user_login_empty_fields(self):
         response = self.client.post(self.path, {
             'username': '',
             'password': '',
         })
-        self.assertEqual(response.status_code, 404)  
-        self.assertIn('User does not exist', response.content.decode())
+        self.assertEqual(response.status_code, 400)  
+        self.assertIn('This field may not be blank', response.content.decode())
+
+class UserRoleTests(TestCase):
+    def setUp(self):
+        from inventory.models import Product
+        from rest_framework.test import APIClient
+
+        self.client = APIClient()
+        self.customer = User.objects.create_user(username='customer', contact='0734567890', role='Customer', password='SecurePass')
+        self.cashier = User.objects.create_user(username='cashier', contact='0790876543', role='Cashier', password='SecurePass')
+        self.manager = User.objects.create_user(username='manager', contact='0712345678', role='Manager', password='SecurePass')
+        self.admin = User.objects.create_user(username='admin', email='admin@vimi.vm', is_superadmin=True, role='Admin', password='SecurePass')
+
+        self.product = Product.objects.create(name='TestProduct', category='Category', quantity_in_stock=100, unit_price=29.99, reorder_level=5)
+        self.id = self.product.id
+
+    
+
+    def test_customer_role(self):
+        self.assertEqual(self.customer.role, 'Customer')
+        # test for CRUD operations, customer should only be able to read and update their own profile
+        self.assertEqual(self.client.get('/api/inventory/products/').status_code, 200)
+        self.assertEqual(self.client.get(f'/api/inventory/products/{self.id}/').status_code, 200)
+
+        # try to make a post request to create a product: should return 401 unauthorized
+        # if the user is not an admin or manager return 403 forbidden
+        response = self.client.post('/api/users/login/', {
+            'username': 'customer',
+            'password': 'SecurePass',
+        })
+        token = response.data['access']
+
+        self.assertEqual(self.client.post('/api/inventory/products/').status_code, 401)
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+        self.assertEqual(self.client.post('/api/inventory/products/', data ={
+            "name": "New Product",
+            "category": "New Category",
+            "quantity_in_stock": 10,
+            "unit_price": 29.99,
+            "reorder_level": 5
+        }).status_code, 403)
+
+        # try to update a product as a customer, should return 403 forbidden
+        self.assertEqual(self.client.put(f'/api/inventory/products/{self.id}/', data ={
+            "name": "New Product",
+            "category": "New Category",
+            "quantity_in_stock": 109,
+            "unit_price": 29.99,
+            "reorder_level": 5
+        }).status_code, 403)
+
+        # try to delete a product as a customer, should return 403 forbidden
+        self.assertEqual(self.client.delete(f'/api/inventory/products/{self.id}/').status_code, 403)
+
+    def test_cashier_role(self):
+        """ test for cashier role """
+        self.assertEqual(self.cashier.role, 'Cashier')
+        # test for CRUD operations, cashier should only be able to read and update their own profile
+        self.assertEqual(self.client.get('/api/inventory/products/').status_code, 200)
+        self.assertEqual(self.client.get(f'/api/inventory/products/{self.id}/').status_code, 200)
+
+        # try to make a post request to create a product: should return 401 unauthorized
+        # if the user is not an admin or manager return 403 forbidden
+        response = self.client.post('/api/users/login/', {
+            'username': 'cashier',
+            'password': 'SecurePass',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        token = response.data['access']
+
+        self.assertEqual(self.client.post('/api/inventory/products/').status_code, 401)
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+        self.assertEqual(self.client.post('/api/inventory/products/', data ={
+            "name": "New Product",
+            "category": "New Category",
+            "quantity_in_stock": 10,
+            "unit_price": 29.99,
+            "reorder_level": 5
+        }).status_code, 403)
+
+        # try to update a product as a cashier, should return 403 forbidden
+        self.assertEqual(self.client.put(f'/api/inventory/products/{self.id}/', data ={
+            "name": "New Product",
+            "category": "New Category",
+            "quantity_in_stock": 109,
+            "unit_price": 29.99,
+            "reorder_level": 5
+        }).status_code, 403)
+
+        # try to delete a product as a cashier, should return 403 forbidden
+        self.assertEqual(self.client.delete(f'/api/inventory/products/{self.id}/').status_code, 403)
+
+    def test_manager_role(self):
+        """ test for manager role """
+        self.assertEqual(self.manager.role, 'Manager')
+        # test for CRUD operations, manager should only be able to read and update their own profile
+        self.assertEqual(self.client.get('/api/inventory/products/').status_code, 200)
+        self.assertEqual(self.client.get(f'/api/inventory/products/{self.id}/').status_code, 200)
+
+        # try to make a post request to create a product: should return 401 unauthorized
+        # if the user is not an admin or manager return 403 forbidden
+        response = self.client.post('/api/users/login/', {
+            'username': 'manager',
+            'password': 'SecurePass',
+        })
+        token = response.data['access']
+
+        self.assertEqual(self.client.post('/api/inventory/products/').status_code, 401)
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+        self.assertEqual(self.client.post('/api/inventory/products/', data ={
+            "name": "New Product",
+            "category": "New Category",
+            "quantity_in_stock": 10,
+            "unit_price": 29.99,
+            "reorder_level": 5
+        }).status_code, 201)
+
+        # try to update a product as a manager, should return 403 forbidden
+        self.assertEqual(self.client.put(f'/api/inventory/products/{self.id}/', data ={
+            "name": "New Product",
+            "category": "New Category",
+            "quantity_in_stock": 109,
+            "unit_price": 29.99,
+            "reorder_level": 5
+        }).status_code, 200)
+
+        # try to delete a product as a manager, should return 403 forbidden
+        self.assertEqual(self.client.delete(f'/api/inventory/products/{self.id}/').status_code, 403)
+
+    def test_admin_role(self):
+        """ test for admin role """
+        self.assertEqual(self.admin.role, 'Admin')
+        # test for CRUD operations, admin should only be able to read and update their own profile
+        self.assertEqual(self.client.get('/api/inventory/products/').status_code, 200)
+        self.assertEqual(self.client.get(f'/api/inventory/products/{self.id}/').status_code, 200)
+
+        # try to make a post request to create a product: should return 401 unauthorized
+        # if the user is not an admin or manager return 403 forbidden
+        response = self.client.post('/api/users/login/', {
+            'username': 'admin',
+            'password': 'SecurePass',
+        })
+        token = response.data['access']
+
+        self.assertEqual(self.client.post('/api/inventory/products/').status_code, 401)
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+        self.assertEqual(self.client.post('/api/inventory/products/', data ={
+            "name": "New Product",
+            "category": "New Category",
+            "quantity_in_stock": 10,
+            "unit_price": 29.99,
+            "reorder_level": 5
+        }).status_code, 201)
+
+        # try to update a product as an admin, should return 201 created
+        self.assertEqual(self.client.put(f'/api/inventory/products/{self.id}/', data ={
+            "name": "New Product",
+            "category": "New Category",
+            "quantity_in_stock": 109,
+            "unit_price": 29.99,
+            "reorder_level": 5
+        }).status_code, 200)
+
+        # try to delete a product as an admin, should return 201 created
+        self.assertEqual(self.client.delete(f'/api/inventory/products/{self.id}/').status_code, 204)
