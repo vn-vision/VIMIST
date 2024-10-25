@@ -21,7 +21,7 @@ export const loadProducts = createAsyncThunk<Product[], void>(
   async () => {
     try {
       const response = await getProducts();
-      return response;
+      return response.Product;
     } catch (error: any) {
       return error || 'Failed to load products';
     }
@@ -86,7 +86,7 @@ export const removeProduct = createAsyncThunk<
 
 // Define the initial state using that type
 const initialState: ProductState = {
-  products: [],
+  products: [] as Product[],
   status: "idle",
   error: null,
 };
@@ -103,6 +103,7 @@ const productsSlice = createSlice({
       })
       .addCase(loadProducts.fulfilled, (state, action) => {
         state.status = "succeeded";
+        console.log("Inventory []:", action.payload);
         state.products = action.payload;
       })
       .addCase(loadProducts.rejected, (state, action) => {

@@ -9,7 +9,7 @@ export interface Product {
   reorder_level: number;
 }
 
-const baseUrl = "http://localhost:8000/inventory/products";
+const baseUrl = "http://127.0.0.1:8000/api/inventory/products";
 
 // fetch all products
 export const getProducts = async () => {

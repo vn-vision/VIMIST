@@ -54,9 +54,12 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     # django filters
     'django_filters',
+    # cross origin headers
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -179,6 +182,13 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+# CORS_ALLOW_ALL_ORIGINS = True  # Allows all origins
+
+# Alternatively, specify allowed origins
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
