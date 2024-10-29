@@ -23,6 +23,7 @@ export const loadProducts = createAsyncThunk<Product[], void>(
       const response = await getProducts();
       return response.Product;
     } catch (error: any) {
+      console.log("Error:", error);
       return error || 'Failed to load products';
     }
   }
@@ -35,8 +36,11 @@ export const fetchProductById = createAsyncThunk<
 >("products/fetchProductById", async (id, { rejectWithValue }) => {
   try {
     const response = await getProductbyId(id);
+    console.log("Product by id:", response);
     return response;
+
   } catch (error: any) {
+    console.log("Error:", error);
     return rejectWithValue(error.response?.data || "An error occurred");
   }
 });
@@ -49,8 +53,10 @@ export const addNewProduct = createAsyncThunk<
 >("products/addNewProduct", async (product, { rejectWithValue }) => {
   try {
     const response = await postProduct(product);
+    console.log("New Product:", response);
     return response;
   } catch (error: any) {
+    console.log("Error:", error);
     return rejectWithValue(error.response?.data || "An error occurred");
   }
 });
@@ -63,8 +69,10 @@ export const modifyProduct = createAsyncThunk<
 >("products/updateProduct", async (product, { rejectWithValue }) => {
   try {
     const response = await updateProduct(product);
+    console.log("Updated Product:", response);
     return response;
   } catch (error: any) {
+    console.log("Error:", error);
     return rejectWithValue(error.response?.data || "An error occurred");
   }
 });
@@ -77,8 +85,10 @@ export const removeProduct = createAsyncThunk<
 >("products/deleteProduct", async (id, { rejectWithValue }) => {
   try {
     const response = await deleteProduct(id);
+    console.log("Deleted Product:", response);
     return response;
   } catch (error: any) {
+    console.log("Error:", error);
     return rejectWithValue(error.response?.data || "An error occurred");
   }
 });
