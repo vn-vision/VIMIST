@@ -14,6 +14,7 @@ const store = configureStore({
         inventory: inventorySlice,
         purchases: purchasesSlice,
         sales: salesSlice,
+        creditSales: creditSlice,
         payments: paymentsSlice,
         notifications: notificationsSlice,
         credit: creditSlice,

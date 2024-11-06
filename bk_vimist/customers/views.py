@@ -13,7 +13,7 @@ from django.db.models import Count, Sum
 
 # Create your views here.
 class CustomerViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
-    queryset = Customer.objects.all()
+    queryset = Customer.objects.all().order_by('id')
     serializer_class = CustomerSerializer
 
     # Pagination

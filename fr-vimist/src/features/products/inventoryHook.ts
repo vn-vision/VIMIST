@@ -13,9 +13,7 @@ import { Product } from "../../api/inventoryAPI";
 // Hook to display products
 export const useDisplayProducts = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const products = useSelector(
-    (state: RootState) => state.inventory.products || []
-  );
+  const products = useSelector((state: RootState) => state.inventory.products || []);
   const status = useSelector((state: RootState) => state.inventory.status);
   const error = useSelector((state: RootState) => state.inventory.error);
 

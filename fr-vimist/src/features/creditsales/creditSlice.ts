@@ -87,7 +87,7 @@ export const removeCreditSale = createAsyncThunk<number, number, { rejectValue: 
 
 // create the initial state
 const initialState: CreditState = {
-  creditSales: [],
+  creditSales: [] as CreditSale[],
   status: 'idle',
   error: null,
 };
