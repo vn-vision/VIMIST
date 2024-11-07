@@ -35,11 +35,11 @@ export const registerUser = createAsyncThunk<
   }
 });
 
-export const loginUser = createAsyncThunk<User, User, { rejectValue: string }>(
+export const loginUser = createAsyncThunk<{access: string; refresh: string;}, User, { rejectValue: string }>(
   "login/user",
   async (user, { rejectWithValue }) => {
     try {
-      const response = userLogin(user);
+      const response = await userLogin(user);
       return response;
     } catch (error: any) {
       return rejectWithValue(error.message) || "Error trying to login";
@@ -63,6 +63,8 @@ const initialState: authState = {
     contact: "",
     email: "",
     password: "",
+    access: "",
+    refresh: "",
   },
   status: "idle",
   error: null,
@@ -107,7 +109,9 @@ const authSlice = createSlice({
     })
     .addCase(loginUser.fulfilled, (state, action) =>{
       state.status = "succeed";
-      state.user = action.payload;
+      state.user.access = action.payload.access;
+      state.user.refresh = action.payload.refresh;
+
     })
     .addCase(loginUser.rejected, (state, action) =>{
       state.status = "failed";

@@ -4,19 +4,17 @@ import { User } from "../../api/authenticationAPI";
 import { loginUser, registerAdmin, registerUser } from "./authSlice";
 
 // Hook to display users
-export const useDisplayUsers = () => {
+export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const users = useSelector((state: RootState) => state.auth.user || []);
   const status = useSelector((state: RootState) => state.auth.status);
   const error = useSelector((state: RootState) => state.auth.error);
 
-  const fetchUsers = (user:User) => {
-    if (users === null) {
-      dispatch(loginUser(user));
-    }
+  const authUser = (user:User) => {
+      const response = dispatch(loginUser(user));
+      return response.unwrap();
   };
 
-    return { fetchUsers, status, error };
+    return { authUser, status, error };
 };
 
 // Hook to add a new user

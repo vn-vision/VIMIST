@@ -77,7 +77,7 @@ const Dashboard = () => {
     <div>
       <h1 className="vn-text-cyan-600">Products</h1>
       <ul>
-        {AllProducts.data.map((product) => (
+        {AllProducts.data.map((product: Product) => (
           <li key={product.id}>
             <h3>{product.name}</h3>
             <p>Category: {product.category}</p>

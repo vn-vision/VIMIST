@@ -8,6 +8,7 @@ import Payments from "./pages/Payments";
 import Dashboard from "./pages/Dashboard";
 import { Provider } from "react-redux";
 import store from "./store/store";
+import Login from "./pages/Login";
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,8 @@ const App: React.FC = () => {
           <Route path="/sales" element={<Sales />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/payments" element={<Payments />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </Router>
     </Provider>
