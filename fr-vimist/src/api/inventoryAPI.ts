@@ -1,5 +1,4 @@
 import axios from "axios";
-
 export interface Product {
   id: number;
   name: string;
@@ -36,7 +35,12 @@ export const getProductbyId = async (id: number) => {
 // post a product
 export const postProduct = async (product: Product) => {
   try {
-    const response = await axios.post(`${baseUrl}/`, product);
+    const response = await axios.post(`${baseUrl}/`, product, {
+      headers: {
+        "Authorization":`Bearer ${localStorage.getItem("access")}`,
+        "Content-Type": "application/json",
+      },
+  });
     return response.data;
   } catch (error) {
     console.error("Error adding product", error);
