@@ -37,10 +37,10 @@ export const postProduct = async (product: Product) => {
   try {
     const response = await axios.post(`${baseUrl}/`, product, {
       headers: {
-        "Authorization":`Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
         "Content-Type": "application/json",
       },
-  });
+    });
     return response.data;
   } catch (error) {
     console.error("Error adding product", error);
@@ -51,7 +51,12 @@ export const postProduct = async (product: Product) => {
 // update a product
 export const updateProduct = async (product: Product) => {
   try {
-    const response = await axios.put(`${baseUrl}/${product.id}/`, product);
+    const response = await axios.put(`${baseUrl}/${product.id}/`, product, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error updating product", error);
@@ -61,7 +66,12 @@ export const updateProduct = async (product: Product) => {
 // delete a product
 export const deleteProduct = async (id: number) => {
   try {
-    const response = await axios.delete(`${baseUrl}/${id}/`);
+    const response = await axios.delete(`${baseUrl}/${id}/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error deleting product", error);

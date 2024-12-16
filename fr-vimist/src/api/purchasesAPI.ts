@@ -36,7 +36,12 @@ export const getPurchaseById = async (id: number) => {
 
 export const postPurchase = async (purchase: Purchase) => {
   try {
-    const response = await axios.post(`${baseUrl}/`, purchase);
+    const response = await axios.post(`${baseUrl}/`, purchase, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error while adding the purchase", error);
@@ -46,7 +51,12 @@ export const postPurchase = async (purchase: Purchase) => {
 
 export const updatePurchase = async (purchase: Purchase) => {
   try {
-    const response = await axios.put(`${baseUrl}/${purchase.id}/`, purchase);
+    const response = await axios.put(`${baseUrl}/${purchase.id}/`, purchase, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error while updating the purchase", error);
@@ -56,7 +66,12 @@ export const updatePurchase = async (purchase: Purchase) => {
 
 export const deletePurchase = async (id: number) => {
   try {
-    const response = await axios.delete(`${baseUrl}/${id}/`);
+    const response = await axios.delete(`${baseUrl}/${id}/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error deleting the purchase", error);

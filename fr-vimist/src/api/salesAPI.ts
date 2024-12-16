@@ -35,7 +35,12 @@ export const getSaleById = async (id: number) => {
 
 export const postSale = async (sale: Sale) => {
   try {
-    const response = await axios.post(`${baseUrl}/`, sale);
+    const response = await axios.post(`${baseUrl}/`, sale, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error while adding the sale", error);
@@ -45,7 +50,12 @@ export const postSale = async (sale: Sale) => {
 
 export const updateSale = async (sale: Sale) => {
   try {
-    const response = await axios.put(`${baseUrl}/${sale.id}/`, sale);
+    const response = await axios.put(`${baseUrl}/${sale.id}/`, sale, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error while updating the sale", error);
@@ -55,7 +65,12 @@ export const updateSale = async (sale: Sale) => {
 
 export const deleteSale = async (id: number) => {
   try {
-    const response = await axios.delete(`${baseUrl}/${id}/`);
+    const response = await axios.delete(`${baseUrl}/${id}/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error while deleting the sale", error);
