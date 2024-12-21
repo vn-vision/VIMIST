@@ -7,6 +7,7 @@ import {
   useDeleteProduct,
 } from "../features/products/inventoryHook";
 import { Product } from "../api/inventoryAPI";
+import SideNavbar from "../components/SideNavbar";
 
 const Dashboard = () => {
   const [selectId, setId] = useState<number | null>(0);
@@ -75,6 +76,7 @@ const Dashboard = () => {
 
   return (
     <div>
+      <SideNavbar />
       <h1 className="vn-text-cyan-600">Products</h1>
       <ul>
         {AllProducts.data.map((product: Product) => (
