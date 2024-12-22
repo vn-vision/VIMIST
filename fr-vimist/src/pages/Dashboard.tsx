@@ -7,7 +7,10 @@ import {
   useDeleteProduct,
 } from "../features/products/inventoryHook";
 import { Product } from "../api/inventoryAPI";
-import SideNavbar from "../components/SideNavbar";
+import TopNavbar from "../components/TopNavbar";
+import DynamicGraph from "../components/Graphs";
+import { dataSets } from "../assets/data/datasets";
+import Layout from "../components/Layout";
 
 const Dashboard = () => {
   const [selectId, setId] = useState<number | null>(0);
@@ -71,186 +74,55 @@ const Dashboard = () => {
       setDeleteId(null);
     }
   };
-
-
-
-  return (
-    <div>
-      <SideNavbar />
-      <h1 className="vn-text-cyan-600">Products</h1>
-      <ul>
-        {AllProducts.data.map((product: Product) => (
-          <li key={product.id}>
-            <h3>{product.name}</h3>
-            <p>Category: {product.category}</p>
-            <p>Price: {product.unit_price}</p>
-            <p>Stock: {product.quantity_in_stock}</p>
-            <p>Reorder Level: {product.reorder_level}</p>
-          </li>
-        ))}
-      </ul>
-      <br/>
-      <br/>
-      <h1 className="vn-text-yellow-700">Single Product</h1>
-
-        <input
-          type="number"
-          placeholder="Enter Product ID"
-          value={selectId || ""}
-          onChange={(e) => setId(parseInt(e.target.value))}
-        />
-
-      {OneProduct.data &&
-        OneProduct.data.map((product: Product) =>
-          product.id === selectId ? (
-            <div key={product.id}>
-              <h3>{product.name}</h3>
-              <p>Category: {product.category}</p>
-              <p>Price: {product.unit_price}</p>
-              <p>Stock: {product.quantity_in_stock}</p>
-              <p>Reorder Level: {product.reorder_level}</p>
+  
+    return (
+      <Layout>
+        <div className="vn-flex vn-flex-col vn-h-full">
+          {/* Top Navbar */}
+          <TopNavbar />
+  
+          {/* Responsive Grid */}
+          <div className="vn-grid vn-grid-cols-1 md:vn-grid-cols-2 vn-grid-rows-4 md:vn-grid-rows-2 vn-flex-grow">
+            {/* Sales Section */}
+            <div className="vn-bg-blue-100 vn-flex vn-flex-col vn-justify-center vn-items-center vn-p-4 vn-overflow-hidden">
+              <h2 className="vn-text-lg vn-font-semibold vn-mb-2">Sales</h2>
+              <div className="vn-h-full vn-w-full">
+                <DynamicGraph dataSets={dataSets} />
+              </div>
             </div>
-          ) : null
-        )}
-      <br/>
-      <br/>
-      <h1 className="vn-text-green-500">Add Product</h1>
-      <form onSubmit={handleAddProduct}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={newProduct.name}
-          onChange={(e) =>
-            setNewProduct({ ...newProduct, name: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Category"
-          value={newProduct.category}
-          onChange={(e) =>
-            setNewProduct({ ...newProduct, category: e.target.value })
-          }
-        />
-        <input
-          type="number"
-          placeholder="Unit Price"
-          value={newProduct.unit_price}
-          onChange={(e) =>
-            setNewProduct({
-              ...newProduct,
-              unit_price: parseFloat(e.target.value),
-            })
-          }
-        />
-        <input
-          type="number"
-          placeholder="Quantity in Stock"
-          value={newProduct.quantity_in_stock}
-          onChange={(e) =>
-            setNewProduct({
-              ...newProduct,
-              quantity_in_stock: parseInt(e.target.value),
-            })
-          }
-        />
-        <input
-          type="number"
-          placeholder="Reorder Level"
-          value={newProduct.reorder_level}
-          onChange={(e) =>
-            setNewProduct({
-              ...newProduct,
-              reorder_level: parseInt(e.target.value),
-            })
-          }
-        />
-        <button type="submit">Add Product</button>
-      </form>
-      <br/>
-      <br/>
-
-      <h1 className="vn-text-orange-400">Update Product</h1>
-      <form onSubmit={handleUpdateProduct}>
-        <input
-          type="number"
-          placeholder="Enter Product ID"
-          value={updateProductData.id || ""}
-          onChange={(e) =>
-            setUpdateProductData({
-              ...updateProductData,
-              id: parseInt(e.target.value),
-            })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Name"
-          value={updateProductData.name}
-          onChange={(e) =>
-            setUpdateProductData({ ...updateProductData, name: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Category"
-          value={updateProductData.category}
-          onChange={(e) =>
-            setUpdateProductData({
-              ...updateProductData,
-              category: e.target.value,
-            })
-          }
-        />
-        <input
-          type="number"
-          placeholder="Unit Price"
-          value={updateProductData.unit_price}
-          onChange={(e) =>
-            setUpdateProductData({
-              ...updateProductData,
-              unit_price: parseFloat(e.target.value),
-            })
-          }
-        />
-        <input
-          type="number"
-          placeholder="Quantity in Stock"
-          value={updateProductData.quantity_in_stock}
-          onChange={(e) =>
-            setUpdateProductData({
-              ...updateProductData,
-              quantity_in_stock: parseInt(e.target.value),
-            })
-          }
-        />
-        <input
-          type="number"
-          placeholder="Reorder Level"
-          value={updateProductData.reorder_level}
-          onChange={(e) =>
-            setUpdateProductData({
-              ...updateProductData,
-              reorder_level: parseInt(e.target.value),
-            })
-          }
-        />
-        <button type="submit">Update Product</button>
-      </form>
-      <br/>
-      <br/>
-      <h1 className="vn-text-red-700">Delete Product</h1>
-      <input
-        type="number"
-        placeholder="Enter Product ID"
-        value={deleteId || ""}
-        onChange={(e) => setDeleteId(parseInt(e.target.value))}
-      />
-      <button type="button" onClick={handleDeleteProduct}>
-        Delete Product
-      </button>
-    </div>
-  );
+  
+            {/* Purchases Section */}
+            <div className="vn-bg-green-100 vn-flex vn-flex-col vn-justify-center vn-items-center vn-p-4 vn-overflow-hidden">
+              <h2 className="vn-text-lg vn-font-semibold vn-mb-2">Purchases</h2>
+              <div className="vn-h-full vn-w-full">
+                <DynamicGraph dataSets={dataSets} />
+              </div>
+            </div>
+  
+            {/* Stock Section */}
+            <div className="vn-bg-yellow-100 vn-flex vn-flex-col vn-justify-center vn-items-center vn-p-4 vn-overflow-hidden">
+              <h2 className="vn-text-lg vn-font-semibold vn-mb-2">Stock</h2>
+              <div className="vn-h-full vn-w-full">
+                <DynamicGraph dataSets={dataSets} />
+              </div>
+            </div>
+  
+            {/* Stock Level Section */}
+            <div className="vn-bg-red-100 vn-flex vn-flex-col vn-justify-center vn-items-center vn-p-4 vn-overflow-auto">
+              <h2 className="vn-text-lg vn-font-semibold vn-mb-2">Stock Level</h2>
+              <ul className="vn-list-disc vn-list-inside vn-text-sm vn-text-gray-800">
+                {AllProducts.data.map((product) => (
+                  <li key={product.id}>
+                    <span className="vn-font-medium">{product.name}</span>:{" "}
+                    {product.quantity_in_stock}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );  
 };
 
 export default Dashboard;
