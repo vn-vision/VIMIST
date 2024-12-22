@@ -15,13 +15,14 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="vn-flex vn-h-screen">
       {/* Sidebar */}
-      <SideNavbar collapsed={collapsed} toggleNavbar={toggleNavbar} />
+      <SideNavbar collapsed={collapsed} toggleNavbar={toggleNavbar}/>
 
       {/* Main Content */}
       <div
         className={`vn-flex vn-flex-col vn-w-full vn-h-screen vn-pl-[${collapsed ? "10%" : "2%"}] vn-mt-0`}
         style={{ marginLeft: collapsed ? "10%" : "2%" }}
       >
+        {/* render dynamically based on the state */}
         {children}
       </div>
     </div>

@@ -9,11 +9,13 @@ import Dashboard from "./pages/Dashboard";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import Login from "./pages/Login";
+import Layout from "./components/Layout";
 
 const App: React.FC = () => {
   return (
     <Provider store={store}>
       <Router>
+        <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/inventory" element={<Inventory />} />
@@ -23,6 +25,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
+        </Layout>
       </Router>
     </Provider>
   );

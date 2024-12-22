@@ -76,8 +76,8 @@ const Dashboard = () => {
   };
   
     return (
-      <Layout>
-        <div className="vn-flex vn-flex-col vn-h-full">
+        <div className="vn-flex vn-flex-col vn-h-full vn-gap-5 vn-mt-5">
+          <h1>Dashboard</h1>
           {/* Top Navbar */}
           <TopNavbar />
   
@@ -121,7 +121,6 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      </Layout>
     );  
 };
 
