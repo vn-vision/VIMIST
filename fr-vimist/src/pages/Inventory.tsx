@@ -20,7 +20,7 @@ const Inventory = () => {
       {!item ? <TopNavbar /> : ""}
 
       {!item ? (
-        <div className="vn-flex vn-justify-between">
+        <div className="vn-flex vn-justify-around">
           <button> Filter</button>
           <button onClick={() => addItem(!item)}>Add Item</button>
         </div>
