@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DynamicTable from "../components/DynamicTable";
-import TopNavbar from "../components/TopNavbar";
+// import TopNavbar from "../components/TopNavbar";
 import AddSaleComponent from "../components/AddSale";
 import CreditSaleComponent from "./CreditSaleComponent";
 
@@ -22,7 +22,7 @@ const Sales = () => {
   return (
     <div className="vn-mt-5 vn-p-5">
       <h1 className="vn-text-2xl vn-font-bold vn-mb-5">Sales</h1>
-      <TopNavbar />
+      {/* <TopNavbar /> */}
 
       {/* Quick Actions */}
       <div className="vn-flex vn-justify-around vn-my-5">
@@ -54,7 +54,7 @@ const Sales = () => {
 
       {/* Conditional Rendering */}
       <div className="vn-mt-5">
-        {view === "table" && <DynamicTable headers={headers} data={data} />}
+        {/* {view === "table" && <DynamicTable headers={headers} data={data} />} */}
         {view === "addSale" && <AddSaleComponent />}
         {view === "creditSale" && <CreditSaleComponent />}
       </div>

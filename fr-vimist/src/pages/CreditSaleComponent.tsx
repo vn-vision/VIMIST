@@ -10,7 +10,7 @@ const data = [
 function CreditSaleComponent() {
   return (
     <div>
-      <DynamicTable headers={headers} data={data} />
+      {/* <DynamicTable headers={headers} data={data} /> */}
     </div>
   )
 }

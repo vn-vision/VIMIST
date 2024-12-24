@@ -1,5 +1,7 @@
 import DynamicTable from "../components/DynamicTable";
-import TopNavbar from "../components/TopNavbar";
+// import TopNavbar from "../components/TopNavbar";
+
+
 
 const headers = ["ID", "Item", "Category", "Price", "Quantity"];
 const data = [
@@ -13,12 +15,12 @@ const Payments = () => {
   return (
     <div className="vn-flex vn-flex-col vn-gap-5 vn-mt-5">
       <h1>Payments</h1>
-      <TopNavbar />
+      {/* <TopNavbar /> */}
       <div className="vn-flex">
         <button> Filter</button>
       </div>
       {/* Payments Section */}
-      <DynamicTable headers={headers} data={data} />
+      {/* <DynamicTable headers={headers} data={data} /> */}
     </div>
   );
 };

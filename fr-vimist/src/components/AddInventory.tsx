@@ -1,63 +1,79 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAddNewProduct } from "../features/products/inventoryHook";
+import { Product } from "../api/inventoryAPI";
 
-function AddInventory() {
-    const navigate = useNavigate();
+function AddInventory({ reset }: { reset: () => void }) {
+  const navigate = useNavigate();
+  
+  // Add a new product
+  const { addProduct, status,  } = useAddNewProduct();
 
-  // Define the state type
-  interface FormData {
-    category: string;
-    item: string;
-    description: string;
-    price: string;
-    quantity: string;
-    image: File | null; // Allow image to be null or a File object
-  }
-
-  // Initialize state with the correct type
-  const [formData, setFormData] = useState<FormData>({
-    category: '',
-    item: '',
-    description: '',
-    price: '',
-    quantity: '',
-    image: null,
+  // State for a new product
+  const [newProduct, setNewProduct] = useState<Product>({
+    id: 0,
+    name: "",
+    category: "",
+    unit_price: 0,
+    quantity_in_stock: 0,
+    reorder_level: 0,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value, files } = e.target;
-    if (id === 'image' && files) {
-      setFormData((prev) => ({ ...prev, image: files[0] })); // Assign File object
-    } else {
-      setFormData((prev) => ({ ...prev, [id]: value })); // Update other fields
-    }
-  };
+  const [productImage, setProductImage] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleAddProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form data submitted:', formData);
 
-    // Add further processing logic here
-    alert('Inventory item saved successfully!');
+    if (!productImage) {
+      alert("Please upload an image.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Prepare product data, including the image if necessary
+    const productData = {
+      ...newProduct,
+      image: productImage, // Optional: Include the image in your logic
+    };
+
+    addProduct(productData);
+
+    // Reset form
+    setNewProduct({
+      id: 0,
+      name: "",
+      category: "",
+      unit_price: 0,
+      quantity_in_stock: 0,
+      reorder_level: 0,
+    });
+    setProductImage(null);
+
+    if (status === 'succeeded') {
+      reset();
+      navigate("/inventory"); // Redirect to inventory or refresh the page
+    }
+    setIsSubmitting(false);
   };
 
   const handleDiscard = () => {
-    setFormData({
-      category: '',
-      item: '',
-      description: '',
-      price: '',
-      quantity: '',
-      image: null,
+    setNewProduct({
+      id: 0,
+      name: "",
+      category: "",
+      unit_price: 0,
+      quantity_in_stock: 0,
+      reorder_level: 0,
     });
-    alert('Form discarded!');
-    navigate("/");
+    setProductImage(null);
   };
 
   return (
     <div className="vn-flex vn-justify-center vn-items-center vn-bg-gray-100 vn-h-full">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleAddProduct}
         className="vn-grid vn-grid-cols-2 vn-gap-4 vn-bg-white vn-shadow-md vn-rounded vn-p-6 vn-max-w-lg"
       >
         <label htmlFor="category" className="vn-font-bold">
@@ -67,34 +83,23 @@ function AddInventory() {
           id="category"
           type="text"
           placeholder="Cereals"
-          value={formData.category}
-          onChange={handleChange}
+          value={newProduct.category}
+          onChange={(e) =>
+            setNewProduct({ ...newProduct, category: e.target.value })
+          }
           required
           className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
         />
 
-        <label htmlFor="item" className="vn-font-bold">
-          Item:
+        <label htmlFor="name" className="vn-font-bold">
+          Name:
         </label>
         <input
-          id="item"
+          id="name"
           type="text"
           placeholder="Rice"
-          value={formData.item}
-          onChange={handleChange}
-          required
-          className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
-        />
-
-        <label htmlFor="description" className="vn-font-bold">
-          Description:
-        </label>
-        <input
-          id="description"
-          type="text"
-          placeholder="Sindano"
-          value={formData.description}
-          onChange={handleChange}
+          value={newProduct.name}
+          onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
           required
           className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
         />
@@ -106,8 +111,13 @@ function AddInventory() {
           id="price"
           type="number"
           placeholder="120.00"
-          value={formData.price}
-          onChange={handleChange}
+          value={newProduct.unit_price}
+          onChange={(e) =>
+            setNewProduct({
+              ...newProduct,
+              unit_price: parseFloat(e.target.value) || 0,
+            })
+          }
           required
           className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
         />
@@ -119,8 +129,31 @@ function AddInventory() {
           id="quantity"
           type="number"
           placeholder="20"
-          value={formData.quantity}
-          onChange={handleChange}
+          value={newProduct.quantity_in_stock}
+          onChange={(e) =>
+            setNewProduct({
+              ...newProduct,
+              quantity_in_stock: parseInt(e.target.value, 10) || 0,
+            })
+          }
+          required
+          className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
+        />
+
+        <label htmlFor="reorder-level" className="vn-font-bold">
+          Re-Order Level:
+        </label>
+        <input
+          id="reorder-level"
+          type="number"
+          placeholder="20"
+          value={newProduct.reorder_level}
+          onChange={(e) =>
+            setNewProduct({
+              ...newProduct,
+              reorder_level: parseInt(e.target.value, 10) || 0,
+            })
+          }
           required
           className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
         />
@@ -132,16 +165,24 @@ function AddInventory() {
           id="image"
           type="file"
           accept="image/*"
-          onChange={handleChange}
+          onChange={(e) => {
+            if (e.target.files && e.target.files[0]) {
+              const file = e.target.files[0];
+              // Optional: Add file size/type validation here
+              setProductImage(file);
+            }
+          }}
           className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
         />
 
         <button
           type="submit"
-          className="vn-col-span-2 vn-bg-blue-500 vn-text-white vn-rounded vn-py-2 vn-font-bold vn-hover:bg-blue-600"
+          className={`vn-col-span-2 vn-bg-blue-500 vn-text-white vn-rounded vn-py-2 vn-font-bold vn-hover:bg-blue-600 ${isSubmitting && "vn-bg-blue-300"}`}
+          disabled={isSubmitting}
         >
-          Save
+          {isSubmitting ? "Saving..." : "Save"}
         </button>
+
         <button
           type="button"
           onClick={handleDiscard}

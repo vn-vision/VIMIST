@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DynamicTable from "../components/DynamicTable";
-import TopNavbar from "../components/TopNavbar";
+// import TopNavbar from "../components/TopNavbar";
 import AddPurchase from "../components/AddPurchase";
 
 const headers = ["ID", "Item", "Category", "Price", "Quantity"];
@@ -17,7 +17,7 @@ const Purchases = () => {
   return (
     <div className="vn-flex vn-flex-col vn-gap-5 vn-mt-5">
       <h1>Purchases</h1>
-      {!item ? <TopNavbar /> : ""}
+      {/* {!item ? <TopNavbar /> : ""} */}
 
       {!item ? (
         <div className="vn-flex vn-justify-around">
@@ -27,7 +27,7 @@ const Purchases = () => {
       ) : ""}
       {/* Purchases Section */}
 
-      {item ? <AddPurchase /> : <DynamicTable headers={headers} data={data} />}
+      {/* {item ? <AddPurchase /> : <DynamicTable headers={headers} data={data} />} */}
     </div>
   );
 };

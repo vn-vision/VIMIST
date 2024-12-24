@@ -10,19 +10,8 @@ import { Product } from "../api/inventoryAPI";
 import TopNavbar from "../components/TopNavbar";
 import DynamicGraph from "../components/Graphs";
 import { dataSets } from "../assets/data/datasets";
-import Layout from "../components/Layout";
 
 const Dashboard = () => {
-  const [selectId, setId] = useState<number | null>(0);
-  const [newProduct, setNewProduct] = useState<Product>({
-    id: 0,
-    name: "",
-    category: "",
-    unit_price: 0,
-    quantity_in_stock: 0,
-    reorder_level: 0,
-  });
-
   const [updateProductData, setUpdateProductData] = useState<Product>({
     id: 0,
     name: "",
@@ -32,26 +21,9 @@ const Dashboard = () => {
     reorder_level: 0,
   });
 
-  const [deleteId, setDeleteId] = useState<number | null>(null);
-
   const AllProducts = useDisplayProducts();
-  const OneProduct = useDisplayProductId(selectId || 0);
-  const { addProduct } = useAddNewProduct();
   const { updateProduct } = useUpdateProduct();
-  const { deleteProduct } = useDeleteProduct();
 
-  const handleAddProduct = (e: React.FormEvent) => {
-    e.preventDefault();
-    addProduct(newProduct);
-    setNewProduct({
-      id: 0,
-      name: "",
-      category: "",
-      unit_price: 0,
-      quantity_in_stock: 0,
-      reorder_level: 0,
-    });
-  };
 
   const handleUpdateProduct = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,18 +40,12 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeleteProduct = () => {
-    if (deleteId) {
-      deleteProduct(deleteId);
-      setDeleteId(null);
-    }
-  };
   
     return (
         <div className="vn-flex vn-flex-col vn-h-full vn-gap-5 vn-mt-5">
           <h1>Dashboard</h1>
           {/* Top Navbar */}
-          <TopNavbar />
+          {/* <TopNavbar /> */}
   
           {/* Responsive Grid */}
           <div className="vn-grid vn-grid-cols-1 md:vn-grid-cols-2 vn-grid-rows-4 md:vn-grid-rows-2 vn-flex-grow">
