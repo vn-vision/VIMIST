@@ -3,15 +3,21 @@ interface DataTableProps {
   headers: string[];
   data: Record<string, any>[];
   onDelete: (id: number) => void;
+  onEdit: (id: number) => void;
 }
 
-function DynamicTable({ headers, data, onDelete }: DataTableProps) {
-    const navigate = useNavigate();
+function DynamicTable({ headers, data, onDelete, onEdit }: DataTableProps) {
+  const navigate = useNavigate();
+  
   // callback function to delete an Item
-
   const handleDelete = (id: number) => {
     onDelete(id); // Pass the ID to the parent handler
     navigate(0);
+  };
+
+  // callback function to edit an item
+  const handleEdit = (id: number) => {
+    onEdit(id);
   };
   return (
     <div className="vn-overflow-x-auto vn-shadow-md vn-rounded-lg">
@@ -43,6 +49,9 @@ function DynamicTable({ headers, data, onDelete }: DataTableProps) {
                 </td>
               ))}
               <td className="vn-flex vn-gap-2">
+                <button className="vn-border vn-border-green-500"
+                onClick={() => handleEdit(row.id)}
+                >Edit</button>
                 <button
                   className="vn-border vn-border-red-500"
                   onClick={() => handleDelete(row.id)}

@@ -10,6 +10,7 @@ const Inventory = () => {
   const [item, addItem] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string | number>("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [editItemId, setEditItemId] = useState<number | null>(null);
 
   // get all products
   const allProducts = useDisplayProducts();
@@ -27,6 +28,11 @@ const Inventory = () => {
     }
   };
 
+  // edit a product
+  const handleEdit = (id: number) => {
+    setEditItemId(id);
+    addItem(true);
+  };
   // delete a product by its ID
     const {deleteProduct} = useDeleteProduct();
 
@@ -42,7 +48,7 @@ const Inventory = () => {
         </div>
       ) : ""}
       {/* inventory Section */}
-      {item ? <AddInventory reset={() => addItem(false)}/> : <DynamicTable headers={headers} data={searchQuery ? filteredData : allProducts.data} onDelete={deleteProduct}/>}
+      {item ? <AddInventory reset={() => {addItem(false); setEditItemId(null);}} itemId={editItemId}/> : <DynamicTable headers={headers} data={searchQuery ? filteredData : allProducts.data} onDelete={deleteProduct} onEdit={handleEdit}/>}
 
       {/* No results found */}
       {searchQuery && filteredData.length === 0 && (

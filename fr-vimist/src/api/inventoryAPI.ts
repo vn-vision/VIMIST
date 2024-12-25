@@ -6,6 +6,7 @@ export interface Product {
   unit_price: number;
   quantity_in_stock: number;
   reorder_level: number;
+  image?: File; // Optional property
 }
 
 const baseUrl = "http://127.0.0.1:8000/api/inventory/products";
