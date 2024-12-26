@@ -47,8 +47,8 @@ export const fetchProductById = createAsyncThunk<
 
 // Add a new product
 export const addNewProduct = createAsyncThunk<
-  Product,
-  Product,
+Product,
+  FormData,
   { rejectValue: string }
 >("products/addNewProduct", async (product, { rejectWithValue }) => {
   try {

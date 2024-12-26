@@ -48,7 +48,7 @@ export const useAddNewProduct = () => {
   const status = useSelector((state: RootState) => state.inventory.status);
   const error = useSelector((state: RootState) => state.inventory.error);
 
-  const addProduct = (product: Product) => {
+  const addProduct = (product: FormData) => {
     dispatch(addNewProduct(product));
   };
 

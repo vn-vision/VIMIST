@@ -81,6 +81,7 @@ const Dashboard = () => {
                   <li key={product.id}>
                     <span className="vn-font-medium">{product.name}</span>:{" "}
                     {product.quantity_in_stock}
+                    <img src={product.image instanceof File ? URL.createObjectURL(product.image): product.image ? product.image : ''} alt={product.name} />
                   </li>
                 ))}
               </ul>

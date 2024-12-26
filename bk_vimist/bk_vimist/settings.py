@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-from os import getenv
+import os
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -97,11 +97,11 @@ WSGI_APPLICATION = 'bk_vimist.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': getenv('VIMIST_DB_NAME'),
-        'USER': getenv('VIMIST_DB_USER'),
-        'PASSWORD': getenv('VIMIST_DB_PASS'),
-        'HOST': getenv('VIMIST_DB_HOST', 'localhost'),
-        'PORT': getenv('VIMIST_DB_PORT', '3306'),
+        'NAME': os.getenv('VIMIST_DB_NAME'),
+        'USER': os.getenv('VIMIST_DB_USER'),
+        'PASSWORD': os.getenv('VIMIST_DB_PASS'),
+        'HOST': os.getenv('VIMIST_DB_HOST', 'localhost'),
+        'PORT': os.getenv('VIMIST_DB_PORT', '3306'),
     }
 }
 
@@ -208,3 +208,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

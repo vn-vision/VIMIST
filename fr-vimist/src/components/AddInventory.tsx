@@ -15,6 +15,7 @@ const defaultProductState: Product = {
   unit_price: 0,
   quantity_in_stock: 0,
   reorder_level: 0,
+  image: null,
 };
 
 const ProductForm = ({
@@ -144,7 +145,19 @@ function AddInventory({ reset, itemId }: AddInventoryProps) {
         return;
       }
 
-      addProduct({ ...product, image: productImage });
+      // form data to allow file submission
+      const formData = new FormData();
+
+      // append to the form Data for submission
+      formData.append('category', product.category);
+      formData.append('name', product.name);
+      formData.append('unit_price', product.unit_price.toString());
+      formData.append('quantity_in_stock', product.quantity_in_stock.toString());
+      formData.append('reorder_level', product.reorder_level.toString());
+      formData.append('image', productImage);
+
+      addProduct(formData);
+
       if (addStatus === "succeeded") navigate("/inventory");
     } else {
       updateProduct(product);

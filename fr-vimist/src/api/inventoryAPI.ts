@@ -6,7 +6,7 @@ export interface Product {
   unit_price: number;
   quantity_in_stock: number;
   reorder_level: number;
-  image?: File; // Optional property
+  image?: File | null | string; // Optional property
 }
 
 const baseUrl = "http://127.0.0.1:8000/api/inventory/products";
@@ -34,12 +34,12 @@ export const getProductbyId = async (id: number) => {
 };
 
 // post a product
-export const postProduct = async (product: Product) => {
+export const postProduct = async (product: FormData) => {
   try {
     const response = await axios.post(`${baseUrl}/`, product, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("access")}`,
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;
@@ -55,7 +55,7 @@ export const updateProduct = async (product: Product) => {
     const response = await axios.put(`${baseUrl}/${product.id}/`, product, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("access")}`,
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;

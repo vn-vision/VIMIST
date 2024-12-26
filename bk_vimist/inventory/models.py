@@ -8,6 +8,7 @@ class Product(models.Model):
     quantity_in_stock = models.IntegerField()
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     reorder_level = models.IntegerField()
+    image = models.ImageField(default='fallback.png', upload_to='images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
