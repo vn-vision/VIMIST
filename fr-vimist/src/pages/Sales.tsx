@@ -2,17 +2,25 @@ import { useState } from "react";
 import DynamicTable from "../components/DynamicTable";
 // import TopNavbar from "../components/TopNavbar";
 import AddSaleComponent from "../components/AddSale";
+import { useFetchSales, useDeleteSale } from "../features/sales/salesHook";
 import CreditSaleComponent from "./CreditSaleComponent";
 
-const headers = ["ID", "ITEM", "CATEGORY", "PRICE", "QUANTITY", "DATE"];
-const data = [
-  { id: 1, item: "Laptop", category: "Electronics", price: 1200, quantity: 10, date: "2024-12-23" },
-  { id: 2, item: "Shirt", category: "Clothing", price: 25, quantity: 50, date: "2024-12-24" },
-  { id: 3, item: "Book", category: "Stationery", price: 15, quantity: 100, date: "2024-12-25" },
-];
+const headers = ["Product", "Quantity_Sold", "Total_Price", "Payment_Type", "Sale_Date", "Customer"];
+
 
 const Sales = () => {
+  // get data from the hook
+  const { data,} = useFetchSales();
+  console.log( "Sales data ", data);
   const [view, setView] = useState<"table" | "addSale" | "creditSale">("table");
+  const [editItemId, setEditItemId] = useState<number | null>(null);
+
+    // edit a product
+    const handleEdit = (id: number) => {
+      setEditItemId(id);
+    };
+    // delete a product by its ID
+      const {deleteSale} = useDeleteSale();
 
   // Handler for view switching
   const handleViewChange = (newView: "table" | "addSale" | "creditSale") => {
@@ -54,7 +62,7 @@ const Sales = () => {
 
       {/* Conditional Rendering */}
       <div className="vn-mt-5">
-        {/* {view === "table" && <DynamicTable headers={headers} data={data} />} */}
+        {view === "table" && <DynamicTable headers={headers} data={data} onEdit={handleEdit} onDelete={deleteSale}/>}
         {view === "addSale" && <AddSaleComponent />}
         {view === "creditSale" && <CreditSaleComponent />}
       </div>

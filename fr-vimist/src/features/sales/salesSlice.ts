@@ -25,7 +25,7 @@ export const fetchSales = createAsyncThunk<Sale[], void>(
   async () => {
     try {
       const response = await getSales();
-      return response;
+      return response.Sales;
     } catch (error: any) {
       return error || "Failed to load Sales";
     }

@@ -8,7 +8,7 @@ export interface Sale {
   quantity_sold: number;
   sale_price: number;
   sale_date: string;
-  customer: string;
+  customer: string | null;
   payment_type: string;
 }
 

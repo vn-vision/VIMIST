@@ -15,4 +15,4 @@ class Credit_Sale(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Credit sale for {self.customer.name} - Balance: {self.outstanding_balance}"
+        return f"Credit sale for {self.customer.name if self.customer else "Anonymous"} - Balance: {self.outstanding_balance}"

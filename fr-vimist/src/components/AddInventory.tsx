@@ -130,8 +130,10 @@ function AddInventory({ reset, itemId }: AddInventoryProps) {
   const [productImage, setProductImage] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // if the id is provide, fetch the product details and set the state
+  // this is to allow updating of the product
   const handleInputChange = (field: string, value: string | number) => {
-    setProduct((prev) => ({ ...prev, [field]: value }));
+    setProduct((prev) => ({...prev, ...(itemId ? {id: itemId}:{}) , [field]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {

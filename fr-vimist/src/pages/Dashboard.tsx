@@ -22,24 +22,6 @@ const Dashboard = () => {
   });
 
   const AllProducts = useDisplayProducts();
-  const { updateProduct } = useUpdateProduct();
-
-
-  const handleUpdateProduct = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (updateProductData.id) {
-      updateProduct(updateProductData);
-      setUpdateProductData({
-        id: 0,
-        name: "",
-        category: "",
-        unit_price: 0,
-        quantity_in_stock: 0,
-        reorder_level: 0,
-      });
-    }
-  };
-
   
     return (
         <div className="vn-flex vn-flex-col vn-h-full vn-gap-5 vn-mt-5">
@@ -80,8 +62,7 @@ const Dashboard = () => {
                 {AllProducts.data.map((product) => (
                   <li key={product.id}>
                     <span className="vn-font-medium">{product.name}</span>:{" "}
-                    {product.quantity_in_stock}
-                    <img src={product.image instanceof File ? URL.createObjectURL(product.image): product.image ? product.image : ''} alt={product.name} />
+                    {product.quantity_in_stock} units
                   </li>
                 ))}
               </ul>
