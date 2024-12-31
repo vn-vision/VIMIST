@@ -2,17 +2,24 @@ import { useState } from "react";
 import DynamicTable from "../components/DynamicTable";
 // import TopNavbar from "../components/TopNavbar";
 import AddPurchase from "../components/AddPurchase";
+import {useDisplayPurchases, useDeletePurchases} from "../features/purchases/purchaseHook";
 
-const headers = ["ID", "Item", "Category", "Price", "Quantity"];
-const data = [
-  { id: 1, item: "Laptop", category: "Electronics", price: 1200, quantity: 10 },
-  { id: 2, item: "Shirt", category: "Clothing", price: 25, quantity: 50 },
-  { id: 3, item: "Book", category: "Stationery", price: 15, quantity: 100 },
-  // More rows can go here
-];
+const headers = ["ID", "Product", "Quantity_Purchased", "Purchase_Price", "Supplier", "Purchase_Date"];
+
 
 const Purchases = () => {
   const [item, addItem] = useState(false);
+  // fetch data from hook
+  const { data } = useDisplayPurchases();
+
+  // delete data from hook
+  const { deletePurchase } = useDeletePurchases();
+
+  // edit a purchase
+  const handleEditPurchase = (purchase: any) => {
+    console.log(purchase);
+  };
+
 
   return (
     <div className="vn-flex vn-flex-col vn-gap-5 vn-mt-5">
@@ -27,7 +34,7 @@ const Purchases = () => {
       ) : ""}
       {/* Purchases Section */}
 
-      {/* {item ? <AddPurchase /> : <DynamicTable headers={headers} data={data} />} */}
+      {item ? <AddPurchase /> : <DynamicTable headers={headers} data={data} onEdit={handleEditPurchase} onDelete={deletePurchase} />}
     </div>
   );
 };

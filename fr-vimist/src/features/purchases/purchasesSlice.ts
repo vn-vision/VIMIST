@@ -15,7 +15,7 @@ export const fetchPurchases = createAsyncThunk<Purchase[], void>(
   async () => {
     try {
       const response = await getPurchases();
-      return response;
+      return response.Purchases;
     } catch (error: any) {
       return error.response?.data || "An error occurred";
     }

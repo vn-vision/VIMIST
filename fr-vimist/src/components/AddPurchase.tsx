@@ -1,151 +1,255 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useDisplayProducts } from "../features/products/inventoryHook";
+import { useAddNewPurchase } from "../features/purchases/purchaseHook";
+import { Product } from "../api/inventoryAPI";
+import { Purchase } from "../api/purchasesAPI";
 
 function AddPurchase() {
-    const navigate = useNavigate();
+  // Fetch data from hook
+  const { data: products } = useDisplayProducts();
 
-  // Define the state type
-  interface FormData {
-    category: string;
-    item: string;
-    description: string;
-    price: string;
-    quantity: string;
-    image: File | null; // Allow image to be null or a File object
-  }
+  // Add purchase
+  const { addPurchase } = useAddNewPurchase();
 
-  // Initialize state with the correct type
-  const [formData, setFormData] = useState<FormData>({
-    category: '',
-    item: '',
-    description: '',
-    price: '',
-    quantity: '',
-    image: null,
+  // State to hold form data
+  const [formData, setFormData] = useState<Purchase>({
+    id: 0,
+    product: 0,
+    quantity_purchased: 0,
+    purchase_price: 0,
+    supplier: "",
+    purchase_date: new Date().toISOString().split("T")[0],
+    payment_type: "Cash",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // State to handle errors and success messages
+  const [error, setError] = useState<Record<string, string>>({});
+  const [success, setSuccess] = useState<string>("");
+
+  // Handle form field changes
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { id, value } = e.target;
-      setFormData((prev) => ({ ...prev, [id]: value })); // Update other fields
+
+    if (id === "inventory") {
+      const selectedProduct = products.find(
+        (product: Product) => product.name === value
+      );
+      setFormData({ ...formData, product: selectedProduct?.id || 0 });
+    } else {
+      setFormData({ ...formData, [id]: value });
+    }
+
+    // Clear individual field error
+    if (error[id]) {
+      setError({ ...error, [id]: "" });
+    }
   };
 
+  // Validate form fields
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.product) newErrors.inventory = "Please select a product.";
+    if (!formData.quantity_purchased)
+      newErrors.quantity_purchased = "Quantity is required.";
+    if (!formData.purchase_price)
+      newErrors.purchase_price = "Purchase price is required.";
+    if (!formData.supplier) newErrors.supplier = "Supplier is required.";
+    if (!formData.purchase_date)
+      newErrors.purchase_date = "Purchase date is required.";
+    if (!formData.payment_type)
+      newErrors.payment_type = "Payment type is required.";
+
+    return newErrors;
+  };
+
+  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form data submitted:', formData);
 
-    // Add further processing logic here
-    alert('Inventory item saved successfully!');
-  };
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setError(newErrors);
+      return;
+    }
 
-  const handleDiscard = () => {
-    setFormData({
-      category: '',
-      item: '',
-      description: '',
-      price: '',
-      quantity: '',
-      image: null,
-    });
-    alert('Form discarded!');
-    navigate("/");
+    try {
+      addPurchase(formData);
+      setSuccess("Purchase added successfully.");
+      setFormData({
+        id: 0,
+        product: 0,
+        quantity_purchased: 0,
+        purchase_price: 0,
+        supplier: "",
+        purchase_date: new Date().toISOString().split("T")[0],
+        payment_type: "Cash",
+      });
+    } catch (error: any) {
+      setError({ general: error.message });
+    }
   };
 
   return (
-    <div className="vn-flex vn-justify-center vn-items-center vn-bg-gray-100 vn-h-full">
-      <form
-        onSubmit={handleSubmit}
-        className="vn-grid vn-grid-cols-2 vn-gap-4 vn-bg-white vn-shadow-md vn-rounded vn-p-6 vn-max-w-lg"
-      >
-        <label htmlFor="category" className="vn-font-bold">
-          Category:
-        </label>
-        <input
-          id="category"
-          type="text"
-          placeholder="Cereals"
-          value={formData.category}
-          onChange={handleChange}
-          required
-          className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
-        />
+    <div className="vn-p-4 vn-max-w-md vn-mx-auto">
+      <form onSubmit={handleSubmit}>
+        {/* Product Selection */}
+        <div className="vn-mb-4">
+          <label htmlFor="inventory" className="vn-block vn-text-sm vn-font-medium">
+            Products
+          </label>
+          <input
+            id="inventory"
+            list="products"
+            placeholder="Select Product"
+            value={
+              products.find((product: Product) => product.id === formData.product)
+                ?.name || ""
+            }
+            onChange={handleChange}
+            className={`vn-w-full vn-border vn-rounded vn-px-2 vn-py-1 ${
+              error.inventory ? "vn-border-red-500" : ""
+            }`}
+          />
+          <datalist id="products">
+            {products?.map((product: Product) => (
+              <option key={product.id} value={product.name}></option>
+            ))}
+          </datalist>
+          {error.inventory && <div className="vn-text-red-500">{error.inventory}</div>}
+        </div>
 
-        <label htmlFor="item" className="vn-font-bold">
-          Item:
-        </label>
-        <input
-          id="item"
-          type="text"
-          placeholder="Rice"
-          value={formData.item}
-          onChange={handleChange}
-          required
-          className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
-        />
+        {/* Quantity */}
+        <div className="vn-mb-4">
+          <label htmlFor="quantity_purchased" className="vn-block vn-text-sm vn-font-medium">
+            Quantity
+          </label>
+          <input
+            id="quantity_purchased"
+            type="number"
+            placeholder="Enter Quantity"
+            value={formData.quantity_purchased}
+            onChange={handleChange}
+            className={`vn-w-full vn-border vn-rounded vn-px-2 vn-py-1 ${
+              error.quantity_purchased ? "vn-border-red-500" : ""
+            }`}
+          />
+          {error.quantity_purchased && (
+            <div className="vn-text-red-500">{error.quantity_purchased}</div>
+          )}
+        </div>
 
-        <label htmlFor="description" className="vn-font-bold">
-          Description:
-        </label>
-        <input
-          id="description"
-          type="text"
-          placeholder="Sindano"
-          value={formData.description}
-          onChange={handleChange}
-          required
-          className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
-        />
+        {/* Price */}
+        <div className="vn-mb-4">
+          <label htmlFor="purchase_price" className="vn-block vn-text-sm vn-font-medium">
+            Price
+          </label>
+          <input
+            id="purchase_price"
+            type="number"
+            placeholder="Enter Price"
+            value={formData.purchase_price}
+            onChange={handleChange}
+            className={`vn-w-full vn-border vn-rounded vn-px-2 vn-py-1 ${
+              error.purchase_price ? "vn-border-red-500" : ""
+            }`}
+          />
+          {error.purchase_price && (
+            <div className="vn-text-red-500">{error.purchase_price}</div>
+          )}
+        </div>
 
-        <label htmlFor="price" className="vn-font-bold">
-          Price:
-        </label>
-        <input
-          id="price"
-          type="number"
-          placeholder="120.00"
-          value={formData.price}
-          onChange={handleChange}
-          required
-          className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
-        />
+        {/* Supplier */}
+        <div className="vn-mb-4">
+          <label htmlFor="supplier" className="vn-block vn-text-sm vn-font-medium">
+            Supplier
+          </label>
+          <input
+            id="supplier"
+            type="text"
+            placeholder="Enter Supplier"
+            value={formData.supplier}
+            onChange={handleChange}
+            className={`vn-w-full vn-border vn-rounded vn-px-2 vn-py-1 ${
+              error.supplier ? "vn-border-red-500" : ""
+            }`}
+          />
+          {error.supplier && <div className="vn-text-red-500">{error.supplier}</div>}
+        </div>
 
-        <label htmlFor="quantity" className="vn-font-bold">
-          Quantity:
-        </label>
-        <input
-          id="quantity"
-          type="number"
-          placeholder="20"
-          value={formData.quantity}
-          onChange={handleChange}
-          required
-          className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
-        />
+        {/* Date */}
+        <div className="vn-mb-4">
+          <label htmlFor="purchase_date" className="vn-block vn-text-sm vn-font-medium">
+            Date
+          </label>
+          <input
+            id="purchase_date"
+            type="date"
+            value={formData.purchase_date}
+            onChange={handleChange}
+            className={`vn-w-full vn-border vn-rounded vn-px-2 vn-py-1 ${
+              error.purchase_date ? "vn-border-red-500" : ""
+            }`}
+          />
+          {error.purchase_date && (
+            <div className="vn-text-red-500">{error.purchase_date}</div>
+          )}
+        </div>
 
-        <label htmlFor="image" className="vn-font-bold">
-          Supplier:
-        </label>
-        <input
-          id="supplier"
-          type="text"
-          placeholder='Magunas'
-          onChange={handleChange}
-          required
-          className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
-        />
+        {/* Payment Type */}
+        <div className="vn-mb-4">
+          <label htmlFor="payment_type" className="vn-block vn-text-sm vn-font-medium">
+            Payment Type
+          </label>
+          <select
+            id="payment_type"
+            value={formData.payment_type}
+            onChange={handleChange}
+            className={`vn-w-full vn-border vn-rounded vn-px-2 vn-py-1 ${
+              error.payment_type ? "vn-border-red-500" : ""
+            }`}
+          >
+            <option value="Cash">Cash</option>
+            <option value="Mpesa">Mpesa</option>
+            <option value="Credit">Credit</option>
+          </select>
+          {error.payment_type && (
+            <div className="vn-text-red-500">{error.payment_type}</div>
+          )}
+        </div>
 
-        <button
-          type="submit"
-          className="vn-col-span-2 vn-bg-blue-500 vn-text-white vn-rounded vn-py-2 vn-font-bold vn-hover:bg-blue-600"
-        >
-          Save
-        </button>
-        <button
-          type="button"
-          onClick={handleDiscard}
-          className="vn-col-span-2 vn-bg-gray-500 vn-text-white vn-rounded vn-py-2 vn-font-bold vn-hover:bg-gray-600"
-        >
-          Discard
-        </button>
+        {/* Error & Success Messages */}
+        {error.general && <div className="vn-text-red-500">{error.general}</div>}
+        {success && <div className="vn-text-green-500">{success}</div>}
+
+        {/* Submit & Cancel Buttons */}
+        <div className="vn-flex vn-justify-between">
+          <button
+            type="submit"
+            className="vn-bg-green-500 vn-text-white vn-rounded vn-py-2 hover:vn-bg-green-600"
+          >
+            Submit
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              setFormData({
+                id: 0,
+                product: 0,
+                quantity_purchased: 0,
+                purchase_price: 0,
+                supplier: "",
+                purchase_date: new Date().toISOString().split("T")[0],
+                payment_type: "Cash",
+              })
+            }
+            className="vn-bg-red-500 vn-text-white vn-rounded vn-py-2 hover:vn-bg-red-600"
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

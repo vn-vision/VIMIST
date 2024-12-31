@@ -64,7 +64,7 @@ export const useUpdatePurchase = () => {
 };
 
 // Hook to delete a purchase
-export const useDelete =()=>{
+export const useDeletePurchases =()=>{
     const dispatch = useDispatch<AppDispatch>();
     const status = useSelector((state: RootState) => state.purchases.status);
     const error = useSelector((state: RootState) => state.purchases.error);
