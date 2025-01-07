@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DynamicTable from "../components/DynamicTable";
-// import TopNavbar from "../components/TopNavbar";
+import TopNavbar from "../components/TopNavbar";
 import AddSaleComponent from "../components/AddSale";
 import { useFetchSales, useDeleteSale } from "../features/sales/salesHook";
 import CreditSaleComponent from "./CreditSaleComponent";
@@ -14,6 +14,9 @@ const Sales = () => {
   console.log( "Sales data ", data);
   const [view, setView] = useState<"table" | "addSale" | "creditSale">("table");
   const [editItemId, setEditItemId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string | number>("");
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+
 
     // edit a product
     const handleEdit = (id: number) => {
@@ -27,10 +30,26 @@ const Sales = () => {
     setView((currentView) => (currentView === newView ? "table" : newView));
   };
 
+  // search for sale by ID, Name, Category or Customer
+  const handleSearch = (query: string | number) => {
+    setSearchQuery(query);
+    if (data){
+      const results = data.filter((sale: any)=>
+      sale.id?.toString().includes(query.toString()) ||
+      sale.product?.toString().includes(query.toString()) ||
+      sale.customer?.toLowerCase().includes(query.toString().toLowerCase()) ||
+      sale.payment_type?.toLowerCase().includes(query.toString().toLowerCase())
+    );
+    setFilteredData(results);
+    }
+  };
+
+
   return (
     <div className="vn-mt-5 vn-p-5">
       <h1 className="vn-text-2xl vn-font-bold vn-mb-5">Sales</h1>
-      {/* <TopNavbar /> */}
+      {/* TopNavbar */}
+      <TopNavbar onSearch={handleSearch} />
 
       {/* Quick Actions */}
       <div className="vn-flex vn-justify-around vn-my-5">
@@ -62,7 +81,7 @@ const Sales = () => {
 
       {/* Conditional Rendering */}
       <div className="vn-mt-5">
-        {view === "table" && <DynamicTable headers={headers} data={data} onEdit={handleEdit} onDelete={deleteSale}/>}
+        {view === "table" && <DynamicTable headers={headers} data={ searchQuery ? filteredData : data} onEdit={handleEdit} onDelete={deleteSale}/>}
         {view === "addSale" && <AddSaleComponent />}
         {view === "creditSale" && <CreditSaleComponent />}
       </div>

@@ -77,3 +77,13 @@ export const deleteSale = async (id: number) => {
     throw error;
   }
 };
+
+export const periodicSales = async () => {
+  try {
+    const response = await axios.get('http://localhost:8000/api/sales/total_sales/');
+    return response.data;
+   } catch (error){
+    console.error("Error while getting the total sales", error);
+    throw error;
+   }
+};

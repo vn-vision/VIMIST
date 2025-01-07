@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DynamicTable from "../components/DynamicTable";
-// import TopNavbar from "../components/TopNavbar";
+import TopNavbar from "../components/TopNavbar";
 import AddPurchase from "../components/AddPurchase";
 import {useDisplayPurchases, useDeletePurchases} from "../features/purchases/purchaseHook";
 
@@ -9,22 +9,43 @@ const headers = ["ID", "Product", "Quantity_Purchased", "Purchase_Price", "Suppl
 
 const Purchases = () => {
   const [item, addItem] = useState(false);
-  // fetch data from hook
+  const [searchQuery, setSearchQuery] = useState<string | number>("");
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [editItemId, setEditItemId] = useState<number | null>(null);
+
+
+  // fetch purchase data from hook
   const { data } = useDisplayPurchases();
 
   // delete data from hook
   const { deletePurchase } = useDeletePurchases();
 
-  // edit a purchase
-  const handleEditPurchase = (purchase: any) => {
-    console.log(purchase);
+
+  // search for purchase by ID, Name, Category or Supplier
+  const handleSearch = (query: string | number) => {
+    setSearchQuery(query);
+    if (data){
+      const results = data.filter((purchase: any) =>
+        purchase.id.toString().includes(query.toString()) ||
+      purchase.product.toString().includes(query.toString()) ||
+      purchase.supplier?.toLowerCase().includes(query.toString().toLowerCase())
+      );
+      setFilteredData(results);
+    }
   };
 
+  // edit a purchase
+  const handleEdit = (id: number) => {
+    // check if the product exists
+    const setProductId = data.find((purchase: any)=> purchase.id === id)?.product;
+    setEditItemId(setProductId ?? null); // set the product id to null if it does not exist
+    addItem(true);
+  };
 
   return (
     <div className="vn-flex vn-flex-col vn-gap-5 vn-mt-5">
       <h1>Purchases</h1>
-      {/* {!item ? <TopNavbar /> : ""} */}
+      {!item ? <TopNavbar onSearch={handleSearch} /> : ""}
 
       {!item ? (
         <div className="vn-flex vn-justify-around">
@@ -34,7 +55,7 @@ const Purchases = () => {
       ) : ""}
       {/* Purchases Section */}
 
-      {item ? <AddPurchase /> : <DynamicTable headers={headers} data={data} onEdit={handleEditPurchase} onDelete={deletePurchase} />}
+      {item ? <AddPurchase reset={() =>{addItem(false); setEditItemId(null);}} itemId={editItemId} /> : <DynamicTable headers={headers} data={ searchQuery ? filteredData : data} onEdit={handleEdit} onDelete={deletePurchase} />}
     </div>
   );
 };

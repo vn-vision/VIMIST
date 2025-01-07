@@ -9,6 +9,7 @@ import {
   postSale,
   updateSale,
   deleteSale,
+  periodicSales,
 } from "../../api/salesAPI";
 
 // create type for the initial state
@@ -31,6 +32,22 @@ export const fetchSales = createAsyncThunk<Sale[], void>(
     }
   }
 );
+
+// get all sales by period
+
+export const fetchPeriodicSales = createAsyncThunk<any, void>(
+  "sales/fetchPeriod",
+  async () => {
+    try {
+      const response =  await periodicSales();
+      return response;
+    } catch (error: any){
+      return error || "Failed to load Sales by Period";
+    }
+  }
+);
+
+
 
 // get a sale by id
 export const fetchSaleById = createAsyncThunk<
@@ -119,6 +136,19 @@ const salesSlice = createSlice({
     .addCase(fetchSales.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.error.message || 'Failed to load sales';
+    })
+
+    // Handle loading Sales by Period
+    .addCase(fetchPeriodicSales.pending, (state)=>{
+      state.status = 'loading';
+    })
+    .addCase(fetchPeriodicSales.fulfilled, (state, action) =>{
+      state.status = 'succeeded';
+      state.sales = action.payload;
+    })
+    .addCase(fetchPeriodicSales.rejected, (state, action)=>{
+      state.status = 'failed';
+      state.error = action.error.message || 'Failed to load sales by period';
     })
 
     // get a product by Id

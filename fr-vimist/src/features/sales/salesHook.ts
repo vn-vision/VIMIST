@@ -4,6 +4,7 @@ import {
   addNewSale,
   modifySale,
   removeSale,
+  fetchPeriodicSales,
 } from "../sales/salesSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
@@ -39,6 +40,21 @@ export const useFetchSales = () => {
     }
   }, [dispatch, sales.length]);
   return { data: sales, status, error };
+};
+
+// create a hook to get all sales by period
+export const useFetchSalesByPeriod = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const sales_by_period = useSelector((state: RootState) => state.sales.sales);
+  const status = useSelector((state: RootState) => state.sales.status);
+  const error = useSelector((state: RootState) => state.sales.error);
+
+  useEffect(()=>{
+    if(sales_by_period.length === 0){
+      dispatch(fetchPeriodicSales());
+    }
+  }, [dispatch, sales_by_period.length]);
+  return {data: sales_by_period, status, error};
 };
 
 // create hook to add a new sale

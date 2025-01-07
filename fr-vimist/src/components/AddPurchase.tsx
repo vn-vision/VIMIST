@@ -1,15 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDisplayProducts } from "../features/products/inventoryHook";
-import { useAddNewPurchase } from "../features/purchases/purchaseHook";
+import { useDisplayPurchases, useAddNewPurchase, useUpdatePurchase } from "../features/purchases/purchaseHook";
 import { Product } from "../api/inventoryAPI";
 import { Purchase } from "../api/purchasesAPI";
 
-function AddPurchase() {
+interface AddPurchaseProps {
+  reset: () => void;
+  itemId: number | null;
+}
+
+function AddPurchase({reset, itemId}:AddPurchaseProps) {
+
   // Fetch data from hook
   const { data: products } = useDisplayProducts();
 
+
   // Add purchase
   const { addPurchase } = useAddNewPurchase();
+  // Update purchase
+  const { updatePurchase } = useUpdatePurchase();
+
+  // get purchase that matches the id
+  const { data: allPurchases } = useDisplayPurchases();
+  const selectPurchase = allPurchases?.find((purchase: Purchase) => purchase.id === itemId);
+  console.log("Debug update: ", selectPurchase);
 
   // State to hold form data
   const [formData, setFormData] = useState<Purchase>({
@@ -21,6 +35,21 @@ function AddPurchase() {
     purchase_date: new Date().toISOString().split("T")[0],
     payment_type: "Cash",
   });
+
+ // if itemId is not null, set the form data to the selected purchase
+ useEffect(() => {
+  if (selectPurchase){
+    setFormData({
+      id: selectPurchase.id,
+      product: selectPurchase.product,
+      quantity_purchased: selectPurchase.quantity_purchased,
+      purchase_price: selectPurchase.purchase_price,
+      supplier: selectPurchase.supplier,
+      purchase_date: selectPurchase.purchase_date,
+      payment_type: selectPurchase.payment_type,
+    })
+  }
+ }, [selectPurchase]);
 
   // State to handle errors and success messages
   const [error, setError] = useState<Record<string, string>>({});
@@ -76,20 +105,28 @@ function AddPurchase() {
     }
 
     try {
-      addPurchase(formData);
-      setSuccess("Purchase added successfully.");
-      setFormData({
-        id: 0,
-        product: 0,
-        quantity_purchased: 0,
-        purchase_price: 0,
-        supplier: "",
-        purchase_date: new Date().toISOString().split("T")[0],
-        payment_type: "Cash",
-      });
-    } catch (error: any) {
+      if (itemId){
+        updatePurchase(formData)
+          setSuccess("Purchase updated successfully.");
+          reset()
+      } else
+      {
+        addPurchase(formData)
+          setSuccess("Purchase added successfully.");
+          setFormData({
+            id: 0,
+            product: 0,
+            quantity_purchased: 0,
+            purchase_price: 0,
+            supplier: "",
+            purchase_date: new Date().toISOString().split("T")[0],
+            payment_type: "Cash",
+          });
+          reset();
+        }
+    } catch (error: any){
       setError({ general: error.message });
-    }
+  }
   };
 
   return (
@@ -105,7 +142,7 @@ function AddPurchase() {
             list="products"
             placeholder="Select Product"
             value={
-              products.find((product: Product) => product.id === formData.product)
+              products?.find((product: Product) => product.id === formData.product)
                 ?.name || ""
             }
             onChange={handleChange}
