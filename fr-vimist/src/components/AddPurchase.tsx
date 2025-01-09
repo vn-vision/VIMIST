@@ -22,8 +22,7 @@ function AddPurchase({reset, itemId}:AddPurchaseProps) {
 
   // get purchase that matches the id
   const { data: allPurchases } = useDisplayPurchases();
-  const selectPurchase = allPurchases?.find((purchase: Purchase) => purchase.id === itemId);
-  console.log("Debug update: ", selectPurchase);
+  const selectPurchase = allPurchases?.find((purchase: Purchase) => purchase.product === itemId);
 
   // State to hold form data
   const [formData, setFormData] = useState<Purchase>({

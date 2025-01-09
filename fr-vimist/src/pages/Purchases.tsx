@@ -11,7 +11,7 @@ const Purchases = () => {
   const [item, addItem] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string | number>("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [editItemId, setEditItemId] = useState<number | null>(null);
+  const [editItemId, setEditItemId] = useState<number>(0);
 
 
   // fetch purchase data from hook
@@ -38,7 +38,7 @@ const Purchases = () => {
   const handleEdit = (id: number) => {
     // check if the product exists
     const setProductId = data.find((purchase: any)=> purchase.id === id)?.product;
-    setEditItemId(setProductId ?? null); // set the product id to null if it does not exist
+    setEditItemId(setProductId ?? 0); // set the product id to null if it does not exist
     addItem(true);
   };
 
@@ -55,7 +55,7 @@ const Purchases = () => {
       ) : ""}
       {/* Purchases Section */}
 
-      {item ? <AddPurchase reset={() =>{addItem(false); setEditItemId(null);}} itemId={editItemId} /> : <DynamicTable headers={headers} data={ searchQuery ? filteredData : data} onEdit={handleEdit} onDelete={deletePurchase} />}
+      {item ? <AddPurchase reset={() =>{addItem(false); setEditItemId(0);}} itemId={editItemId} /> : <DynamicTable headers={headers} data={ searchQuery ? filteredData : data} onEdit={handleEdit} onDelete={deletePurchase} />}
     </div>
   );
 };
