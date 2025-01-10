@@ -45,7 +45,7 @@ export const useFetchSales = () => {
 // create a hook to get all sales by period
 export const useFetchSalesByPeriod = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const sales_by_period = useSelector((state: RootState) => state.sales.sales);
+  const sales_by_period = useSelector((state: RootState) => state.sales.period);
   const status = useSelector((state: RootState) => state.sales.status);
   const error = useSelector((state: RootState) => state.sales.error);
 

@@ -26,14 +26,16 @@ class PurchaseViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
     # method to get total purchases over specific period
     def total_purchases(self, request):
         # get the start and end date from the request
-        daily_purchases = Purchases.objects.annotate(day=TruncDay('purchase_date')).values('day').annotate(total_purchases=F('quantity_purchased') * F('purchase_price')).values('total_purchases').order_by('day')
-        monthly_purchases = Purchases.objects.annotate(month=TruncMonth('purchase_date')).values('month').annotate(total_purchases=F('quantity_purchased') * F('purchase_price')).values('total_purchases').order_by('month')
-        yearly_purchases = Purchases.objects.annotate(year=TruncYear('purchase_date')).values('year').annotate(total_purchases=F('quantity_purchased') * F('purchase_price')).values('total_purchases').order_by('year')
+        # daily_purchases = Purchases.objects.annotate(day=TruncDay('purchase_date')).values('day').annotate(total_purchases=F('quantity_purchased') * F('purchase_price')).values('total_purchases').order_by('day')
+        
+        purchases_by_day = Purchases.objects.annotate(day=TruncDay('purchase_date')).values('day').annotate(total_amount=Sum(F('quantity_purchased') * F('purchase_price'))).order_by('day')
+        purchases_by_month = Purchases.objects.annotate(month=TruncMonth('purchase_date')).values('month').annotate(total_amount=Sum(F('quantity_purchased') * F('purchase_price'))).order_by('month')
+        purchases_by_year = Purchases.objects.annotate(year=TruncYear('purchase_date')).values('year').annotate(total_amount=Sum(F('quantity_purchased') * F('purchase_price'))).order_by('year')
 
         total_purchases = {
-            'daily_purchases': list(daily_purchases),
-            'monthly_purchases': list(monthly_purchases),
-            'yearly_purchases': list(yearly_purchases)
+            'by_day': list(purchases_by_day),
+            'by_month': list(purchases_by_month),
+            'by_year': list(purchases_by_year)
         }
         return Response(total_purchases)
     

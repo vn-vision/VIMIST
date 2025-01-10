@@ -6,8 +6,10 @@ import {
   postPurchase,
   updatePurchase,
   deletePurchase,
+  periodicPurchases,
   Purchase,
 } from "../../api/purchasesAPI";
+import { Period } from "../sales/salesSlice";
 
 // load all purchases
 export const fetchPurchases = createAsyncThunk<Purchase[], void>(
@@ -77,17 +79,33 @@ export const removePurchase = createAsyncThunk<
   }
 });
 
+
+// fetch purchases by period
+export const fetchPeriodicPurchases = createAsyncThunk<Period[], void>(
+  "Purchases/fetchPeriodPurchases",
+  async () => {
+    try {
+      const response = await periodicPurchases();
+      return response;
+    } catch (error: any) {
+      return error || "Failed to load Sales"
+    }
+  }
+)
+
 // Define type for the slice state
 interface PurchasesState {
   purchases: Purchase[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  period: Period[];
 }
 
 const initialState: PurchasesState = {
   purchases: [],
   status: "idle",
   error: null,
+  period: []
 };
 
 const purchasesSlice = createSlice({
@@ -166,6 +184,19 @@ const purchasesSlice = createSlice({
       .addCase(removePurchase.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string|| "Failed to delete purchase";
+      })
+
+      // fetch purchases by Period
+      .addCase(fetchPeriodicPurchases.pending, (state)=>{
+        state.status = "loading";
+      })
+      .addCase(fetchPeriodicPurchases.fulfilled, (state, action) =>{
+        state.status = 'succeeded';
+        state.period = action.payload;
+      })
+      .addCase(fetchPeriodicPurchases.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Failed to fetch Purchases by period';
       });
   },
 });

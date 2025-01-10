@@ -14,7 +14,6 @@ import {
   Legend,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
-import { useFetchSalesByPeriod } from "../features/sales/salesHook";
 
 // Register required Chart.js components
 ChartJS.register(
@@ -49,6 +48,15 @@ const emptyGraphData: GraphData = {
   datasets: [],
 };
 
+// empty apiData template
+
+type useFetchAPIDataByPeriod = {
+  data: [] | any;
+  status: string;
+  error: string | null;
+  dataFor: string;
+};
+
 // Type definitions for transformed data across timelines
 type TransformedData = {
   weekly: GraphData | null;
@@ -56,7 +64,12 @@ type TransformedData = {
   yearly: GraphData | null;
 };
 
-const DynamicGraph = () => {
+const DynamicGraph = ({
+  data: periodicData,
+  status: periodState,
+  error: periodError,
+  dataFor,
+}: useFetchAPIDataByPeriod) => {
   // States to manage selected date, graph data, graph type, and timeline
   const [selectDate, setSelectDate] = useState<string>(
     new Date().toISOString().split("T")[0]
@@ -72,88 +85,84 @@ const DynamicGraph = () => {
   );
 
   // Fetch data from custom hook
-  const {
-    data: periodicData,
-    status: periodState,
-    error: periodError,
-  } = useFetchSalesByPeriod();
-
-  /**
-   * Generate an array of random RGBA colors
-   * @param count - Number of colors to generate
-   * @returns Array of random RGBA colors
-   */
 
   /**
    * Transform API data into Graph.js-compatible format
    * @param apiData - Raw data fetched from the backend
    * @returns Transformed data for weekly, monthly, and yearly views
    */
-  const transformData = useCallback((apiData: any): TransformedData => {
+  const transformData = useCallback(
+    (apiData: any): TransformedData => {
+      /**
+       * Generate an array of random RGBA colors
+       * @param count - Number of colors to generate
+       * @returns Array of random RGBA colors
+       */
+      const generateColors = (count: number): string[] => {
+        return Array.from(
+          { length: count },
+          () =>
+            `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
+              Math.random() * 256
+            )}, ${Math.floor(Math.random() * 256)}, .8)`
+        );
+      };
 
-    const generateColors =  (count: number): string[] => {
-      return Array.from(
-        { length: count },
-        () =>
-          `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-            Math.random() * 255
-          )}, ${Math.floor(Math.random() * 255)}, 0.2)`
-      );
-    };
+      const weeklyColors = generateColors(apiData.by_day.length);
+      const monthlyColors = generateColors(apiData.by_month.length);
+      const yearlyColors = generateColors(apiData.by_year.length);
 
-    const weeklyColors = generateColors(apiData.sales_by_day.length);
-    const monthlyColors = generateColors(apiData.sales_by_month.length);
-    const yearlyColors = generateColors(apiData.sales_by_year.length);
-
-    return {
-      weekly: {
-        labels: apiData.sales_by_day.map((record: any) =>
-          new Date(record.day).toLocaleDateString("en-US", { weekday: "short" })
-        ),
-        datasets: [
-          {
-            label: "Daily Sales",
-            data: apiData.sales_by_day.map((record: any) => record.total_sales),
-            backgroundColor: weeklyColors,
-            borderColor: "rgba(54, 162, 235, 1)",
-            borderWidth: 1,
-          },
-        ],
-      },
-      monthly: {
-        labels: apiData.sales_by_month.map((record: any) =>
-          new Date(record.month).toLocaleDateString("en-US", { month: "short" })
-        ),
-        datasets: [
-          {
-            label: "Monthly Sales",
-            data: apiData.sales_by_month.map(
-              (record: any) => record.total_sales
-            ),
-            backgroundColor: monthlyColors,
-            borderColor: "rgba(255, 99, 132, 1)",
-            borderWidth: 1,
-          },
-        ],
-      },
-      yearly: {
-        labels: apiData.sales_by_year.map((record: any) =>
-          new Date(record.year).getFullYear().toString()
-        ),
-        datasets: [
-          {
-            label: "Yearly Sales",
-            data: apiData.sales_by_year.map(
-              (record: any) => record.total_sales
-            ),
-            backgroundColor: yearlyColors,
-            borderColor: "rgba(75, 192, 192, 1)",
-            borderWidth: 1,
-          },
-        ],
-      },
-    };
-  }, [ ]);
+      return {
+        weekly: {
+          labels: apiData.by_day.map((record: any) =>
+            new Date(record.day).toLocaleDateString("en-US", {
+              weekday: "short",
+            })
+          ),
+          datasets: [
+            {
+              label: `Daily ${dataFor}`,
+              data: apiData.by_day.map((record: any) => record.total_amount),
+              backgroundColor: weeklyColors,
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        monthly: {
+          labels: apiData.by_month.map((record: any) =>
+            new Date(record.month).toLocaleDateString("en-US", {
+              month: "short",
+            })
+          ),
+          datasets: [
+            {
+              label: `Monthly ${dataFor}`,
+              data: apiData.by_month.map((record: any) => record.total_amount),
+              backgroundColor: monthlyColors,
+              borderColor: "rgba(255, 99, 132, 1)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        yearly: {
+          labels: apiData.by_year.map((record: any) =>
+            new Date(record.year).getFullYear().toString()
+          ),
+          datasets: [
+            {
+              label: `Yearly ${dataFor}`,
+              data: apiData.by_year.map((record: any) => record.total_amount),
+              backgroundColor: yearlyColors,
+              borderColor: "rgba(75, 192, 192, 1)",
+              borderWidth: 1,
+            },
+          ],
+        },
+      };
+    },
+    [dataFor]
+  );
 
   /**
    * Filter data based on the selected date.
@@ -174,14 +183,14 @@ const DynamicGraph = () => {
       const year = date.getFullYear();
 
       return {
-        sales_by_day: data.sales_by_day.filter((record: any) => {
+        by_day: data.by_day.filter((record: any) => {
           const recordDate = new Date(record.day);
           return recordDate >= startOfWeek && recordDate <= endOfWeek;
         }),
-        sales_by_month: data.sales_by_month.filter(
+        by_month: data.by_month.filter(
           (record: any) => new Date(record.month).getMonth() === month
         ),
-        sales_by_year: data.sales_by_year.filter(
+        by_year: data.by_year.filter(
           (record: any) => new Date(record.year).getFullYear() === year
         ),
       };
@@ -205,14 +214,6 @@ const DynamicGraph = () => {
       {periodError && <p className="vn-text-red-500">{periodError}</p>}
       {/* Controls for selecting date and graph type */}
       <div className="vn-flex vn-gap-5">
-        <label htmlFor="date" className="vn-text-sm vn-font-medium">
-          Select Date
-        </label>
-        <input
-          type="date"
-          value={selectDate}
-          onChange={(e) => setSelectDate(e.target.value)}
-        />
         {["line", "bar", "pie"].map((type) => (
           <button
             key={type}
@@ -245,6 +246,17 @@ const DynamicGraph = () => {
             {period.charAt(0).toUpperCase() + period.slice(1)}
           </button>
         ))}
+
+        <div className="vn-flex  vn-flex-col vn-m-auto vn-border-2 vn-border-blue-300 vn-text-center vn-rounded-md vn-bg-blue-500">
+        <label htmlFor="date" className="vn-text-sm vn-font-medium">
+          Change Date
+        </label>
+        <input
+          type="date"
+          value={selectDate}
+          onChange={(e) => setSelectDate(e.target.value)}
+        />
+        </div>
       </div>
 
       {/* Graph rendering */}

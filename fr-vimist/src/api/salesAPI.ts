@@ -12,6 +12,7 @@ export interface Sale {
   payment_type: string;
 }
 
+
 export const getSales = async () => {
   try {
     const response = await axios.get(`${baseUrl}/`);

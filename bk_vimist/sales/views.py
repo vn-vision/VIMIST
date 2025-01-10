@@ -31,14 +31,14 @@ class SaleViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
         """
         get total sales for a day, month or year
         """
-        sales_by_day = Sale.objects.annotate(day=TruncDay('sale_date')).values('day').annotate(total_sales=Sum('total_price')).order_by('day')
-        sales_by_month = Sale.objects.annotate(month=TruncMonth('sale_date')).values('month').annotate(total_sales=Sum('total_price')).order_by('month')
-        sales_by_year = Sale.objects.annotate(year=TruncYear('sale_date')).values('year').annotate(total_sales=Sum('total_price')).order_by('year')
+        sales_by_day = Sale.objects.annotate(day=TruncDay('sale_date')).values('day').annotate(total_amount=Sum('total_price')).order_by('day')
+        sales_by_month = Sale.objects.annotate(month=TruncMonth('sale_date')).values('month').annotate(total_amount=Sum('total_price')).order_by('month')
+        sales_by_year = Sale.objects.annotate(year=TruncYear('sale_date')).values('year').annotate(total_amount=Sum('total_price')).order_by('year')
 
         total_sales = {
-            'sales_by_day': list(sales_by_day),
-            'sales_by_month': list(sales_by_month),
-            'sales_by_year': list(sales_by_year)
+            'by_day': list(sales_by_day),
+            'by_month': list(sales_by_month),
+            'by_year': list(sales_by_year)
         }
 
         return Response(total_sales)

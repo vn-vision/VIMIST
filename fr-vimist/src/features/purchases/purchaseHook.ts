@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
 import { Purchase } from "../../api/purchasesAPI";
-import { fetchPurchaseById, fetchPurchases, addNewPurchase, modifyPurchase, removePurchase } from "./purchasesSlice";
+import { fetchPurchaseById, fetchPurchases, addNewPurchase, modifyPurchase, removePurchase, fetchPeriodicPurchases } from "./purchasesSlice";
 
 // Hook to display purchases
 export const useDisplayPurchases = () => {
@@ -64,7 +64,7 @@ export const useUpdatePurchase = () => {
 };
 
 // Hook to delete a purchase
-export const useDeletePurchases =()=>{
+export const useDeletePurchases = () =>{
     const dispatch = useDispatch<AppDispatch>();
     const status = useSelector((state: RootState) => state.purchases.status);
     const error = useSelector((state: RootState) => state.purchases.error);
@@ -73,4 +73,20 @@ export const useDeletePurchases =()=>{
         dispatch(removePurchase(id));
     };
     return {deletePurchase, status, error};
+};
+
+// hook to fetch purchases
+export const useFetchPurchasesByPeriod = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const status = useSelector((state: RootState) => state.purchases.status);
+  const error = useSelector((state: RootState) => state.purchases.error);
+
+  const purchases_by_period = useSelector((state: RootState) => state.purchases.period);
+
+  useEffect(()=>{
+    if (purchases_by_period.length === 0){
+      dispatch(fetchPeriodicPurchases());
+    }
+  }, [dispatch, purchases_by_period]);
+  return {status, error, data: purchases_by_period};
 };

@@ -34,6 +34,7 @@ export const getPurchaseById = async (id: number) => {
   }
 };
 
+// add a new purchase
 export const postPurchase = async (purchase: Purchase) => {
   try {
     const response = await axios.post(`${baseUrl}/`, purchase, {
@@ -49,6 +50,7 @@ export const postPurchase = async (purchase: Purchase) => {
   }
 };
 
+// update an existing purchase
 export const updatePurchase = async (purchase: Purchase) => {
   try {
     const response = await axios.put(`${baseUrl}/${purchase.id}/`, purchase, {
@@ -64,6 +66,7 @@ export const updatePurchase = async (purchase: Purchase) => {
   }
 };
 
+// delete an existing purchase
 export const deletePurchase = async (id: number) => {
   try {
     const response = await axios.delete(`${baseUrl}/${id}/`, {
@@ -75,6 +78,17 @@ export const deletePurchase = async (id: number) => {
     return response.data;
   } catch (error) {
     console.error("Error deleting the purchase", error);
+    throw error;
+  }
+};
+
+// fetch all purchase by period
+export const periodicPurchases = async () =>{
+  try {
+    const response = await axios.get('http://localhost:8000/api/purchases/total_purchases/');
+    return response.data;
+  } catch (error){
+    console.error("Error while getting the total purchases ", error);
     throw error;
   }
 };

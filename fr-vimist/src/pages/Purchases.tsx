@@ -3,6 +3,7 @@ import DynamicTable from "../components/DynamicTable";
 import TopNavbar from "../components/TopNavbar";
 import AddPurchase from "../components/AddPurchase";
 import {useDisplayPurchases, useDeletePurchases} from "../features/purchases/purchaseHook";
+import { useNavigate } from "react-router-dom";
 
 const headers = ["ID", "Product", "Quantity_Purchased", "Purchase_Price", "Supplier", "Purchase_Date"];
 
@@ -13,9 +14,9 @@ const Purchases = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [editItemId, setEditItemId] = useState<number>(0);
 
-
   // fetch purchase data from hook
-  const { data } = useDisplayPurchases();
+  const { data, status, error} = useDisplayPurchases();
+
 
   // delete data from hook
   const { deletePurchase } = useDeletePurchases();
@@ -54,8 +55,20 @@ const Purchases = () => {
         </div>
       ) : ""}
       {/* Purchases Section */}
-
-      {item ? <AddPurchase reset={() =>{addItem(false); setEditItemId(0);}} itemId={editItemId} /> : <DynamicTable headers={headers} data={ searchQuery ? filteredData : data} onEdit={handleEdit} onDelete={deletePurchase} />}
+      {status === 'loading' && <h2 className="vn-text-orange-500"> Loading...</h2>}
+      {status === 'failed' && <h2 className="vn-text-red-500"> Error: {error}</h2>}
+      {item ? <AddPurchase reset={() =>{addItem(false); setEditItemId(0);}} itemId={editItemId} /> :
+            <DynamicTable
+            headers={headers}
+            data={Array.isArray(filteredData) && searchQuery && filteredData.length > 0 
+              ? filteredData 
+              : Array.isArray(data) && status === 'succeeded'
+              ? data 
+              : []}
+            onEdit={handleEdit}
+            onDelete={deletePurchase}
+          />
+          }
     </div>
   );
 };

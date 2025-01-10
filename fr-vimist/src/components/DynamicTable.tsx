@@ -24,7 +24,7 @@ function DynamicTable({ headers, data, onDelete, onEdit }: DataTableProps) {
       <table className="vn-min-w-full vn-table-auto vn-border-collapse">
         <thead>
           <tr>
-            {headers.map((header, index) => (
+            {headers?.map((header, index) => (
               <th
                 key={index}
                 className="vn-border-b vn-px-4 vn-py-2 vn-text-left vn-uppercase vn-font-bold vn-text-sm"
@@ -38,7 +38,7 @@ function DynamicTable({ headers, data, onDelete, onEdit }: DataTableProps) {
           </tr>
         </thead>
         <tbody>
-          {data.map((row, rowId) => (
+          {data?.map((row, rowId) => (
             <tr key={rowId}>
               {headers.map((header, ColId) => (
                 <td

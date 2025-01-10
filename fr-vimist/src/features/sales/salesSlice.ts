@@ -17,6 +17,13 @@ interface SalesState {
   sales: Sale[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  period: Period[];
+}
+
+// trpe for periodic data
+export interface Period {
+  day: string;
+  total_amount: number;
 }
 
 // create different thunks for the sales
@@ -35,7 +42,7 @@ export const fetchSales = createAsyncThunk<Sale[], void>(
 
 // get all sales by period
 
-export const fetchPeriodicSales = createAsyncThunk<any, void>(
+export const fetchPeriodicSales = createAsyncThunk<Period[], void>(
   "sales/fetchPeriod",
   async () => {
     try {
@@ -117,6 +124,7 @@ const initialState: SalesState ={
   sales:[],
   status: 'idle',
   error: null,
+  period: []
 };
 // create slice
 const salesSlice = createSlice({
@@ -144,7 +152,7 @@ const salesSlice = createSlice({
     })
     .addCase(fetchPeriodicSales.fulfilled, (state, action) =>{
       state.status = 'succeeded';
-      state.sales = action.payload;
+      state.period = action.payload;
     })
     .addCase(fetchPeriodicSales.rejected, (state, action)=>{
       state.status = 'failed';

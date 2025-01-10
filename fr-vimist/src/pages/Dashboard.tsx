@@ -1,10 +1,14 @@
 import { useDisplayProducts } from "../features/products/inventoryHook";
 // import TopNavbar from "../components/TopNavbar";
 import DynamicGraph from "../components/Graphs";
+import { useFetchSalesByPeriod } from "../features/sales/salesHook";
+import { useFetchPurchasesByPeriod } from "../features/purchases/purchaseHook";
 
 const Dashboard = () => {
  
   const AllProducts = useDisplayProducts();
+  const {data: periodSalesData, status: periodSalesStatus, error: periodSalesError} = useFetchSalesByPeriod();
+  const {data: periodPurchaseData, status: periodPurchaseStatu, error: periodPurchaseError} = useFetchPurchasesByPeriod();
 
     return (
         <div className="vn-flex vn-flex-col vn-h-full vn-gap-5 vn-mt-5">
@@ -18,7 +22,7 @@ const Dashboard = () => {
             <div className="vn-bg-blue-100 vn-flex vn-flex-col vn-justify-center vn-items-center vn-p-4 vn-overflow-hidden">
               <h2 className="vn-text-lg vn-font-semibold vn-mb-2">Sales</h2>
               <div className="vn-h-full vn-w-full">
-                <DynamicGraph />
+                <DynamicGraph data={periodSalesData} dataFor='Sales' status={periodSalesStatus} error={periodSalesError} />
               </div>
             </div>
   
@@ -26,7 +30,7 @@ const Dashboard = () => {
             <div className="vn-bg-green-100 vn-flex vn-flex-col vn-justify-center vn-items-center vn-p-4 vn-overflow-hidden">
               <h2 className="vn-text-lg vn-font-semibold vn-mb-2">Purchases</h2>
               <div className="vn-h-full vn-w-full">
-                <DynamicGraph />
+                <DynamicGraph data={periodPurchaseData} dataFor="Purchases" status={periodPurchaseStatu} error={periodPurchaseError}/>
               </div>
             </div>
   
@@ -34,7 +38,7 @@ const Dashboard = () => {
             <div className="vn-bg-yellow-100 vn-flex vn-flex-col vn-justify-center vn-items-center vn-p-4 vn-overflow-hidden">
               <h2 className="vn-text-lg vn-font-semibold vn-mb-2">Stock</h2>
               <div className="vn-h-full vn-w-full">
-                <DynamicGraph />
+                {/* <DynamicGraph /> */}
               </div>
             </div>
   
