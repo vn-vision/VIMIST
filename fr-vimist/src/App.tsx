@@ -11,6 +11,8 @@ import store from "./store/store";
 import Login from "./pages/Login";
 import Layout from "./components/Layout";
 import Purchases from "./pages/Purchases";
+import RegisterUser from "./pages/RegisterUser";
+import RegisterAdmin from "./pages/RegisterAdmin";
 
 const App: React.FC = () => {
   return (
@@ -25,6 +27,8 @@ const App: React.FC = () => {
           <Route path="/purchases" element={<Purchases />} />
           <Route path="/payments" element={<Payments />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<RegisterUser />} />
+          <Route path="register/admin" element={<RegisterAdmin />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
         </Layout>
