@@ -75,8 +75,8 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="vn-flex vn-flex-col md:vn-flex-row vn-w-full vn-h-full vn-justify-around">
-      <div className="vn-flex vn-flex-col vn- justify-evenly">
+    <div className="vn-flex vn-flex-col md:vn-flex-row vn-w-full vn-min-h-full vn-justify-evenly vn-m-auto">
+      <div className="vn-flex vn-flex-col vn-justify-center vn-gap-5 vn-w-[50%]">
         <img
           src={logo}
           alt="logo"
@@ -87,9 +87,12 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
           Welcome to Vimist, don't just window shop, try it out ...
         </p>
       </div>
-      <div>
+      <div className="vn-flex vn-flex-col vn-w-[50%] vn-justify-center">
         <h1>{mode === "login" ? "Login" : "Register"}</h1>
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={handleSubmit}
+          className="vn-flex vn-flex-col vn-gap-5 vn-px-2 vn-py-5 vn-w-[50%] vn-items-center vn-rounded-md vn-border vn-border-orange-500 vn-shadow-lg"
+        >
           <input
             type="text"
             placeholder="Username"
@@ -97,6 +100,32 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
             onChange={(e) => setUser({ ...user, username: e.target.value })}
             autoComplete="on"
           />
+          
+          {mode === "register" && (
+            <>
+              {regAs === "admin" && (
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={user.email || ""}
+                  onChange={(e) => setUser({ ...user, email: e.target.value })}
+                  autoComplete="on"
+                />
+              )}
+              {regAs === "user" && (
+                <input
+                  type="text"
+                  placeholder="Contact"
+                  value={user.contact || ""}
+                  onChange={(e) =>
+                    setUser({ ...user, contact: e.target.value })
+                  }
+                  autoComplete="on"
+                />
+              )}
+            </>
+          )}
+
           <input
             type="password"
             placeholder="Password"
@@ -104,24 +133,7 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
             onChange={(e) => setUser({ ...user, password: e.target.value })}
             autoComplete="off"
           />
-          {mode === "register" && (
-            <>
-              <input
-                type="email"
-                placeholder="Email"
-                value={user.email || ""}
-                onChange={(e) => setUser({ ...user, email: e.target.value })}
-                autoComplete="on"
-              />
-              <input
-                type="text"
-                placeholder="Contact"
-                value={user.contact || ""}
-                onChange={(e) => setUser({ ...user, contact: e.target.value })}
-                autoComplete="on"
-              />
-            </>
-          )}
+
           <button type="submit" className="vn-bg-green-400">
             {mode === "login" ? "Login" : "Register"}
           </button>
