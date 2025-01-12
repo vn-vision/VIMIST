@@ -4,7 +4,7 @@ import {
   adminRegister,
   userRegister,
   userLogin,
-} from "../../api/authenticationAPI";
+} from "../../utils/api/authenticationAPI";
 
 // create different Thunks to consume the Data from endpoints
 export const registerAdmin = createAsyncThunk<
@@ -47,8 +47,12 @@ export const loginUser = createAsyncThunk<{access: string; refresh: string;}, Us
   }
 );
 
-
-// create a slice to handle authentication/
+export const logoutUser = createAsyncThunk(
+  "logout/user",
+  async () => {
+    return null;
+  }
+);// create a slice to handle authentication/
 
 // create type for the slice
 interface authState {
@@ -116,7 +120,27 @@ const authSlice = createSlice({
     .addCase(loginUser.rejected, (state, action) =>{
       state.status = "failed";
       state.error = action.error.message || "Failed to login user";
-    })    
+    })
+
+    // logout user
+    .addCase(logoutUser.pending, (state) =>{
+      state.status = "loading";
+    })
+    .addCase(logoutUser.fulfilled, (state) =>{
+      state.status = "succeed";
+      state.user = {
+        username: "",
+        contact: "",
+        email: "",
+        password: "",
+        access: "",
+        refresh: "",
+      };
+    })
+    .addCase(logoutUser.rejected, (state, action) =>{
+      state.status = "failed";
+      state.error = action.error.message || "Failed to logout user";
+    })
   }
 })
 

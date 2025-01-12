@@ -2,7 +2,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
-import { Purchase } from "../../api/purchasesAPI";
+import { Purchase } from "../../utils/api/purchasesAPI";
 import { fetchPurchaseById, fetchPurchases, addNewPurchase, modifyPurchase, removePurchase, fetchPeriodicPurchases } from "./purchasesSlice";
 
 // Hook to display purchases

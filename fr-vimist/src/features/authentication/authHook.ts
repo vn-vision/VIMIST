@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
-import { User } from "../../api/authenticationAPI";
-import { loginUser, registerAdmin, registerUser } from "./authSlice";
+import { User } from "../../utils/api/authenticationAPI";
+import { loginUser, registerAdmin, registerUser, logoutUser } from "./authSlice";
 
 // Hook to display users
 export const useAuth = () => {
@@ -15,6 +15,19 @@ export const useAuth = () => {
   };
 
     return { authUser, status, error };
+};
+
+// hook to logout user
+export const useLogout = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const status = useSelector((state: RootState) => state.auth.status);
+  const error = useSelector((state: RootState) => state.auth.error);
+
+  const logout = () => {
+    dispatch(logoutUser());
+  };
+
+  return { logout, status, error };
 };
 
 // Hook to add a new user

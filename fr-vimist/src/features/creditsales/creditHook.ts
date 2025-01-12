@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
-import { CreditSale } from "../../api/creditAPI";
+import { CreditSale } from "../../utils/api/creditAPI";
 import { fetchCreditSaleById, fetchCreditSales, addNewCreditSale, modifyCreditSale, removeCreditSale } from "./creditSlice";
 
 

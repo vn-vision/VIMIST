@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDisplayProducts } from "../features/products/inventoryHook";
 import { useDisplayPurchases, useAddNewPurchase, useUpdatePurchase } from "../features/purchases/purchaseHook";
-import { Product } from "../api/inventoryAPI";
-import { Purchase } from "../api/purchasesAPI";
+import { Product } from "../utils/api/inventoryAPI";
+import { Purchase } from "../utils/api/purchasesAPI";
 
 interface AddPurchaseProps {
   reset: () => void;

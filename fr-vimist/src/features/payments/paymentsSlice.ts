@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Payment, getPayments, getPaymentById, postPayment, updatePayment, deletePayment } from "../../api/paymentsAPI";
+import { Payment, getPayments, getPaymentById, postPayment, updatePayment, deletePayment } from "../../utils/api/paymentsAPI";
 
 
 // Define the type for initial state 

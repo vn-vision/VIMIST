@@ -6,7 +6,7 @@ import {
   updateCreditSale,
   deleteCreditSale,
   CreditSale,
-} from "../../api/creditAPI";
+} from "../../utils/api/creditAPI";
 
 // create the type for the initial state
 interface CreditState {

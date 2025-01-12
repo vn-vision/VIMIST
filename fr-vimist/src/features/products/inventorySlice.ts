@@ -6,7 +6,7 @@ import {
   deleteProduct,
   Product,
   getProductbyId,
-} from "../../api/inventoryAPI";
+} from "../../utils/api/inventoryAPI";
 
 // Define a type for the slice state
 interface ProductState {

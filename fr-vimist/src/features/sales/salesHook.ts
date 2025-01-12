@@ -9,7 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
-import { Sale } from "../../api/salesAPI";
+import { Sale } from "../../utils/api/salesAPI";
 
 // create hooks to get the data and status of a sale request
 export const useFetchSaleById = (id: number) => {

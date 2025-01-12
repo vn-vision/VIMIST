@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
-import { Notification } from "../../api/notificationAPI";
+import { Notification } from "../../utils/api/notificationAPI";
 import { fetchNotificationById, fetchNotifications, addNewNotification, modifyNotification, removeNotification } from "./notificationsSlice";
 
 // Hook to display notifications

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Notification, getNotifications, getNotificationById, postNotification, updateNotification, deleteNotification } from "../../api/notificationAPI";
+import { Notification, getNotifications, getNotificationById, postNotification, updateNotification, deleteNotification } from "../../utils/api/notificationAPI";
 
 // Define type for initial state
 interface NotificationState {

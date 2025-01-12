@@ -8,7 +8,7 @@ import {
 import { AppDispatch, RootState } from "../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { Product } from "../../api/inventoryAPI";
+import { Product } from "../../utils/api/inventoryAPI";
 
 // Hook to display products
 export const useDisplayProducts = () => {

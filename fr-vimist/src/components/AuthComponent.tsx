@@ -1,5 +1,5 @@
-import React from "react";
-import { User } from "../api/authenticationAPI";
+import React, { useState } from "react";
+import { User } from "../utils/api/authenticationAPI";
 import {
   useAuth,
   useAddNewAdmin,
@@ -13,14 +13,30 @@ type AuthComponentProps = {
   regAs: "admin" | "user" | null;
 };
 
+type ThisMessage = {
+  message: string;
+  class: string;
+};
+
+// global variable to hold the token
+export let myToken = {
+  access: "",
+  refresh: "",
+};
 function AuthComponent({ mode, regAs }: AuthComponentProps) {
   // state to hold the user details
-  const [user, setUser] = React.useState<User>({
+  const [user, setUser] = useState<User>({
     username: "",
     password: "",
     email: "" || null,
     contact: "" || null,
   });
+
+
+  const [entryError, setError] = useState<ThisMessage>();
+  const [entrySuccess, setSuccess] = useState<ThisMessage>();
+
+
 
   // use the custom hooks to handle the user registration and login
   const { authUser, status: loginStatus, error: loginError } = useAuth();
@@ -42,28 +58,77 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
       try {
         const result = await authUser(user);
         if (result) {
-          console.log("Login successful");
+          myToken = result;
 
-          // store the tokens in the local storage
-          localStorage.setItem("access", result.access);
-          localStorage.setItem("refresh", result.refresh);
-          navigate("/");
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        }
+
+        if (loginStatus === "idle" || loginStatus === "loading") {
+          setError({
+            message: "Loading...",
+            class:
+              "vn-border-2 vn-border-blue-500 vn-shadow-md vn-text-blue-200",
+          });
+        } else if (loginStatus === "succeed") {
+          setSuccess({
+            message: "Success. Redirecting in 3...2..1.",
+            class:
+              "vn-border-2 vn-border-green-500 vn-shadow-md",
+          });
+        } else if (loginStatus === "failed") {
+          setError({
+            message: `Login Failed ${loginError?.toString()}`,
+            class:
+              "vn-border-2 vn-border-red-500 vn-shadow-md",
+          });
         }
       } catch (error) {
         console.error("Login failed", error);
+        setError({
+          message: "Login Failed",
+          class:
+            "vn-border-2 vn-border-red-500 vn-shadow-md",
+        });
       }
     } else {
       if (regAs === "admin") {
         try {
           await addNewAdmin(user);
-          console.log("Admin registration successful");
+          if (addAdminStatus === "succeed") {
+            setSuccess({
+              message: "Admin Registered Successfully",
+              class:
+                "vn-border-2 vn-border-green-500 vn-shadow-md",
+            });
+          } else if (addAdminStatus === "failed") {
+            setError({
+              message: `Admin registration Failed ${addAdminError?.toString()}`,
+              class:
+                "vn-border-2 vn-border-red-500 vn-shadow-md",
+            });
+          }
         } catch (error) {
           console.error("Admin registration failed", error);
         }
       } else if (regAs === "user") {
         try {
           await addNewUser(user);
-          console.log("User registration successful");
+
+          if (addUserStatus === "succeed") {
+            setSuccess({
+              message: "User Registered Successfully",
+              class:
+                "vn-border-2 vn-border-green-500 vn-shadow-md",
+            });
+          } else if (addUserStatus === "failed") {
+            setError({
+              message: `User registration Failed ${addUserError?.toString()}`,
+              class:
+                "vn-border-2 vn-border-red-500 vn-shadow-md",
+            });
+          }
         } catch (error) {
           console.error("User registration failed", error);
         }
@@ -87,11 +152,16 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
           Welcome to Vimist, don't just window shop, try it out ...
         </p>
       </div>
-      <div className="vn-flex vn-flex-col vn-w-[50%] vn-justify-center">
+      <div className="vn-flex vn-flex-col vn-w-[50%] vn-justify-center"> 
         <h1>{mode === "login" ? "Login" : "Register"}</h1>
+        {loginError && (<h2 className="vn-text-red-500"> {loginError}</h2>)}
+        {entryError && (<h2 className="vn-text-red-500"> {entryError?.message}</h2>)}
+        {entrySuccess && (<h2 className="vn-text-green-500"> {entrySuccess?.message}</h2>)}
         <form
           onSubmit={handleSubmit}
-          className="vn-flex vn-flex-col vn-gap-5 vn-px-2 vn-py-5 vn-w-[50%] vn-items-center vn-rounded-md vn-border vn-border-orange-500 vn-shadow-lg"
+          className={`vn-flex vn-flex-col vn-gap-5 vn-px-2 vn-py-5 vn-w-[50%] vn-items-center vn-rounded-md vn-border vn-border-red-500 vn-shadow-lg
+           ${entryError ? entryError?.class : entrySuccess && entrySuccess?.class
+          }`}
         >
           <input
             type="text"
@@ -100,7 +170,7 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
             onChange={(e) => setUser({ ...user, username: e.target.value })}
             autoComplete="on"
           />
-          
+
           {mode === "register" && (
             <>
               {regAs === "admin" && (

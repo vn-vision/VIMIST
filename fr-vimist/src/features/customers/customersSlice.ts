@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Customer, getCustomerById, getCustomers, postCustomer, updateCustomer, deleteCustomer } from "../../api/customerAPI";
+import { Customer, getCustomerById, getCustomers, postCustomer, updateCustomer, deleteCustomer } from "../../utils/api/customerAPI";
 
 // define type for initial state
 interface CustomerState {

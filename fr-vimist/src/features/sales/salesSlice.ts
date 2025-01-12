@@ -10,7 +10,7 @@ import {
   updateSale,
   deleteSale,
   periodicSales,
-} from "../../api/salesAPI";
+} from "../../utils/api/salesAPI";
 
 // create type for the initial state
 interface SalesState {

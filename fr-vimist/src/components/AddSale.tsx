@@ -1,8 +1,8 @@
 import { useState } from "react";
 import GenericCard from "./GenericCard";
 import { useDisplayProducts } from "../features/products/inventoryHook";
-import { Product } from "../api/inventoryAPI";
-import { Sale } from "../api/salesAPI";
+import { Product } from "../utils/api/inventoryAPI";
+import { Sale } from "../utils/api/salesAPI";
 import { useAddNewSale } from "../features/sales/salesHook";
 
 function AddSaleComponent() {

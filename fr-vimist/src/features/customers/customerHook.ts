@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
-import { Customer } from "../../api/customerAPI";
+import { Customer } from "../../utils/api/customerAPI";
 import { fetchCustomerById, fetchCustomers, addNewCustomer, modifyCustomer, removeCustomer } from "./customersSlice";
 
 // Hook to display customers

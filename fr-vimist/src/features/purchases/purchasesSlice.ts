@@ -8,7 +8,7 @@ import {
   deletePurchase,
   periodicPurchases,
   Purchase,
-} from "../../api/purchasesAPI";
+} from "../../utils/api/purchasesAPI";
 import { Period } from "../sales/salesSlice";
 
 // load all purchases

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAddNewProduct, useUpdateProduct } from "../features/products/inventoryHook";
-import { Product } from "../api/inventoryAPI";
+import { Product } from "../utils/api/inventoryAPI";
 
 interface AddInventoryProps {
   reset: () => void;
