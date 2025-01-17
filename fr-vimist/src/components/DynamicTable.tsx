@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { myToken } from "./AuthComponent";
+
 interface DataTableProps {
   headers: string[];
   data: Record<string, any>[];
@@ -7,12 +8,14 @@ interface DataTableProps {
 }
 
 function DynamicTable({ headers, data, onDelete, onEdit }: DataTableProps) {
-  const navigate = useNavigate();
-  
   // callback function to delete an Item
   const handleDelete = (id: number) => {
-    onDelete(id); // Pass the ID to the parent handler
-    navigate(0);
+    if (myToken.access === "Admin") {
+      // Pass the ID to the parent handler
+      onDelete(id);
+    } else {
+      alert("You are not authorized to perform this action");
+    }
   };
 
   // callback function to edit an item
@@ -49,9 +52,12 @@ function DynamicTable({ headers, data, onDelete, onEdit }: DataTableProps) {
                 </td>
               ))}
               <td className="vn-flex vn-gap-2">
-                <button className="vn-border vn-border-green-500"
-                onClick={() => handleEdit(row.id)}
-                >Edit</button>
+                <button
+                  className="vn-border vn-border-green-500"
+                  onClick={() => handleEdit(row.id)}
+                >
+                  Edit
+                </button>
                 <button
                   className="vn-border vn-border-red-500"
                   onClick={() => handleDelete(row.id)}

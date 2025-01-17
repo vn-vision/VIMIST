@@ -14,12 +14,13 @@ const Purchases = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [editItemId, setEditItemId] = useState<number>(0);
 
+  const navigate = useNavigate();
   // fetch purchase data from hook
-  const { data, status, error} = useDisplayPurchases();
+  const { data, status, error: displayError} = useDisplayPurchases();
 
 
   // delete data from hook
-  const { deletePurchase } = useDeletePurchases();
+  const { deletePurchase, status: deleteStatus, error: deleteError } = useDeletePurchases();
 
 
   // search for purchase by ID, Name, Category or Supplier
@@ -54,9 +55,8 @@ const Purchases = () => {
           <button onClick={() => addItem(!item)}>Make Purchase</button>
         </div>
       ) : ""}
+
       {/* Purchases Section */}
-      {status === 'loading' && <h2 className="vn-text-orange-500"> Loading...</h2>}
-      {status === 'failed' && <h2 className="vn-text-red-500"> Error: {error}</h2>}
       {item ? <AddPurchase reset={() =>{addItem(false); setEditItemId(0);}} itemId={editItemId} /> :
             <DynamicTable
             headers={headers}

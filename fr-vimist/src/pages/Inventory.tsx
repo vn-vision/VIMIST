@@ -34,7 +34,8 @@ const Inventory = () => {
     addItem(true);
   };
   // delete a product by its ID
-    const {deleteProduct} = useDeleteProduct();
+    const {deleteProduct, status: deleteStatus, error: deleteError} = useDeleteProduct();
+    deleteError && console.log("Error:", deleteError);
 
   return (
     <div className="vn-flex vn-flex-col vn-gap-5 vn-mt-5">
@@ -48,6 +49,7 @@ const Inventory = () => {
         </div>
       ) : ""}
       {/* inventory Section */}
+      <h1> {deleteStatus === 'failed' ? deleteError?.toString() : ""} </h1>
       {item ? <AddInventory reset={() => {addItem(false); setEditItemId(null);}} itemId={editItemId}/> : <DynamicTable headers={headers} data={searchQuery ? filteredData : allProducts.data} onDelete={deleteProduct} onEdit={handleEdit}/>}
 
       {/* No results found */}

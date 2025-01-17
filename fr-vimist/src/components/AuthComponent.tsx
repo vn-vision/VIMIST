@@ -7,6 +7,8 @@ import {
 } from "../features/authentication/authHook";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.jpg";
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+
 
 type AuthComponentProps = {
   mode: "login" | "register";
@@ -20,9 +22,13 @@ type ThisMessage = {
 
 // global variable to hold the token
 export let myToken = {
-  access: "",
-  refresh: "",
+access: "",
+expire: 0,
 };
+
+interface CustomPayload extends JwtPayload {
+  role: string;
+}
 function AuthComponent({ mode, regAs }: AuthComponentProps) {
   // state to hold the user details
   const [user, setUser] = useState<User>({
@@ -31,7 +37,6 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
     email: "" || null,
     contact: "" || null,
   });
-
 
   const [entryError, setError] = useState<ThisMessage>();
   const [entrySuccess, setSuccess] = useState<ThisMessage>();
@@ -58,8 +63,9 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
       try {
         const result = await authUser(user);
         if (result) {
-          myToken = result;
-
+          const decoded = jwtDecode<CustomPayload>(result.access);
+          myToken.access = decoded.role;
+          myToken.expire = decoded.exp ? decoded.exp : 0;
           setTimeout(() => {
             navigate("/");
           }, 2000);

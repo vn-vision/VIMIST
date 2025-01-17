@@ -45,6 +45,7 @@ class LoginView(APIView):
         if user is not None:
             # Generate JWT token for the user
             refresh = RefreshToken.for_user(user)
+            refresh['role'] = user.role
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)

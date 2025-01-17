@@ -19,7 +19,7 @@ export const fetchPurchases = createAsyncThunk<Purchase[], void>(
       const response = await getPurchases();
       return response.Purchases;
     } catch (error: any) {
-      return error.response?.data || "An error occurred";
+      return error.response.request.statusText|| "An error occurred";
     }
   }
 );
@@ -33,7 +33,7 @@ export const fetchPurchaseById = createAsyncThunk<
     const response = await getPurchaseById(id);
     return response;
   } catch (error: any) {
-    return rejectWithValue(error.response?.data || "An error occurred");
+    return rejectWithValue(error.response?.request.statusText || "An error occurred");
   }
 });
 
@@ -47,7 +47,7 @@ export const addNewPurchase = createAsyncThunk<
     const response = await postPurchase(purchase);
     return response;
   } catch (error: any) {
-    return rejectWithValue(error.response?.data || "An error occurred");
+    return rejectWithValue(error.response?.request.statusText || "An error occurred");
   }
 });
 
@@ -61,7 +61,7 @@ export const modifyPurchase = createAsyncThunk<
     const response = await updatePurchase(purchase);
     return response;
   } catch (error: any) {
-    return rejectWithValue(error.response?.data || "An error occurred");
+    return rejectWithValue(error.response?.request.statusText|| "An error occurred");
   }
 });
 
@@ -75,7 +75,7 @@ export const removePurchase = createAsyncThunk<
     const response = await deletePurchase(id);
     return response;
   } catch (error: any) {
-    return rejectWithValue(error.response?.data || "An error occurred");
+    return rejectWithValue(error.response?.request.statusText || "An error occurred");
   }
 });
 

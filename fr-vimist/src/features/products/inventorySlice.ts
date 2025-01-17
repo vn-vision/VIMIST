@@ -41,7 +41,7 @@ export const fetchProductById = createAsyncThunk<
 
   } catch (error: any) {
     console.log("Error:", error);
-    return rejectWithValue(error.response?.data || "An error occurred");
+    return rejectWithValue(error.response?.request.statusText|| "An error occurred");
   }
 });
 
@@ -57,7 +57,7 @@ Product,
     return response;
   } catch (error: any) {
     console.log("Error:", error);
-    return rejectWithValue(error.response?.data || "An error occurred");
+    return rejectWithValue(error.response?.request.statusText || "An error occurred");
   }
 });
 
@@ -73,7 +73,7 @@ export const modifyProduct = createAsyncThunk<
     return response;
   } catch (error: any) {
     console.log("Error:", error);
-    return rejectWithValue(error.response?.data || "An error occurred");
+    return rejectWithValue(error.response?.request.statusText || "An error occurred");
   }
 });
 
@@ -89,7 +89,7 @@ export const removeProduct = createAsyncThunk<
     return response;
   } catch (error: any) {
     console.log("Error:", error);
-    return rejectWithValue(error.response?.data || "An error occurred");
+    return rejectWithValue(error.response?.request.statusText || "An error occurred");
   }
 });
 

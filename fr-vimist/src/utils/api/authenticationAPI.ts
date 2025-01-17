@@ -41,6 +41,7 @@ export const userRegister = async (user: User) => {
 export const userLogin = async (user: User) => {
   try {
     const response = await axios.post(`${loginUrl}/`, user);
+    console.log(response.data);
     return response.data;
 
   } catch (error: any) {

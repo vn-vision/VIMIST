@@ -35,7 +35,7 @@ export const registerUser = createAsyncThunk<
   }
 });
 
-export const loginUser = createAsyncThunk<{access: string; refresh: string;}, User, { rejectValue: string }>(
+export const loginUser = createAsyncThunk<{access: string, refresh: string}, User, { rejectValue: string }>(
   "login/user",
   async (user, { rejectWithValue }) => {
     try {

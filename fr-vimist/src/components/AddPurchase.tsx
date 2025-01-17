@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDisplayProducts } from "../features/products/inventoryHook";
-import { useDisplayPurchases, useAddNewPurchase, useUpdatePurchase } from "../features/purchases/purchaseHook";
+import {
+  useDisplayPurchases,
+  useAddNewPurchase,
+  useUpdatePurchase,
+} from "../features/purchases/purchaseHook";
 import { Product } from "../utils/api/inventoryAPI";
 import { Purchase } from "../utils/api/purchasesAPI";
 
@@ -9,20 +13,20 @@ interface AddPurchaseProps {
   itemId: number | null;
 }
 
-function AddPurchase({reset, itemId}:AddPurchaseProps) {
-
+function AddPurchase({ reset, itemId }: AddPurchaseProps) {
   // Fetch data from hook
   const { data: products } = useDisplayProducts();
 
-
   // Add purchase
-  const { addPurchase } = useAddNewPurchase();
+  const { addPurchase, error: addError } = useAddNewPurchase();
   // Update purchase
-  const { updatePurchase } = useUpdatePurchase();
+  const { updatePurchase, error: updateError } = useUpdatePurchase();
 
   // get purchase that matches the id
   const { data: allPurchases } = useDisplayPurchases();
-  const selectPurchase = allPurchases?.find((purchase: Purchase) => purchase.product === itemId);
+  const selectPurchase = allPurchases?.find(
+    (purchase: Purchase) => purchase.product === itemId
+  );
 
   // State to hold form data
   const [formData, setFormData] = useState<Purchase>({
@@ -35,20 +39,20 @@ function AddPurchase({reset, itemId}:AddPurchaseProps) {
     payment_type: "Cash",
   });
 
- // if itemId is not null, set the form data to the selected purchase
- useEffect(() => {
-  if (selectPurchase){
-    setFormData({
-      id: selectPurchase.id,
-      product: selectPurchase.product,
-      quantity_purchased: selectPurchase.quantity_purchased,
-      purchase_price: selectPurchase.purchase_price,
-      supplier: selectPurchase.supplier,
-      purchase_date: selectPurchase.purchase_date,
-      payment_type: selectPurchase.payment_type,
-    })
-  }
- }, [selectPurchase]);
+  // if itemId is not null, set the form data to the selected purchase
+  useEffect(() => {
+    if (selectPurchase) {
+      setFormData({
+        id: selectPurchase.id,
+        product: selectPurchase.product,
+        quantity_purchased: selectPurchase.quantity_purchased,
+        purchase_price: selectPurchase.purchase_price,
+        supplier: selectPurchase.supplier,
+        purchase_date: selectPurchase.purchase_date,
+        payment_type: selectPurchase.payment_type,
+      });
+    }
+  }, [selectPurchase]);
 
   // State to handle errors and success messages
   const [error, setError] = useState<Record<string, string>>({});
@@ -104,36 +108,47 @@ function AddPurchase({reset, itemId}:AddPurchaseProps) {
     }
 
     try {
-      if (itemId){
-        updatePurchase(formData)
-          setSuccess("Purchase updated successfully.");
-          reset()
-      } else
-      {
-        addPurchase(formData)
-          setSuccess("Purchase added successfully.");
-          setFormData({
-            id: 0,
-            product: 0,
-            quantity_purchased: 0,
-            purchase_price: 0,
-            supplier: "",
-            purchase_date: new Date().toISOString().split("T")[0],
-            payment_type: "Cash",
-          });
-          reset();
-        }
-    } catch (error: any){
+      if (itemId) {
+        updatePurchase(formData);
+      } else {
+        addPurchase(formData);
+        setFormData({
+          id: 0,
+          product: 0,
+          quantity_purchased: 0,
+          purchase_price: 0,
+          supplier: "",
+          purchase_date: new Date().toISOString().split("T")[0],
+          payment_type: "Cash",
+        });
+      }
+
+      setSuccess("Purchase updated successfully.");
+    } catch (error: any) {
       setError({ general: error.message });
-  }
+    }
   };
 
   return (
     <div className="vn-p-4 vn-max-w-md vn-mx-auto">
+      <button className="vn-text-orange-500" onClick={reset}>
+        {"<< "}Back
+      </button>
+      <h1 className="vn-text-red-500">
+        {" "}
+        {addError
+          ? addError.toString()
+          : updateError
+          ? updateError.toString()
+          : ""}{" "}
+      </h1>
       <form onSubmit={handleSubmit}>
         {/* Product Selection */}
         <div className="vn-mb-4">
-          <label htmlFor="inventory" className="vn-block vn-text-sm vn-font-medium">
+          <label
+            htmlFor="inventory"
+            className="vn-block vn-text-sm vn-font-medium"
+          >
             Products
           </label>
           <input
@@ -141,8 +156,9 @@ function AddPurchase({reset, itemId}:AddPurchaseProps) {
             list="products"
             placeholder="Select Product"
             value={
-              products?.find((product: Product) => product.id === formData.product)
-                ?.name || ""
+              products?.find(
+                (product: Product) => product.id === formData.product
+              )?.name || ""
             }
             onChange={handleChange}
             className={`vn-w-full vn-border vn-rounded vn-px-2 vn-py-1 ${
@@ -154,12 +170,17 @@ function AddPurchase({reset, itemId}:AddPurchaseProps) {
               <option key={product.id} value={product.name}></option>
             ))}
           </datalist>
-          {error.inventory && <div className="vn-text-red-500">{error.inventory}</div>}
+          {error.inventory && (
+            <div className="vn-text-red-500">{error.inventory}</div>
+          )}
         </div>
 
         {/* Quantity */}
         <div className="vn-mb-4">
-          <label htmlFor="quantity_purchased" className="vn-block vn-text-sm vn-font-medium">
+          <label
+            htmlFor="quantity_purchased"
+            className="vn-block vn-text-sm vn-font-medium"
+          >
             Quantity
           </label>
           <input
@@ -179,7 +200,10 @@ function AddPurchase({reset, itemId}:AddPurchaseProps) {
 
         {/* Price */}
         <div className="vn-mb-4">
-          <label htmlFor="purchase_price" className="vn-block vn-text-sm vn-font-medium">
+          <label
+            htmlFor="purchase_price"
+            className="vn-block vn-text-sm vn-font-medium"
+          >
             Price
           </label>
           <input
@@ -199,7 +223,10 @@ function AddPurchase({reset, itemId}:AddPurchaseProps) {
 
         {/* Supplier */}
         <div className="vn-mb-4">
-          <label htmlFor="supplier" className="vn-block vn-text-sm vn-font-medium">
+          <label
+            htmlFor="supplier"
+            className="vn-block vn-text-sm vn-font-medium"
+          >
             Supplier
           </label>
           <input
@@ -212,12 +239,17 @@ function AddPurchase({reset, itemId}:AddPurchaseProps) {
               error.supplier ? "vn-border-red-500" : ""
             }`}
           />
-          {error.supplier && <div className="vn-text-red-500">{error.supplier}</div>}
+          {error.supplier && (
+            <div className="vn-text-red-500">{error.supplier}</div>
+          )}
         </div>
 
         {/* Date */}
         <div className="vn-mb-4">
-          <label htmlFor="purchase_date" className="vn-block vn-text-sm vn-font-medium">
+          <label
+            htmlFor="purchase_date"
+            className="vn-block vn-text-sm vn-font-medium"
+          >
             Date
           </label>
           <input
@@ -236,7 +268,10 @@ function AddPurchase({reset, itemId}:AddPurchaseProps) {
 
         {/* Payment Type */}
         <div className="vn-mb-4">
-          <label htmlFor="payment_type" className="vn-block vn-text-sm vn-font-medium">
+          <label
+            htmlFor="payment_type"
+            className="vn-block vn-text-sm vn-font-medium"
+          >
             Payment Type
           </label>
           <select
@@ -257,7 +292,9 @@ function AddPurchase({reset, itemId}:AddPurchaseProps) {
         </div>
 
         {/* Error & Success Messages */}
-        {error.general && <div className="vn-text-red-500">{error.general}</div>}
+        {error.general && (
+          <div className="vn-text-red-500">{error.general}</div>
+        )}
         {success && <div className="vn-text-green-500">{success}</div>}
 
         {/* Submit & Cancel Buttons */}

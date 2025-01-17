@@ -123,8 +123,8 @@ const ProductForm = ({
 
 function AddInventory({ reset, itemId }: AddInventoryProps) {
   const navigate = useNavigate();
-  const { addProduct, status: addStatus } = useAddNewProduct();
-  const { updateProduct, status: updateStatus } = useUpdateProduct();
+  const { addProduct, status: addStatus, error: addError } = useAddNewProduct();
+  const { updateProduct, status: updateStatus, error: updateError } = useUpdateProduct();
 
   const [product, setProduct] = useState<Product>(defaultProductState);
   const [productImage, setProductImage] = useState<File | null>(null);
@@ -160,20 +160,25 @@ function AddInventory({ reset, itemId }: AddInventoryProps) {
 
       addProduct(formData);
 
-      if (addStatus === "succeeded") navigate("/inventory");
+      if (addStatus === "succeeded") {
+        navigate("/inventory");
+      }
     } else {
       updateProduct(product);
-      if (updateStatus === "succeeded") navigate("/inventory");
+      if (updateStatus === "succeeded"){
+        navigate("/inventory");
+      }
     }
 
-    reset();
     setProduct(defaultProductState);
     setProductImage(null);
     setIsSubmitting(false);
   };
 
   return (
-    <div className="vn-flex vn-justify-center vn-items-center vn-bg-gray-100 vn-h-full">
+    <div className="vn-flex vn-justify-center vn-items-center vn-flex-col vn-bg-gray-100 vn-h-full">
+      <button className="vn-text-2xl vn-font-bold vn-text-orange-500" onClick={() => reset()}>{'<<'} Back</button>
+      <h1 className="vn-text-2xl vn-font-bold vn-mb-5 vn-text-red-500">{addError ? addError.toString() : updateError ? updateError.toString(): ""}</h1>
       <ProductForm
         product={product}
         handleChange={handleInputChange}

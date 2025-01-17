@@ -1,6 +1,6 @@
 // src/App.tsx
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Inventory from "./pages/Inventory";
 import Sales from "./pages/Sales";
 import Customers from "./pages/Customers";
@@ -17,7 +17,6 @@ import RegisterAdmin from "./pages/RegisterAdmin";
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <Router>
         <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
@@ -32,7 +31,6 @@ const App: React.FC = () => {
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
         </Layout>
-      </Router>
     </Provider>
   );
 };
