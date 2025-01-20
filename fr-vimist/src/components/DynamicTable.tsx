@@ -10,16 +10,18 @@ interface DataTableProps {
 function DynamicTable({ headers, data, onDelete, onEdit }: DataTableProps) {
   // callback function to delete an Item
   const handleDelete = (id: number) => {
-    if (myToken.access === "Admin") {
+    if (myToken.role === "Admin") {
       // Pass the ID to the parent handler
+      alert(`Are you sure you want to delete this item? ${id}`);
       onDelete(id);
     } else {
-      alert("You are not authorized to perform this action");
+      alert(`You are not authorized to perform this action ${id}`);
     }
   };
 
   // callback function to edit an item
   const handleEdit = (id: number) => {
+    alert(`Editing item with ID: ${id}`);
     onEdit(id);
   };
   return (

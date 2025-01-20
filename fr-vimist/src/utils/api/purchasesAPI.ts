@@ -1,5 +1,6 @@
 // purchasesAPI.ts
 import axios from "axios";
+import { myToken } from "../../components/AuthComponent";
 
 export interface Purchase {
   id: number;
@@ -17,6 +18,7 @@ const baseUrl = "http://localhost:8000/api/purchases/purchases";
 export const getPurchases = async () => {
   try {
     const response = await axios.get(`${baseUrl}/`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching purchases", error);
@@ -39,7 +41,7 @@ export const postPurchase = async (purchase: Purchase) => {
   try {
     const response = await axios.post(`${baseUrl}/`, purchase, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });
@@ -55,7 +57,7 @@ export const updatePurchase = async (purchase: Purchase) => {
   try {
     const response = await axios.put(`${baseUrl}/${purchase.id}/`, purchase, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });
@@ -71,7 +73,7 @@ export const deletePurchase = async (id: number) => {
   try {
     const response = await axios.delete(`${baseUrl}/${id}/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });

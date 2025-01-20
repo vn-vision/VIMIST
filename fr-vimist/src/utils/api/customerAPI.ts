@@ -1,4 +1,5 @@
 import axios from "axios";
+import { myToken } from "../../components/AuthComponent";
 
 //  define interface for customer
 export interface Customer {
@@ -35,7 +36,7 @@ export const postCustomer = async (customer: Customer) => {
   try {
     const response = await axios.post(`${baseUrl}/`, customer, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });
@@ -50,7 +51,7 @@ export const updateCustomer = async (customer: Customer) => {
   try {
     const response = await axios.put(`${baseUrl}/${customer.id}/`, customer, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });
@@ -65,7 +66,7 @@ export const deleteCustomer = async (id: number) => {
   try {
     const response = await axios.delete(`${baseUrl}/${id}/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });

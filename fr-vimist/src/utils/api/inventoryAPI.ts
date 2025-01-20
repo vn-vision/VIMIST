@@ -1,4 +1,6 @@
 import axios from "axios";
+import { myToken } from "../../components/AuthComponent";
+
 export interface Product {
   id: number;
   name: string;
@@ -38,7 +40,7 @@ export const postProduct = async (product: FormData) => {
   try {
     const response = await axios.post(`${baseUrl}/`, product, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "multipart/form-data",
       },
     });
@@ -54,7 +56,7 @@ export const updateProduct = async (product: Product) => {
   try {
     const response = await axios.put(`${baseUrl}/${product.id}/`, product, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "multipart/form-data",
       },
     });
@@ -69,7 +71,7 @@ export const deleteProduct = async (id: number) => {
   try {
     const response = await axios.delete(`${baseUrl}/${id}/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });

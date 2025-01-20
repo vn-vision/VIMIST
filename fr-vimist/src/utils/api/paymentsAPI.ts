@@ -1,4 +1,5 @@
 import axios from "axios";
+import { myToken } from "../../components/AuthComponent";
 
 //  define type for payment
 
@@ -37,7 +38,7 @@ export const postPayment = async (payment: Payment): Promise<Payment> => {
   try {
     const response = await axios.post(`${baseUrl}/`, payment, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });
@@ -52,7 +53,7 @@ export const updatePayment = async (payment: Payment): Promise<Payment> => {
   try {
     const response = await axios.put(`${baseUrl}/${payment.id}/`, payment, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });
@@ -67,7 +68,7 @@ export const deletePayment = async (id: number) => {
   try {
     const response = await axios.delete(`${baseUrl}/${id}`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });

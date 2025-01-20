@@ -108,9 +108,9 @@ const DynamicGraph = ({
         );
       };
 
-      const weeklyColors = generateColors(apiData.by_day.length);
-      const monthlyColors = generateColors(apiData.by_month.length);
-      const yearlyColors = generateColors(apiData.by_year.length);
+      const weeklyColors = generateColors(apiData.by_day?.length);
+      const monthlyColors = generateColors(apiData.by_month?.length);
+      const yearlyColors = generateColors(apiData.by_year?.length);
 
       return {
         weekly: {
@@ -183,14 +183,14 @@ const DynamicGraph = ({
       const year = date.getFullYear();
 
       return {
-        by_day: data.by_day.filter((record: any) => {
+        by_day: data.by_day?.filter((record: any) => {
           const recordDate = new Date(record.day);
           return recordDate >= startOfWeek && recordDate <= endOfWeek;
         }),
-        by_month: data.by_month.filter(
+        by_month: data.by_month?.filter(
           (record: any) => new Date(record.month).getMonth() === month
         ),
-        by_year: data.by_year.filter(
+        by_year: data.by_year?.filter(
           (record: any) => new Date(record.year).getFullYear() === year
         ),
       };
@@ -201,8 +201,7 @@ const DynamicGraph = ({
   // Update graph data when API data or selected date changes
   useEffect(() => {
     if (periodState === "succeeded" && periodicData) {
-      const filteredData = selectDate
-        ? filterDataByDate(periodicData)
+      const filteredData = selectDate ? filterDataByDate(periodicData)
         : periodicData;
       setGraphData(transformData(filteredData));
     }

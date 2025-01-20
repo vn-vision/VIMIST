@@ -2,7 +2,6 @@ import { useState } from "react";
 import GenericCard from "./GenericCard";
 import { useDisplayProducts } from "../features/products/inventoryHook";
 import { Product } from "../utils/api/inventoryAPI";
-import { Sale } from "../utils/api/salesAPI";
 import { useAddNewSale } from "../features/sales/salesHook";
 
 function AddSaleComponent() {
@@ -166,7 +165,7 @@ function AddSaleComponent() {
             Mpesa
           </button>
           <button className="vn-w-1/2 vn-bg-blue-500 vn-text-white vn-rounded vn-py-2 hover:vn-bg-blue-600"
-          onClick={()=>setLogPayment('Mpesa')}>
+          onClick={()=>setLogPayment('Cash')}>
             Cash
           </button>
           <button className="vn-w-1/2 vn-bg-yellow-500 vn-text-white vn-rounded vn-py-2 hover:vn-bg-yellow-600"

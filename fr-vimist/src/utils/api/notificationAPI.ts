@@ -1,4 +1,6 @@
 import axios from "axios";
+import { myToken } from "../../components/AuthComponent";
+
 //  define interface for notification
 export interface Notification {
   id: number;
@@ -35,7 +37,7 @@ export const postNotification = async (notification: Notification) => {
   try {
     const response = await axios.post(`${baseUrl}/`, notification, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });
@@ -53,7 +55,7 @@ export const updateNotification = async (notification: Notification) => {
       notification,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("access")}`,
+          Authorization: `Bearer ${myToken.access}`,
           "Content-Type": "application/json",
         },
       }
@@ -69,7 +71,7 @@ export const deleteNotification = async (id: number) => {
   try {
     const response = await axios.delete(`${baseUrl}/${id}/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Authorization: `Bearer ${myToken.access}`,
         "Content-Type": "application/json",
       },
     });

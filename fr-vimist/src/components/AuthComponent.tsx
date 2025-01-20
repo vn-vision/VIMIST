@@ -23,6 +23,8 @@ type ThisMessage = {
 // global variable to hold the token
 export let myToken = {
 access: "",
+refresh: "",
+role: "",
 expire: 0,
 };
 
@@ -64,7 +66,9 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
         const result = await authUser(user);
         if (result) {
           const decoded = jwtDecode<CustomPayload>(result.access);
-          myToken.access = decoded.role;
+          myToken.access = result.access;
+          myToken.refresh = result.refresh;
+          myToken.role = decoded.role;
           myToken.expire = decoded.exp ? decoded.exp : 0;
           setTimeout(() => {
             navigate("/");

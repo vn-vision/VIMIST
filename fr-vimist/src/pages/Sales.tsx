@@ -4,8 +4,10 @@ import TopNavbar from "../components/TopNavbar";
 import AddSaleComponent from "../components/AddSale";
 import { useFetchSales, useDeleteSale } from "../features/sales/salesHook";
 import CreditSaleComponent from "./CreditSaleComponent";
+import EditSales from "../components/EditSales";
 
 const headers = [
+  "ID",
   "Product",
   "Quantity_Sold",
   "Total_Price",
@@ -25,6 +27,7 @@ const Sales = () => {
   // edit a product
   const handleEdit = (id: number) => {
     setEditItemId(id);
+    <EditSales itemId={editItemId} reset={() => setEditItemId(0)} />
   };
   // delete a product by its ID
   const { deleteSale } = useDeleteSale();
@@ -113,6 +116,7 @@ const Sales = () => {
         )}
         {view === "addSale" && <AddSaleComponent />}
         {view === "creditSale" && <CreditSaleComponent />}
+        {editItemId && <EditSales itemId={editItemId} reset={() => setEditItemId(0)} />}
       </div>
     </div>
   );
