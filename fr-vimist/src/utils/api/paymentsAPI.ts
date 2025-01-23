@@ -17,7 +17,7 @@ const baseUrl = "http://localhost:8000/api/payments/payments";
 export const getPayments = async (): Promise<Payment[]> => {
   try {
     const response = await axios.get(baseUrl);
-    return response.data;
+    return response.data.Payment;
   } catch (error: any) {
     throw new Error(error.response.data);
   }

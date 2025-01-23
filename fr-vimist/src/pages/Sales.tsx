@@ -3,7 +3,7 @@ import DynamicTable from "../components/DynamicTable";
 import TopNavbar from "../components/TopNavbar";
 import AddSaleComponent from "../components/AddSale";
 import { useFetchSales, useDeleteSale } from "../features/sales/salesHook";
-import CreditSaleComponent from "./CreditSaleComponent";
+import CreditSaleComponent from "../components/CreditSaleComponent";
 import EditSales from "../components/EditSales";
 
 const headers = [
@@ -27,7 +27,7 @@ const Sales = () => {
   // edit a product
   const handleEdit = (id: number) => {
     setEditItemId(id);
-    <EditSales itemId={editItemId} reset={() => setEditItemId(0)} />
+    <EditSales itemId={editItemId} reset={() => setEditItemId(0)} />;
   };
   // delete a product by its ID
   const { deleteSale } = useDeleteSale();
@@ -116,7 +116,9 @@ const Sales = () => {
         )}
         {view === "addSale" && <AddSaleComponent />}
         {view === "creditSale" && <CreditSaleComponent />}
-        {editItemId && <EditSales itemId={editItemId} reset={() => setEditItemId(0)} />}
+        {editItemId && (
+          <EditSales itemId={editItemId} reset={() => setEditItemId(0)} />
+        )}
       </div>
     </div>
   );

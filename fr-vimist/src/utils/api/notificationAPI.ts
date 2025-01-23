@@ -9,13 +9,14 @@ export interface Notification {
   read_at: Date;
 }
 
-const baseUrl = "http://localhost:8000/api/notifications/notifications/";
+const baseUrl = "http://localhost:8000/api/notifications/notifications";
+
 
 // get all notifications
 export const getNotifications = async () => {
   try {
     const response = await axios.get(`${baseUrl}/`);
-    return response.data;
+    return response.data.Notifications;
   } catch (error) {
     console.error("Error fetching notifications", error);
     throw error;

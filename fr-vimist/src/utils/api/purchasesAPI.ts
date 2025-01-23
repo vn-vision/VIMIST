@@ -18,7 +18,6 @@ const baseUrl = "http://localhost:8000/api/purchases/purchases";
 export const getPurchases = async () => {
   try {
     const response = await axios.get(`${baseUrl}/`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching purchases", error);

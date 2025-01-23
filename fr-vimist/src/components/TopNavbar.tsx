@@ -1,7 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 function TopNavbar({onSearch}: {onSearch: (query: number | string)=>void}) {
 
   const [searchItem, setSearchItem] = useState<number | string>("");
+  
+  // set navigate
+  const navigate = useNavigate();
+  
   // search for an item based on ID or Category or Name
   const handleSearch = () => {
     if (searchItem){
@@ -22,7 +28,10 @@ function TopNavbar({onSearch}: {onSearch: (query: number | string)=>void}) {
         > Search </button>
       </div>
       <div>
-        <button className='vn-px-4 vn-py-2 vn-rounded vn-bg-red-600 vn-text-white'>Notifications</button>
+        <button
+        className='vn-px-4 vn-py-2 vn-rounded vn-bg-red-600 vn-text-white'
+        onClick={()=>navigate('/reports')}
+        >Notifications</button>
       </div>
     </div>
   )

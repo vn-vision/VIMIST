@@ -13,6 +13,8 @@ import Layout from "./components/Layout";
 import Purchases from "./pages/Purchases";
 import RegisterUser from "./pages/RegisterUser";
 import RegisterAdmin from "./pages/RegisterAdmin";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
 
 const App: React.FC = () => {
   return (
@@ -28,6 +30,8 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterUser />} />
           <Route path="register/admin" element={<RegisterAdmin />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
         </Layout>

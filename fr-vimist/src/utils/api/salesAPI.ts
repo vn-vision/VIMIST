@@ -17,7 +17,6 @@ export interface Sale {
 export const getSales = async () => {
   try {
     const response = await axios.get(`${baseUrl}/`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching sales", error);
