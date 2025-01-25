@@ -16,6 +16,9 @@ import RegisterAdmin from "./pages/RegisterAdmin";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 
+// adding user pages to the App component
+import LandingPage from "./pages/user/LandingPage";
+
 const App: React.FC = () => {
   return (
     <Provider store={store}>
@@ -32,6 +35,7 @@ const App: React.FC = () => {
           <Route path="register/admin" element={<RegisterAdmin />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/user/landing" element={<LandingPage />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
         </Layout>
