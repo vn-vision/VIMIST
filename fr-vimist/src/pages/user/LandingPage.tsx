@@ -1,7 +1,6 @@
 import React from 'react';
 import landing from '../../assets/images/logo.jpg';
 import logo from '../../assets/images/logo.jpg';
-import CatalogueView from '../../components/CatalogueView';
 
 function LandingPage() {
   return (
@@ -49,7 +48,6 @@ function LandingPage() {
         <span className="vn-text-blue-600 hover:vn-underline">Twitter</span>
         <span className="vn-text-blue-600 hover:vn-underline">Facebook</span>
       </div>
-      <CatalogueView />
     </div>
   );
 }

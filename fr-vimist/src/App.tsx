@@ -18,6 +18,7 @@ import Settings from "./pages/Settings";
 
 // adding user pages to the App component
 import LandingPage from "./pages/user/LandingPage";
+import ViewCatalogue from "./pages/user/ViewCatalogue";
 
 const App: React.FC = () => {
   return (
@@ -36,6 +37,8 @@ const App: React.FC = () => {
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/user/landing" element={<LandingPage />} />
+          <Route path="/user/catalogue" element={<ViewCatalogue />} />
+          
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
         </Layout>

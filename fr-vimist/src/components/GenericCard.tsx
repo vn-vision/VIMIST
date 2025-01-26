@@ -31,8 +31,8 @@ function GenericCard({id, name, category, unit_price, image, addToCart, removeFr
     }, [image]);
 
   return (
-    <div className='vn-flex vn-flex-col vn-w-[50%] vn-h-[50%]'>
-        <img src={processedImage} alt={name && category} className='vn-w-full vn-h-[50%]' />
+    <div className='vn-flex vn-flex-col vn-w-[50%] vn-h-fit vn-m-2'>
+        <img src={processedImage} alt={name && category} className='vn-w-full vn-h-full' />
         <div>
             <p>{name}</p>
             <p>{category}</p>
