@@ -4,6 +4,8 @@ import { Product } from "../../utils/api/inventoryAPI";
 import ProductGrid from "../../components/CatalogueView";
 import ViewModeButtons from "../../components/ViewModeButtons";
 import TopNavbar from "../../components/TopNavbar";
+import CartSummary from "../../components/Cart";
+
 
 type ViewMode = "single" | "double" | "grid";
 
@@ -41,7 +43,7 @@ function ViewCatalogue() {
       prevCart.filter((item) => item.product.id !== product.id)
     );
   };
-  console.log("My cart", cart);
+
 
   // handle search for a product
     // search for inventory by ID, Name, Category or Customer
@@ -85,6 +87,21 @@ function ViewCatalogue() {
         onAddToCart={handleAddToCart}
         onRemoveFromCart={handleRemoveFromCart}
       />
+
+<CartSummary
+  cart={cart}
+  onUpdateQuantity={(product, quantity) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.product.id === product.id
+          ? { ...item, quantity: item.quantity + quantity }
+          : item
+      )
+    );
+  }}
+  onRemoveFromCart={handleRemoveFromCart}
+/>
+
     </div>
   );
 }

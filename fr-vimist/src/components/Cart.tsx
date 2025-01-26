@@ -1,0 +1,164 @@
+import React from "react";
+import { Product } from "../utils/api/inventoryAPI";
+import logo from "../assets/images/logo.jpg";
+import { useAddNewSale } from "../features/sales/salesHook";
+
+type CartItem = {
+  product: Product;
+  quantity: number;
+};
+
+type CartSummaryProps = {
+  cart: CartItem[];
+  onUpdateQuantity: (product: Product, quantity: number) => void;
+  onRemoveFromCart: (product: Product) => void;
+};
+
+
+
+const CartSummary: React.FC<CartSummaryProps> = ({
+  cart,
+  onUpdateQuantity,
+  onRemoveFromCart,
+}) => {
+// fetch add sale function
+  const {addSale} = useAddNewSale();
+
+  const [logPayment, setLogPayment] = React.useState<string>('Cash');
+  const handleIncrement = (product: Product) => {
+    onUpdateQuantity(product, 1);
+  };
+
+  const handleDecrement = (product: Product) => {
+    onUpdateQuantity(product, -1);
+  };
+
+  const calculateSubtotal = () => {
+    return cart
+      .reduce((acc, item) => acc + item.product.unit_price * item.quantity, 0)
+      .toFixed(2);
+  };
+
+  const calculateTax = (subtotal: number) => {
+    const taxRate = 0.16; // 16% VAT
+    return (subtotal * taxRate).toFixed(2);
+  };
+
+  const calculateTotal = () => {
+    const subtotal = parseFloat(calculateSubtotal());
+    const tax = parseFloat(calculateTax(subtotal));
+    return (subtotal + tax).toFixed(2);
+  };
+
+
+  const handleRecordSale = (paymentType: string) => {
+    cart.map((item, index)=>({
+        id: index,
+        product: item.product.id,
+        quantity_sold: item.quantity,
+        sale_price: item.product.unit_price,
+        sale_date: new Date().toISOString().split("T")[0],
+        customer: null,
+        payment_type: paymentType
+      }))
+      .forEach((sale) => addSale(sale));
+  };
+
+  return (
+    <div className="vn-min-h-screen vn-bg-gray-100 vn-p-4">
+      <h2 className="vn-text-2xl vn-font-bold vn-mb-4">Cart Summary</h2>
+
+      {cart.length > 0 && (
+        <div>
+          <ul>
+            {cart.map((item) => (
+              <li
+                key={item.product.id}
+                className="vn-flex vn-items-center vn-justify-between vn-py-2"
+              >
+                <div className="vn-flex vn-items-center">
+                  <img
+                    src={logo} // Assume the product has an image field
+                    alt={item.product.name}
+                    className="vn-w-16 vn-h-16 vn-object-cover vn-mr-4"
+                  />
+                  <div>
+                    <div>{item.product.name}</div>
+                    <div className="vn-text-sm vn-text-gray-500">
+                      {item.product.category}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="vn-flex vn-items-center">
+                  <button
+                    className="vn-px-2 vn-py-1 vn-bg-gray-300 vn-rounded vn-mr-2"
+                    onClick={() => handleDecrement(item.product)}
+                    disabled={item.quantity <= 1}
+                  >
+                    -
+                  </button>
+                  <span>{item.quantity}</span>
+                  <button
+                    className="vn-px-2 vn-py-1 vn-bg-gray-300 vn-rounded vn-ml-2"
+                    onClick={() => handleIncrement(item.product)}
+                  >
+                    +
+                  </button>
+                  <button
+                    className="vn-ml-4 vn-text-red-500"
+                    onClick={() => onRemoveFromCart(item.product)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <div className="vn-mt-4">
+            {/* Pricing Summary */}
+        <div className="vn-border-t vn-border-gray-200 vn-pt-3">
+          <div className="vn-flex vn-justify-between">
+            <span>Subtotal:</span>
+            <span>{calculateSubtotal()}</span>
+          </div>
+          <div className="vn-flex vn-justify-between">
+            <span>Tax:</span>
+            <span>{calculateTax(parseFloat(calculateSubtotal()))}</span>
+          </div>
+          <div className="vn-flex vn-justify-between vn-font-bold">
+            <span>Total:</span>
+            <span>{calculateTotal()}</span>
+          </div>
+        </div>
+
+        {/* Payment Buttons */}
+        <div className="vn-flex vn-gap-3 vn-mt-4">
+          <button className="vn-w-1/2 vn-bg-green-500 vn-text-white vn-rounded vn-py-2 hover:vn-bg-green-600"
+          onClick={()=>setLogPayment('Mpesa')}>
+            Mpesa
+          </button>
+          <button className="vn-w-1/2 vn-bg-blue-500 vn-text-white vn-rounded vn-py-2 hover:vn-bg-blue-600"
+          onClick={()=>setLogPayment('Cash')}>
+            Cash
+          </button>
+          <button className="vn-w-1/2 vn-bg-yellow-500 vn-text-white vn-rounded vn-py-2 hover:vn-bg-yellow-600"
+          onClick={()=>setLogPayment('Credit')}>
+            Credit
+          </button>
+        </div>
+            <button
+              className="vn-px-6 vn-py-2 vn-bg-blue-500 vn-text-white vn-rounded"
+              onClick={() => handleRecordSale(logPayment)}
+            >
+              Checkout
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CartSummary;
