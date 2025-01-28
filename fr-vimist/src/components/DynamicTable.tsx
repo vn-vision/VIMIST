@@ -1,4 +1,4 @@
-import { myToken } from "./AuthComponent";
+
 
 interface DataTableProps {
   headers: string[];
@@ -6,11 +6,12 @@ interface DataTableProps {
   onDelete: (id: number) => void;
   onEdit: (id: number) => void;
 }
-
+// ACCESS TOKEN
+const role = sessionStorage.getItem("role");
 function DynamicTable({ headers, data, onDelete, onEdit }: DataTableProps) {
   // callback function to delete an Item
   const handleDelete = (id: number) => {
-    if (myToken.role === "Admin") {
+    if (role === "Admin") {
       // Pass the ID to the parent handler
       alert(`Are you sure you want to delete this item? ${id}`);
       onDelete(id);

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { myToken } from "../../components/AuthComponent";
 
 // Define the CreditSale interface
 export interface CreditSale {
@@ -12,6 +11,7 @@ export interface CreditSale {
 }
 
 const baseUrl = "http://localhost:8000/api/credit_sales/credit_sales/";
+const myToken = sessionStorage.getItem("accessToken");
 
 // fetch all credit sales
 export const getCreditSales = async () => {
@@ -40,7 +40,7 @@ export const postCreditSale = async (creditSale: CreditSale) => {
   try {
     const response = await axios.post(`${baseUrl}`, creditSale, {
       headers: {
-        Authorization: `Bearer ${myToken.access}`,
+        Authorization: `Bearer ${myToken}`,
         "Content-Type": "application/json",
       },
     });
@@ -59,7 +59,7 @@ export const updateCreditSale = async (creditSale: CreditSale) => {
       creditSale,
       {
         headers: {
-          Authorization: `Bearer ${myToken.access}`,
+          Authorization: `Bearer ${myToken}`,
           "Content-Type": "application/json",
         },
       }
@@ -76,7 +76,7 @@ export const deleteCreditSale = async (id: number) => {
   try {
     const response = await axios.delete(`${baseUrl}${id}/`, {
       headers: {
-        Authorization: `Bearer ${myToken.access}`,
+        Authorization: `Bearer ${myToken}`,
         "Content-Type": "application/json",
       },
     });

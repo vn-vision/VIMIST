@@ -8,13 +8,14 @@ export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector((state: RootState) => state.auth.status);
   const error = useSelector((state: RootState) => state.auth.error);
+  const accessToken = useSelector((state: RootState) => state.auth.user.access);
 
   const authUser = (user:User) => {
       const response = dispatch(loginUser(user));
       return response.unwrap();
   };
 
-    return { authUser, status, error };
+    return { authUser, status, error, accessToken };
 };
 
 // hook to logout user

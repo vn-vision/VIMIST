@@ -11,7 +11,7 @@ import logo from "../assets/images/logo.jpg";
 import { Link } from "react-router-dom";
 import { useAuth, useLogout } from "../features/authentication/authHook";
 import { useNavigate } from "react-router-dom";
-import { myToken } from "./AuthComponent";
+
 interface SideNavbarProps {
   collapsed: boolean;
   toggleNavbar: () => void;
@@ -24,6 +24,7 @@ const SideNavbar = ({ collapsed, toggleNavbar }: SideNavbarProps) => {
 
 
   const navigate = useNavigate();
+  const myToken = sessionStorage.getItem('accessToken');
 
   return (
     <div
@@ -87,17 +88,16 @@ const SideNavbar = ({ collapsed, toggleNavbar }: SideNavbarProps) => {
       <button
         className="vn-flex vn-gap-3 vn-mx-auto"
         onClick={() => {
-          if (loginStatus === "succeed" && logoutStatus === "succeed") {
+          if (myToken) {
             logout();
-            navigate(0);
-          } else if(loginStatus === "idle") {
+          } else {
             navigate("/login");
           }
         }
         }
       >
-        {myToken?.access ? <BiLogOut /> : <BiLogIn />}
-        {myToken?.access ? "Logout" : "Login"}
+        {myToken ?  <BiLogOut /> : <BiLogIn />}
+        {myToken ? "Logout" : "Login"}
 
       </button>
     </div>

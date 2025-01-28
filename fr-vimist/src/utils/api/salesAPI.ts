@@ -1,5 +1,4 @@
 import axios from "axios";
-import { myToken } from "../../components/AuthComponent";
 
 const baseUrl = "http://localhost:8000/api/sales/sales";
 
@@ -13,6 +12,7 @@ export interface Sale {
   payment_type: string;
 }
 
+const myToken = sessionStorage.getItem("accessToken");
 
 export const getSales = async () => {
   try {
@@ -39,7 +39,7 @@ export const postSale = async (sale: Sale) => {
   try {
     const response = await axios.post(`${baseUrl}/`, sale, {
       headers: {
-        Authorization: `Bearer ${myToken.access}`,
+        Authorization: `Bearer ${myToken}`,
         "Content-Type": "application/json",
       },
     });
@@ -54,7 +54,7 @@ export const updateSale = async (sale: Sale) => {
   try {
     const response = await axios.put(`${baseUrl}/${sale.id}/`, sale, {
       headers: {
-        Authorization: `Bearer ${myToken.access}`,
+        Authorization: `Bearer ${myToken}`,
         "Content-Type": "application/json",
       },
     });
@@ -69,7 +69,7 @@ export const deleteSale = async (id: number) => {
   try {
     const response = await axios.delete(`${baseUrl}/${id}/`, {
       headers: {
-        Authorization: `Bearer ${myToken.access}`,
+        Authorization: `Bearer ${myToken}`,
         "Content-Type": "application/json",
       },
     });

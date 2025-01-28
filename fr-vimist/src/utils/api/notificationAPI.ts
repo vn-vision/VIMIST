@@ -1,5 +1,4 @@
 import axios from "axios";
-import { myToken } from "../../components/AuthComponent";
 
 //  define interface for notification
 export interface Notification {
@@ -10,7 +9,7 @@ export interface Notification {
 }
 
 const baseUrl = "http://localhost:8000/api/notifications/notifications";
-
+const myToken = sessionStorage.getItem("accessToken");
 
 // get all notifications
 export const getNotifications = async () => {
@@ -38,7 +37,7 @@ export const postNotification = async (notification: Notification) => {
   try {
     const response = await axios.post(`${baseUrl}/`, notification, {
       headers: {
-        Authorization: `Bearer ${myToken.access}`,
+        Authorization: `Bearer ${myToken}`,
         "Content-Type": "application/json",
       },
     });
@@ -56,7 +55,7 @@ export const updateNotification = async (notification: Notification) => {
       notification,
       {
         headers: {
-          Authorization: `Bearer ${myToken.access}`,
+          Authorization: `Bearer ${myToken}`,
           "Content-Type": "application/json",
         },
       }
@@ -72,7 +71,7 @@ export const deleteNotification = async (id: number) => {
   try {
     const response = await axios.delete(`${baseUrl}/${id}/`, {
       headers: {
-        Authorization: `Bearer ${myToken.access}`,
+        Authorization: `Bearer ${myToken}`,
         "Content-Type": "application/json",
       },
     });

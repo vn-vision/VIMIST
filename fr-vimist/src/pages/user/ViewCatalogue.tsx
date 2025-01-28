@@ -6,7 +6,6 @@ import ViewModeButtons from "../../components/ViewModeButtons";
 import TopNavbar from "../../components/TopNavbar";
 import CartSummary from "../../components/Cart";
 
-
 type ViewMode = "single" | "double" | "grid";
 
 function ViewCatalogue() {
@@ -44,22 +43,21 @@ function ViewCatalogue() {
     );
   };
 
-
   // handle search for a product
-    // search for inventory by ID, Name, Category or Customer
-    const handleSearch = (query: string | number) => {
-        setSearchQuery(query);
-        if (AllProducts.data) {
-          const results = AllProducts.data?.filter(
-            (inventory: any) =>
-              inventory.id?.toString().includes(query.toString()) ||
-              inventory.category?.toString().includes(query.toString()) ||
-              inventory.name?.toLowerCase().includes(query.toString().toLowerCase())
-          );
-          setFilteredData(results);
-        }
-      };
-    
+  // search for inventory by ID, Name, Category or Customer
+  const handleSearch = (query: string | number) => {
+    setSearchQuery(query);
+    if (AllProducts.data) {
+      const results = AllProducts.data?.filter(
+        (inventory: any) =>
+          inventory.id?.toString().includes(query.toString()) ||
+          inventory.category?.toString().includes(query.toString()) ||
+          inventory.name?.toLowerCase().includes(query.toString().toLowerCase())
+      );
+      setFilteredData(results);
+    }
+  };
+
   // Handle loading and error states
   if (AllProducts.status === "loading") {
     return <div>Loading...</div>;
@@ -70,39 +68,43 @@ function ViewCatalogue() {
   }
 
   return (
-    <div className="vn-min-h-screen vn-bg-gray-100 vn-p-4">
+    <div className="vn-min-h-screen vn-bg-white vn-p-4">
       {/* Header Section */}
-      <div className="vn-flex vn-flex-col vn-justify-between vn-gap-4 vn-mb-4">
+      <div className="vn-flex vn-flex-col vn-gap-4 vn-mb-4">
         <h1 className="vn-text-2xl vn-font-bold">Catalogue</h1>
         {/* Top Navbar */}
         <TopNavbar onSearch={handleSearch} />
         <ViewModeButtons viewMode={viewMode} onViewChange={setViewMode} />
       </div>
-
-
-      {/* Product Grid Section */}
-      <ProductGrid
-        products={searchQuery ? filteredData : AllProducts.data}
-        viewMode={viewMode}
-        onAddToCart={handleAddToCart}
-        onRemoveFromCart={handleRemoveFromCart}
-      />
-
-<CartSummary
-  cart={cart}
-  onUpdateQuantity={(product, quantity) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.product.id === product.id
-          ? { ...item, quantity: item.quantity + quantity }
-          : item
-      )
-    );
-  }}
-  onRemoveFromCart={handleRemoveFromCart}
-/>
-
-    </div>
+      <div className="vn-flex vn-gap-4  vn-bg-slate-200">
+        <div className="vn-flex-1 vn-bg-white vn-my-2">
+          {/* Product Grid Section */}
+          <ProductGrid
+            products={searchQuery ? filteredData : AllProducts.data}
+            viewMode={viewMode}
+            onAddToCart={handleAddToCart}
+            onRemoveFromCart={handleRemoveFromCart}
+          />
+          </div>
+          {cart.length > 0 && (
+            <div className="lg:vn-w-1/3 vn-my-2 vn-bg-white">
+              <CartSummary
+                cart={cart}
+                onUpdateQuantity={(product, quantity) => {
+                  setCart((prevCart) =>
+                    prevCart.map((item) =>
+                      item.product.id === product.id
+                        ? { ...item, quantity: item.quantity + quantity }
+                        : item
+                    )
+                  );
+                }}
+                onRemoveFromCart={handleRemoveFromCart}
+              />
+            </div>
+          )}
+        </div>
+      </div>
   );
 }
 

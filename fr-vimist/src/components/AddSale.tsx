@@ -41,7 +41,7 @@ function AddSaleComponent() {
   return (
     <div className="vn-flex vn-gap-5 vn-min-w-full vn-p-5 vn-bg-gray-100">
       {/* Scrollable Product Cards Section */}
-      <div className="vn-grid sm:vn-grid-cols-1 md:vn-grid-cols-2 lg:vn-grid-cols-3 vn-gap-4 vn-w-[60%] vn-h-[70vh] vn-overflow-y-auto vn-p-2 vn-bg-white vn-rounded vn-shadow-md">
+      <div className="vn-grid sm:vn-grid-cols-1 md:vn-grid-cols-2 lg:vn-grid-cols-3 vn-gap-4 vn-min-w-[60%] vn-h-[70vh] vn-overflow-y-auto vn-p-2 vn-bg-white vn-rounded vn-shadow-md">
         {AllProducts.data.map((product) => (
           <GenericCard
             key={product.id}
@@ -61,6 +61,7 @@ function AddSaleComponent() {
       </div>
 
       {/* Fixed Sales Summary Section */}
+      {addCart.length > 0 &&
       <CartSummary
         cart={addCart}
         onUpdateQuantity={(product, quantity) => {
@@ -74,6 +75,7 @@ function AddSaleComponent() {
         }}
         onRemoveFromCart={handleRemoveFromCart}
       />
+}
     </div>
   );
 }

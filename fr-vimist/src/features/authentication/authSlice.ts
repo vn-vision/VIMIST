@@ -1,10 +1,15 @@
-import { createSlice, createAsyncThunk, } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   User,
   adminRegister,
   userRegister,
   userLogin,
 } from "../../utils/api/authenticationAPI";
+import { jwtDecode, JwtPayload } from "jwt-decode";
+
+interface CustomPayload extends JwtPayload {
+  role: string;
+}
 
 // create different Thunks to consume the Data from endpoints
 export const registerAdmin = createAsyncThunk<
@@ -35,31 +40,34 @@ export const registerUser = createAsyncThunk<
   }
 });
 
-export const loginUser = createAsyncThunk<{access: string, refresh: string}, User, { rejectValue: string }>(
-  "login/user",
-  async (user, { rejectWithValue }) => {
-    try {
-      const response = await userLogin(user);
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(error.message) || "Error trying to login";
-    }
+export const loginUser = createAsyncThunk<
+  { access: string; refresh: string },
+  User,
+  { rejectValue: string }
+>("login/user", async (user, { rejectWithValue }) => {
+  try {
+    const response = await userLogin(user);
+    return response;
+  } catch (error: any) {
+    return rejectWithValue(error.message) || "Error trying to login";
   }
-);
+});
 
-export const logoutUser = createAsyncThunk(
-  "logout/user",
-  async () => {
-    return null;
-  }
-);// create a slice to handle authentication/
+export const logoutUser = createAsyncThunk("logout/user", async () => {
+  sessionStorage.removeItem("accessToken");
+  sessionStorage.removeItem("tokenExpiry");
+  sessionStorage.removeItem("role");
+  return null;
+});
+
+// create a slice to handle authentication/
 
 // create type for the slice
 interface authState {
-  user:User;
+  user: User;
   status: "idle" | "loading" | "succeed" | "failed";
-  error:string | null;
-};
+  error: string | null;
+}
 
 const initialState: authState = {
   user: {
@@ -67,7 +75,7 @@ const initialState: authState = {
     contact: "",
     email: "",
     password: "",
-    access: "",
+    access: sessionStorage.getItem("accessToken") || "", // restore token from sessionStorage
     refresh: "",
   },
   status: "idle",
@@ -75,73 +83,92 @@ const initialState: authState = {
 };
 
 const authSlice = createSlice({
-  name:"authentication",
+  name: "authentication",
   initialState,
-  reducers:{},
-  extraReducers:(builder) =>{
+  reducers: {},
+  extraReducers: (builder) => {
     builder
 
-    // register admin user
-    .addCase(registerAdmin.pending, (state)=>{
-      state.status = "loading";
-    })
-    .addCase(registerAdmin.fulfilled, (state, action) =>{
-      state.status = "succeed";
-      state.user = action.payload;
-    })
-    .addCase(registerAdmin.rejected, (state, action) =>{
-      state.status = "failed";
-      state.error = action.error.message || "Failed to register admin";
-    })
+      // register admin user
+      .addCase(registerAdmin.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(registerAdmin.fulfilled, (state, action) => {
+        state.status = "succeed";
+        state.user = action.payload;
+      })
+      .addCase(registerAdmin.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Failed to register admin";
+      })
 
-    // register user
-    .addCase(registerUser.pending, (state) =>{
-      state.status = "loading";
-    })
-    .addCase(registerUser.fulfilled, (state, action) =>{
-      state.status = "succeed";
-      state.user = action.payload;
-    })
-    .addCase(registerUser.rejected, (state, action) =>{
-      state.status = "failed";
-      state.error = action.error.message || "Failed to register user";
-    })
+      // register user
+      .addCase(registerUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.status = "succeed";
+        state.user = action.payload;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Failed to register user";
+      })
 
-    // login user
-    .addCase(loginUser.pending, (state) =>{
-      state.status = "loading";
-    })
-    .addCase(loginUser.fulfilled, (state, action) =>{
-      state.status = "succeed";
-      state.user.access = action.payload.access;
-      state.user.refresh = action.payload.refresh;
+      // login user
+      .addCase(loginUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.status = "succeed";
+        state.user.access = action.payload.access;
+        state.user.refresh = action.payload.refresh;
+        sessionStorage.setItem("accessToken", action.payload.access);
 
-    })
-    .addCase(loginUser.rejected, (state, action) =>{
-      state.status = "failed";
-      state.error = action.error.message || "Failed to login user";
-    })
+        const expiryTime = Date.now() + 1800 * 1000; // 30 min in milliseconds
+        sessionStorage.setItem("tokenExpiry", expiryTime.toString());
 
-    // logout user
-    .addCase(logoutUser.pending, (state) =>{
-      state.status = "loading";
-    })
-    .addCase(logoutUser.fulfilled, (state) =>{
-      state.status = "succeed";
-      state.user = {
-        username: "",
-        contact: "",
-        email: "",
-        password: "",
-        access: "",
-        refresh: "",
-      };
-    })
-    .addCase(logoutUser.rejected, (state, action) =>{
-      state.status = "failed";
-      state.error = action.error.message || "Failed to logout user";
-    })
-  }
-})
+        // check token expiry on app load
+        const tokenExpiry = sessionStorage.getItem("tokenExpiry");
+        if (tokenExpiry && Date.now() > parseInt(tokenExpiry)) {
+          sessionStorage.removeItem("accessToken");
+          sessionStorage.removeItem("tokenExpiry");
+          sessionStorage.removeItem("role");
+          state.user.access = "";
+        }
+
+        // get role
+        const decode = jwtDecode<CustomPayload>(action.payload.access);
+        sessionStorage.setItem("role", decode.role);
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Failed to login user";
+      })
+
+      // logout user
+      .addCase(logoutUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.status = "succeed";
+        state.user = {
+          username: "",
+          contact: "",
+          email: "",
+          password: "",
+          access: "",
+          refresh: "",
+        };
+        sessionStorage.removeItem("accessToken");
+        sessionStorage.removeItem("tokenExpiry");
+        sessionStorage.removeItem("role");
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Failed to logout user";
+      });
+  },
+});
 
 export default authSlice.reducer;

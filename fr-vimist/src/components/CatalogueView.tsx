@@ -25,7 +25,7 @@ function ProductGrid({ products, viewMode, onAddToCart, onRemoveFromCart }: Prod
   }, [viewMode]);
 
   return (
-    <div className={`vn-grid vn-gap-4 vn-overflow-hidden vn-overflow-y-auto vn-h-[100vh] ${gridClasses} vn-justify-items-center`}>
+    <div className={`vn-grid vn-gap-4 vn-overflow-hidden vn-overflow-y-auto vn-h-[calc(100vh-4rem)] ${gridClasses} vn-justify-items-center vn-p-4`}>
       {products.map((product) => (
         <GenericCard
           key={product.id}

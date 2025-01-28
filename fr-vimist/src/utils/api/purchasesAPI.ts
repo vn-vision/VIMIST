@@ -1,6 +1,5 @@
 // purchasesAPI.ts
 import axios from "axios";
-import { myToken } from "../../components/AuthComponent";
 
 export interface Purchase {
   id: number;
@@ -13,6 +12,7 @@ export interface Purchase {
 }
 
 const baseUrl = "http://localhost:8000/api/purchases/purchases";
+const myToken = sessionStorage.getItem("accessToken");
 
 // get all purchases
 export const getPurchases = async () => {
@@ -40,7 +40,7 @@ export const postPurchase = async (purchase: Purchase) => {
   try {
     const response = await axios.post(`${baseUrl}/`, purchase, {
       headers: {
-        Authorization: `Bearer ${myToken.access}`,
+        Authorization: `Bearer ${myToken}`,
         "Content-Type": "application/json",
       },
     });
@@ -56,7 +56,7 @@ export const updatePurchase = async (purchase: Purchase) => {
   try {
     const response = await axios.put(`${baseUrl}/${purchase.id}/`, purchase, {
       headers: {
-        Authorization: `Bearer ${myToken.access}`,
+        Authorization: `Bearer ${myToken}`,
         "Content-Type": "application/json",
       },
     });
@@ -72,7 +72,7 @@ export const deletePurchase = async (id: number) => {
   try {
     const response = await axios.delete(`${baseUrl}/${id}/`, {
       headers: {
-        Authorization: `Bearer ${myToken.access}`,
+        Authorization: `Bearer ${myToken}`,
         "Content-Type": "application/json",
       },
     });
