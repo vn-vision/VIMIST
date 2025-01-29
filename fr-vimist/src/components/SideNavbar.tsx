@@ -9,7 +9,7 @@ import { BiSolidPurchaseTag, BiLogOut, BiLogIn } from "react-icons/bi";
 import { TbReportSearch } from "react-icons/tb";
 import logo from "../assets/images/logo.jpg";
 import { Link } from "react-router-dom";
-import { useAuth, useLogout } from "../features/authentication/authHook";
+import { useLogout } from "../features/authentication/authHook";
 import { useNavigate } from "react-router-dom";
 
 interface SideNavbarProps {
@@ -18,13 +18,10 @@ interface SideNavbarProps {
 }
 
 const SideNavbar = ({ collapsed, toggleNavbar }: SideNavbarProps) => {
-  // check login status
-  const { status: loginStatus } = useAuth();
-  const { logout, status: logoutStatus } = useLogout();
-
-
   const navigate = useNavigate();
+  // check login status
   const myToken = sessionStorage.getItem('accessToken');
+  const { logout} = useLogout();
 
   return (
     <div
@@ -85,6 +82,12 @@ const SideNavbar = ({ collapsed, toggleNavbar }: SideNavbarProps) => {
           </li>
         </ul>
       </div>
+      <div className="vn-flex vn-flex-col vn-gap-5">
+      <button className="vn-flex vn-gap-3 vn-mx-auto"
+      onClick={()=>navigate("/register")}>
+        <p>{'3'}</p>
+        Sign Up
+      </button>
       <button
         className="vn-flex vn-gap-3 vn-mx-auto"
         onClick={() => {
@@ -100,6 +103,7 @@ const SideNavbar = ({ collapsed, toggleNavbar }: SideNavbarProps) => {
         {myToken ? "Logout" : "Login"}
 
       </button>
+      </div>
     </div>
   );
 };

@@ -14,7 +14,7 @@ from django.db.models import F
 
 # Create your views here.
 class PaymentViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
-    queryset = Payment.objects.all()
+    queryset = Payment.objects.all().order_by('id')
     serializer_class = PaymentSerializer
 
     # Pagination

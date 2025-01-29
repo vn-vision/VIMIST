@@ -1,18 +1,18 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from customers.models import Customer
 from customers.serializer import CustomerSerializer
 from customers.pagination import CustomersPagination
 from customers.filters import CustomerFilter
 from django_filters.rest_framework import DjangoFilterBackend
 # custom permissions to apply to the viewset
-from users.mixins import RoleBasedAccessMixin
+# from users.mixins import RoleBasedAccessMixin
 from rest_framework.response import Response
 from credit_sales.models import Credit_Sale
 from sales.models import Sale
 from django.db.models import Count, Sum
 
 # Create your views here.
-class CustomerViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
+class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all().order_by('id')
     serializer_class = CustomerSerializer
 
@@ -23,6 +23,7 @@ class CustomerViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = CustomerFilter
 
+    permission_classes = [permissions.AllowAny,]
 
     # method to get the customers in debt
     def customers_in_debt(self, request):

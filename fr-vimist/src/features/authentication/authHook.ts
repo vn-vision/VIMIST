@@ -38,7 +38,8 @@ export const useAddNewUser = () => {
   const error = useSelector((state: RootState) => state.auth.error);
 
   const addNewUser = (user: User) => {
-    dispatch(registerUser(user));
+    const response = dispatch(registerUser(user));
+    return response.unwrap();
   };
 
   return { addNewUser, status, error };
@@ -51,7 +52,8 @@ export const useAddNewAdmin = () => {
   const error = useSelector((state: RootState) => state.auth.error);
 
   const addNewAdmin = (user: User) => {
-    dispatch(registerAdmin(user));
+    const response = dispatch(registerAdmin(user));
+    return response.unwrap();
   };
 
   return { addNewAdmin, status, error };

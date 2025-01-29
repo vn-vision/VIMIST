@@ -7,6 +7,9 @@ import {
 } from "../features/authentication/authHook";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.jpg";
+import { useAddNewCustomer } from "../features/customers/customerHook";
+import { Customer } from "../utils/api/customerAPI";
+
 
 type AuthComponentProps = {
   mode: "login" | "register";
@@ -29,7 +32,11 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
 
   const [entryError, setError] = useState<ThisMessage>();
   const [entrySuccess, setSuccess] = useState<ThisMessage>();
-
+  const [customa, setCustoma] = useState<Customer>({
+    id:0,
+    name: "",
+    contact_info: "",
+  });
 
 
   // use the custom hooks to handle the user registration and login
@@ -44,6 +51,9 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
     status: addUserStatus,
     error: addUserError,
   } = useAddNewUser();
+
+  // custom hook to record customer
+  const {addCustomer} = useAddNewCustomer();
 
   //  handle user registration and login
   const handleSubmit = async (e: React.FormEvent) => {
@@ -87,7 +97,14 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
     } else {
       if (regAs === "admin") {
         try {
-          await addNewAdmin(user);
+          const result = await addNewAdmin(user);
+          if (result){
+            await addCustomer(customa);
+            setTimeout(() => {
+              navigate("/");
+            }, 2000);
+          }
+
           if (addAdminStatus === "succeed") {
             setSuccess({
               message: "Admin Registered Successfully",
@@ -106,7 +123,13 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
         }
       } else if (regAs === "user") {
         try {
-          await addNewUser(user);
+          const result = await addNewUser(user);
+          if (result){
+            await addCustomer(customa);
+            setTimeout(() => {
+              navigate("/");
+            }, 2000);
+          }
 
           if (addUserStatus === "succeed") {
             setSuccess({
@@ -114,6 +137,9 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
               class:
                 "vn-border-2 vn-border-green-500 vn-shadow-md",
             });
+            setTimeout(() => {
+              navigate("/");
+            }, 2000);
           } else if (addUserStatus === "failed") {
             setError({
               message: `User registration Failed ${addUserError?.toString()}`,
@@ -159,7 +185,10 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
             type="text"
             placeholder="Username"
             value={user.username}
-            onChange={(e) => setUser({ ...user, username: e.target.value })}
+            onChange={(e) => {
+              setUser({ ...user, username: e.target.value })
+              setCustoma({...customa, name: e.target.value})
+            }}
             autoComplete="on"
           />
 
@@ -170,7 +199,10 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
                   type="email"
                   placeholder="Email"
                   value={user.email || ""}
-                  onChange={(e) => setUser({ ...user, email: e.target.value })}
+                  onChange={(e) => {
+                    setUser({ ...user, email: e.target.value })
+                    setCustoma({...customa, contact_info: e.target.value})
+                  }}
                   autoComplete="on"
                 />
               )}
@@ -179,9 +211,10 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
                   type="text"
                   placeholder="Contact"
                   value={user.contact || ""}
-                  onChange={(e) =>
+                  onChange={(e) =>{
                     setUser({ ...user, contact: e.target.value })
-                  }
+                    setCustoma({...customa, contact_info: e.target.value})
+                  }}
                   autoComplete="on"
                 />
               )}

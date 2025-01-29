@@ -14,7 +14,7 @@ export const fetchCustomers = createAsyncThunk<Customer[], void>(
     async () => {
       try {
         const response = await getCustomers();
-        return response;
+        return response.Customer;
       } catch (error: any) {
         return error.message || "Failed to fetch customers";
       }

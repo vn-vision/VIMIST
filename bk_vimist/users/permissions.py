@@ -59,13 +59,16 @@ def setup_groups_and_permissions():
         manager_group.permissions.add(*manager_permissions)
 
     # assign cashier permissions (view) across all models
-    for model in [Product, Sale, Customer, Payment, Credit_Sale, Purchases, Notification]:
+    for model in [Product, Sale, Payment, Credit_Sale, Purchases, Notification]:
         content_type = ContentType.objects.get_for_model(model)
         cashier_permissions = Permission.objects.filter(content_type=content_type, codename__contains='view')
         cashier_group.permissions.add(*cashier_permissions)
     
     # assign customer permissions (public view) across all models
-    for model in [Product, Sale, Customer, Payment, Credit_Sale, Purchases, Notification]:
+    for model in [Product, Sale, Payment, Credit_Sale, Purchases, Notification]:
         content_type = ContentType.objects.get_for_model(model)
         customer_permissions = Permission.objects.filter(content_type=content_type, codename__contains='view')
+        # give customer permission to make a purchase on an item(sales) as well as modify customer list
+        if model == Sale:
+            customer_permissions |= Permission.objects.filter(content_type=content_type, codename__contains='add')
         customer_group.permissions.add(*customer_permissions)

@@ -46,6 +46,7 @@ class LoginView(APIView):
             # Generate JWT token for the user
             refresh = RefreshToken.for_user(user)
             refresh['role'] = user.role
+            refresh['contact'] = user.contact if user.contact else user.email
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)

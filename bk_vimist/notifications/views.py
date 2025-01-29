@@ -9,7 +9,7 @@ from users.mixins import RoleBasedAccessMixin
 
 # Create your views here.
 class NotificationViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
-    queryset = Notification.objects.all()
+    queryset = Notification.objects.all().order_by('id')
     serializer_class = NotificationSerializer
 
     # Pagination

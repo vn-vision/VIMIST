@@ -4,11 +4,10 @@ import axios from "axios";
 export interface Customer {
   id: number;
   name: string;
-  contact: string;
+  contact_info: string;
 }
 
-const baseUrl = "http://localhost:8000/api/customers/customers/";
-const myToken = sessionStorage.getItem("accessToken");
+const baseUrl = "http://localhost:8000/api/customers/customers";
 
 // get all customers
 export const getCustomers = async () => {
@@ -34,12 +33,7 @@ export const getCustomerById = async (id: number) => {
 
 export const postCustomer = async (customer: Customer) => {
   try {
-    const response = await axios.post(`${baseUrl}/`, customer, {
-      headers: {
-        Authorization: `Bearer ${myToken}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.post(`${baseUrl}/`, customer);
     return response.data;
   } catch (error) {
     console.error("Error while adding the customer", error);
@@ -49,12 +43,7 @@ export const postCustomer = async (customer: Customer) => {
 
 export const updateCustomer = async (customer: Customer) => {
   try {
-    const response = await axios.put(`${baseUrl}/${customer.id}/`, customer, {
-      headers: {
-        Authorization: `Bearer ${myToken}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.put(`${baseUrl}/${customer.id}/`);
     return response.data;
   } catch (error) {
     console.error("Error while updating the customer", error);
@@ -64,12 +53,7 @@ export const updateCustomer = async (customer: Customer) => {
 
 export const deleteCustomer = async (id: number) => {
   try {
-    const response = await axios.delete(`${baseUrl}/${id}/`, {
-      headers: {
-        Authorization: `Bearer ${myToken}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.delete(`${baseUrl}/${id}/`);
     return response.data;
   } catch (error) {
     console.error("Error while deleting the customer", error);

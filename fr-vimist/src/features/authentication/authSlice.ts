@@ -9,6 +9,7 @@ import { jwtDecode, JwtPayload } from "jwt-decode";
 
 interface CustomPayload extends JwtPayload {
   role: string;
+  contact: string;
 }
 
 // create different Thunks to consume the Data from endpoints
@@ -54,9 +55,6 @@ export const loginUser = createAsyncThunk<
 });
 
 export const logoutUser = createAsyncThunk("logout/user", async () => {
-  sessionStorage.removeItem("accessToken");
-  sessionStorage.removeItem("tokenExpiry");
-  sessionStorage.removeItem("role");
   return null;
 });
 
@@ -134,12 +132,14 @@ const authSlice = createSlice({
           sessionStorage.removeItem("accessToken");
           sessionStorage.removeItem("tokenExpiry");
           sessionStorage.removeItem("role");
+          sessionStorage.removeItem('contact');
           state.user.access = "";
         }
 
-        // get role
+        // get role and contact
         const decode = jwtDecode<CustomPayload>(action.payload.access);
         sessionStorage.setItem("role", decode.role);
+        sessionStorage.setItem("contact", decode.contact);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
@@ -163,6 +163,7 @@ const authSlice = createSlice({
         sessionStorage.removeItem("accessToken");
         sessionStorage.removeItem("tokenExpiry");
         sessionStorage.removeItem("role");
+        sessionStorage.removeItem("contact");
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.status = "failed";

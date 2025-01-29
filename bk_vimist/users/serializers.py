@@ -53,6 +53,6 @@ class UserLogSerializer(serializers.Serializer):
         password = data.get('password')
 
         if not username or not password:
-            msg = 'Must provide username and password both.'
+            msg = 'Must provide username and password'
             raise serializers.ValidationError(msg)
         return data
