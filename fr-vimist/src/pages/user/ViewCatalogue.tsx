@@ -10,9 +10,8 @@ type ViewMode = "single" | "double" | "grid";
 
 function ViewCatalogue() {
   const [viewMode, setViewMode] = useState<ViewMode>("single");
-  const [cart, setCart] = useState<{ product: Product; quantity: number }[]>(
-    []
-  );
+  const [showCartSummary, setShowCartSummary] = useState(false);
+  const [cart, setCart] = useState<{ product: Product; quantity: number }[]>([]);
   const [searchQuery, setSearchQuery] = useState<string | number>("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
 
@@ -43,8 +42,7 @@ function ViewCatalogue() {
     );
   };
 
-  // handle search for a product
-  // search for inventory by ID, Name, Category or Customer
+  // Handle search for a product
   const handleSearch = (query: string | number) => {
     setSearchQuery(query);
     if (AllProducts.data) {
@@ -76,35 +74,61 @@ function ViewCatalogue() {
         <TopNavbar onSearch={handleSearch} />
         <ViewModeButtons viewMode={viewMode} onViewChange={setViewMode} />
       </div>
-      <div className="vn-flex vn-gap-4  vn-bg-slate-200">
-        <div className="vn-flex-1 vn-bg-white vn-my-2">
-          {/* Product Grid Section */}
+
+      {/* Toggle Button for Small Screens */}
+      {cart.length > 0 && (
+        <div className="lg:vn-hidden vn-w-full vn-text-center vn-mb-4">
+          <button
+            onClick={() => setShowCartSummary(!showCartSummary)}
+            className="vn-bg-blue-500 vn-text-white vn-py-2 vn-px-4 vn-rounded vn-transition-transform vn-duration-300"
+          >
+            {showCartSummary ? "Back to Catalogue" : "View Cart"}
+          </button>
+        </div>
+      )}
+
+      {/* Main Content Section */}
+      <div className="vn-flex vn-gap-4 vn-bg-slate-200">
+        {/* Catalogue Section */}
+        <div
+          className={`vn-flex-1 vn-bg-white vn-my-2 vn-transition-all vn-duration-500 ${
+            showCartSummary ? "md:vn-block vn-hidden" : "vn-block"
+          }`}
+        >
           <ProductGrid
             products={searchQuery ? filteredData : AllProducts.data}
             viewMode={viewMode}
             onAddToCart={handleAddToCart}
             onRemoveFromCart={handleRemoveFromCart}
           />
-          </div>
-          {cart.length > 0 && (
-            <div className="lg:vn-w-1/3 vn-my-2 vn-bg-white">
-              <CartSummary
-                cart={cart}
-                onUpdateQuantity={(product, quantity) => {
-                  setCart((prevCart) =>
-                    prevCart.map((item) =>
-                      item.product.id === product.id
-                        ? { ...item, quantity: item.quantity + quantity }
-                        : item
-                    )
-                  );
-                }}
-                onRemoveFromCart={handleRemoveFromCart}
-              />
-            </div>
-          )}
         </div>
+
+        {/* Cart Section */}
+        {cart.length > 0 && (
+          <div
+            className={`vn-my-2 vn-bg-white vn-transition-all vn-duration-500 ${
+              showCartSummary
+                ? "vn-w-full md:vn-w-1/3 vn-translate-x-0"
+                : "lg:vn-w-1/3 vn-hidden lg:vn-block lg:vn-translate-x-0"
+            }`}
+          >
+            <CartSummary
+              cart={cart}
+              onUpdateQuantity={(product, quantity) => {
+                setCart((prevCart) =>
+                  prevCart.map((item) =>
+                    item.product.id === product.id
+                      ? { ...item, quantity: item.quantity + quantity }
+                      : item
+                  )
+                );
+              }}
+              onRemoveFromCart={handleRemoveFromCart}
+            />
+          </div>
+        )}
       </div>
+    </div>
   );
 }
 
