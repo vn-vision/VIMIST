@@ -10,7 +10,6 @@ import logo from "../assets/images/logo.jpg";
 import { useAddNewCustomer } from "../features/customers/customerHook";
 import { Customer } from "../utils/api/customerAPI";
 
-
 type AuthComponentProps = {
   mode: "login" | "register";
   regAs: "admin" | "user" | null;
@@ -33,11 +32,10 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
   const [entryError, setError] = useState<ThisMessage>();
   const [entrySuccess, setSuccess] = useState<ThisMessage>();
   const [customa, setCustoma] = useState<Customer>({
-    id:0,
+    id: 0,
     name: "",
     contact_info: "",
   });
-
 
   // use the custom hooks to handle the user registration and login
   const { authUser, status: loginStatus, error: loginError } = useAuth();
@@ -53,7 +51,7 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
   } = useAddNewUser();
 
   // custom hook to record customer
-  const {addCustomer} = useAddNewCustomer();
+  const { addCustomer } = useAddNewCustomer();
 
   //  handle user registration and login
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,29 +74,26 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
         } else if (loginStatus === "succeed") {
           setSuccess({
             message: "Success. Redirecting in 3...2..1.",
-            class:
-              "vn-border-2 vn-border-green-500 vn-shadow-md",
+            class: "vn-border-2 vn-border-green-500 vn-shadow-md",
           });
         } else if (loginStatus === "failed") {
           setError({
             message: `Login Failed ${loginError?.toString()}`,
-            class:
-              "vn-border-2 vn-border-red-500 vn-shadow-md",
+            class: "vn-border-2 vn-border-red-500 vn-shadow-md",
           });
         }
       } catch (error) {
         console.error("Login failed", error);
         setError({
           message: "Login Failed",
-          class:
-            "vn-border-2 vn-border-red-500 vn-shadow-md",
+          class: "vn-border-2 vn-border-red-500 vn-shadow-md",
         });
       }
     } else {
       if (regAs === "admin") {
         try {
           const result = await addNewAdmin(user);
-          if (result){
+          if (result) {
             await addCustomer(customa);
             setTimeout(() => {
               navigate("/");
@@ -108,14 +103,12 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
           if (addAdminStatus === "succeed") {
             setSuccess({
               message: "Admin Registered Successfully",
-              class:
-                "vn-border-2 vn-border-green-500 vn-shadow-md",
+              class: "vn-border-2 vn-border-green-500 vn-shadow-md",
             });
           } else if (addAdminStatus === "failed") {
             setError({
               message: `Admin registration Failed ${addAdminError?.toString()}`,
-              class:
-                "vn-border-2 vn-border-red-500 vn-shadow-md",
+              class: "vn-border-2 vn-border-red-500 vn-shadow-md",
             });
           }
         } catch (error) {
@@ -124,7 +117,7 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
       } else if (regAs === "user") {
         try {
           const result = await addNewUser(user);
-          if (result){
+          if (result) {
             await addCustomer(customa);
             setTimeout(() => {
               navigate("/");
@@ -134,8 +127,7 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
           if (addUserStatus === "succeed") {
             setSuccess({
               message: "User Registered Successfully",
-              class:
-                "vn-border-2 vn-border-green-500 vn-shadow-md",
+              class: "vn-border-2 vn-border-green-500 vn-shadow-md",
             });
             setTimeout(() => {
               navigate("/");
@@ -143,8 +135,7 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
           } else if (addUserStatus === "failed") {
             setError({
               message: `User registration Failed ${addUserError?.toString()}`,
-              class:
-                "vn-border-2 vn-border-red-500 vn-shadow-md",
+              class: "vn-border-2 vn-border-red-500 vn-shadow-md",
             });
           }
         } catch (error) {
@@ -170,24 +161,31 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
           Welcome to Vimist, don't just window shop, try it out ...
         </p>
       </div>
-      <div className="vn-flex vn-flex-col vn-w-[50%] vn-justify-center"> 
+      <div className="vn-flex vn-flex-col vn-w-[50%] vn-justify-center">
         <h1>{mode === "login" ? "Login" : "Register"}</h1>
-        {loginError && (<h2 className="vn-text-red-500"> {loginError}</h2>)}
-        {entryError && (<h2 className="vn-text-red-500"> {entryError?.message}</h2>)}
-        {entrySuccess && (<h2 className="vn-text-green-500"> {entrySuccess?.message}</h2>)}
+        {loginError && <h2 className="vn-text-red-500"> {loginError}</h2>}
+        {entryError && (
+          <h2 className="vn-text-red-500"> {entryError?.message}</h2>
+        )}
+        {entrySuccess && (
+          <h2 className="vn-text-green-500"> {entrySuccess?.message}</h2>
+        )}
         <form
           onSubmit={handleSubmit}
           className={`vn-flex vn-flex-col vn-gap-5 vn-px-2 vn-py-5 vn-w-[50%] vn-items-center vn-rounded-md vn-border vn-border-red-500 vn-shadow-lg
-           ${entryError ? entryError?.class : entrySuccess && entrySuccess?.class
-          }`}
+           ${
+             entryError
+               ? entryError?.class
+               : entrySuccess && entrySuccess?.class
+           }`}
         >
           <input
             type="text"
             placeholder="Username"
             value={user.username}
             onChange={(e) => {
-              setUser({ ...user, username: e.target.value })
-              setCustoma({...customa, name: e.target.value})
+              setUser({ ...user, username: e.target.value });
+              setCustoma({ ...customa, name: e.target.value });
             }}
             autoComplete="on"
           />
@@ -200,8 +198,8 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
                   placeholder="Email"
                   value={user.email || ""}
                   onChange={(e) => {
-                    setUser({ ...user, email: e.target.value })
-                    setCustoma({...customa, contact_info: e.target.value})
+                    setUser({ ...user, email: e.target.value });
+                    setCustoma({ ...customa, contact_info: e.target.value });
                   }}
                   autoComplete="on"
                 />
@@ -211,9 +209,9 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
                   type="text"
                   placeholder="Contact"
                   value={user.contact || ""}
-                  onChange={(e) =>{
-                    setUser({ ...user, contact: e.target.value })
-                    setCustoma({...customa, contact_info: e.target.value})
+                  onChange={(e) => {
+                    setUser({ ...user, contact: e.target.value });
+                    setCustoma({ ...customa, contact_info: e.target.value });
                   }}
                   autoComplete="on"
                 />
@@ -233,6 +231,25 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
             {mode === "login" ? "Login" : "Register"}
           </button>
         </form>
+                  
+        {mode === "login" && (
+            <button
+              className="vn-text-black vn-text-sm vn-shadow-lg vn-w-[50%] vn-rounded vn-h-auto"
+              onClick={() => navigate("/register")}
+            >
+              {" "}
+              Don't have an account? Join the fun
+            </button>
+          )}
+          {mode === "register" && (
+            <button
+              className="vn-text-black vn-text-sm vn-shadow-lg vn-w-[50%] vn-rounded vn-h-auto"
+              onClick={() => navigate("/login")}
+            >
+              {" "}
+              Have an account? Welcome.
+            </button>
+          )}        
       </div>
     </div>
   );

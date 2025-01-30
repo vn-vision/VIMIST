@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CounterNotification from "./NotificationCounter";
 
 function TopNavbar({onSearch}: {onSearch: (query: number | string)=>void}) {
 
@@ -34,13 +35,7 @@ function TopNavbar({onSearch}: {onSearch: (query: number | string)=>void}) {
         </button>
       </div>
       <div>
-        <button
-          className='vn-px-4 vn-py-2 vn-rounded vn-bg-red-600 vn-text-white hover:vn-bg-red-700 focus:vn-ring-2 focus:vn-ring-red-500'
-          onClick={()=>navigate('/reports')}
-          aria-label="View notifications"
-        >
-          Notifications
-        </button>
+        <CounterNotification />
       </div>
     </div>
   )

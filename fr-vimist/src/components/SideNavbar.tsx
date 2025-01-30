@@ -83,11 +83,6 @@ const SideNavbar = ({ collapsed, toggleNavbar }: SideNavbarProps) => {
         </ul>
       </div>
       <div className="vn-flex vn-flex-col vn-gap-5">
-      <button className="vn-flex vn-gap-3 vn-mx-auto"
-      onClick={()=>navigate("/register")}>
-        <p>{'3'}</p>
-        Sign Up
-      </button>
       <button
         className="vn-flex vn-gap-3 vn-mx-auto"
         onClick={() => {
