@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useDisplayProducts } from "../../features/products/inventoryHook";
 import { Product } from "../../utils/api/inventoryAPI";
 import ProductGrid from "../../components/CatalogueView";
 import ViewModeButtons from "../../components/ViewModeButtons";
 import TopNavbar from "../../components/TopNavbar";
 import CartSummary from "../../components/Cart";
+import CategoryFilter from "../../components/CategoryFilter"; // assuming this is correctly imported
+import useDebounce from "../../features/hooks/useDebounce";
 
 type ViewMode = "single" | "double" | "grid";
 
@@ -13,9 +15,44 @@ function ViewCatalogue() {
   const [showCartSummary, setShowCartSummary] = useState(false);
   const [cart, setCart] = useState<{ product: Product; quantity: number }[]>([]);
   const [searchQuery, setSearchQuery] = useState<string | number>("");
-  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [filteredData, setFilteredData] = useState<Product[]>([]);
 
   const AllProducts = useDisplayProducts();
+
+  // Using debounced search query
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
+  // Filter products by search query and category
+  useEffect(() => {
+    if (AllProducts.data) {
+      let filteredItems = AllProducts.data;
+
+      // Filter by category if selected
+      if (selectedCategory) {
+        filteredItems = filteredItems.filter(
+          (item) => item.category === selectedCategory
+        );
+      }
+
+      // Filter by search query
+      if (debouncedSearchQuery) {
+        filteredItems = filteredItems.filter(
+          (item) =>
+            item.name
+              ?.toLowerCase()
+              .includes(debouncedSearchQuery.toString().toLowerCase()) ||
+            item.id?.toString().includes(debouncedSearchQuery.toString()) ||
+            item.category?.toLowerCase().includes(debouncedSearchQuery.toString().toLowerCase())
+        );
+      }
+
+      setFilteredData(filteredItems);
+    }
+  }, [debouncedSearchQuery, selectedCategory, AllProducts.data]);
+
+  // Memoize filteredData for performance
+  const memoizedFilteredData = useMemo(() => filteredData, [filteredData]);
 
   // Handle adding a product to the cart
   const handleAddToCart = (product: Product) => {
@@ -42,18 +79,15 @@ function ViewCatalogue() {
     );
   };
 
-  // Handle search for a product
+  // Handle search input
   const handleSearch = (query: string | number) => {
     setSearchQuery(query);
-    if (AllProducts.data) {
-      const results = AllProducts.data?.filter(
-        (inventory: any) =>
-          inventory.id?.toString().includes(query.toString()) ||
-          inventory.category?.toString().includes(query.toString()) ||
-          inventory.name?.toLowerCase().includes(query.toString().toLowerCase())
-      );
-      setFilteredData(results);
-    }
+  };
+
+  // Handle category change, clearing the search query
+  const handleCategoryChange = (category: string | null) => {
+    setSelectedCategory(category);
+    setSearchQuery(""); // clear search when category changes
   };
 
   // Handle loading and error states
@@ -73,6 +107,11 @@ function ViewCatalogue() {
         {/* Top Navbar */}
         <TopNavbar onSearch={handleSearch} />
         <ViewModeButtons viewMode={viewMode} onViewChange={setViewMode} />
+        <CategoryFilter
+          categories={AllProducts.data?.map((product) => product.category) ?? []}
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
+        />
       </div>
 
       {/* Toggle Button for Small Screens */}
@@ -80,7 +119,7 @@ function ViewCatalogue() {
         <div className="lg:vn-hidden vn-w-full vn-text-center vn-mb-4">
           <button
             onClick={() => setShowCartSummary(!showCartSummary)}
-            className="vn-bg-blue-500 vn-text-white vn-py-2 vn-px-4 vn-rounded vn-transition-transform vn-duration-300"
+            className="vn-bg-blue-500 vn-text-white vn-py-2 vn-px-4 vn-rounded"
           >
             {showCartSummary ? "Back to Catalogue" : "View Cart"}
           </button>
@@ -91,12 +130,12 @@ function ViewCatalogue() {
       <div className="vn-flex vn-gap-4 vn-bg-slate-200">
         {/* Catalogue Section */}
         <div
-          className={`vn-flex-1 vn-bg-white vn-my-2 vn-transition-all vn-duration-500 ${
+          className={`vn-flex-1 vn-bg-white vn-my-2 ${
             showCartSummary ? "md:vn-block vn-hidden" : "vn-block"
           }`}
         >
           <ProductGrid
-            products={searchQuery ? filteredData : AllProducts.data}
+            products={memoizedFilteredData}
             viewMode={viewMode}
             onAddToCart={handleAddToCart}
             onRemoveFromCart={handleRemoveFromCart}
@@ -106,10 +145,10 @@ function ViewCatalogue() {
         {/* Cart Section */}
         {cart.length > 0 && (
           <div
-            className={`vn-my-2 vn-bg-white vn-transition-all vn-duration-500 ${
+            className={`vn-my-2 vn-bg-white ${
               showCartSummary
-                ? "vn-w-full md:vn-w-1/3 vn-translate-x-0"
-                : "lg:vn-w-1/3 vn-hidden lg:vn-block lg:vn-translate-x-0"
+                ? "vn-w-full md:vn-w-1/3"
+                : "lg:vn-w-1/3 vn-hidden lg:vn-block"
             }`}
           >
             <CartSummary

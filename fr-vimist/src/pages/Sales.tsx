@@ -60,7 +60,7 @@ const Sales = () => {
     <div className="vn-mt-5 vn-p-5">
       <h1 className="vn-text-2xl vn-font-bold vn-mb-5">Sales</h1>
       {/* TopNavbar */}
-      <TopNavbar onSearch={handleSearch} />
+      {view === 'table' && <TopNavbar onSearch={handleSearch} />}
 
       {/* Quick Actions */}
       <div className="vn-flex vn-justify-around vn-my-5">
