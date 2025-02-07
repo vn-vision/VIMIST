@@ -28,8 +28,7 @@ function Reports() {
   };
 
   return (
-    <div className="vn-flex vn-flex-col vn-h-full vn-gap-5 vn-mt-5 vn-p-5 vn-w-2/3 vn-max-w-3xl vn-mx-auto">
-      {/* Header with Notifications Icon */}
+    <div className="vn-min-h-full  vn-p-5">
       <div className="vn-flex vn-items-center vn-justify-between">
         <h1 className="vn-text-2xl vn-font-bold">Reports</h1>
 
@@ -47,28 +46,32 @@ function Reports() {
         </div>
       </div>
 
-      {/* Back Button */}
-      <button
-        className="vn-text-blue-500 vn-font-medium vn-hover:underline"
-        onClick={() => navigate("/")}
-      >
-        {'<<<<'} Back
-      </button>
+      <div className="vn-flex vn-flex-col vn-gap-5 vn-p-5 vn-w-2/3 vn-max-w-3xl vn-mx-auto">
+        {/* Header with Notifications Icon */}
 
-      {/* Notification List */}
-      <ul className="vn-flex vn-flex-col vn-gap-3">
-        {NotificationData?.map((notification) => (
-          <li key={notification.id}>
-            <Notification
-              id={notification.id}
-              type={notification.type}
-              message={notification.message}
-              read_at={notification.read_at}
-              onMarkAsRead={handleMarkAsRead}
-            />
-          </li>
-        ))}
-      </ul>
+        {/* Back Button */}
+        <button
+          className="vn-text-orange-500 vn-font-medium vn-hover:underline"
+          onClick={() => navigate("/")}
+        >
+          {"<<<<"} Back
+        </button>
+
+        {/* Notification List */}
+        <ul className="vn-flex vn-flex-col vn-gap-3">
+          {NotificationData?.map((notification) => (
+            <li key={notification.id}>
+              <Notification
+                id={notification.id}
+                type={notification.type}
+                message={notification.message}
+                read_at={notification.read_at}
+                onMarkAsRead={handleMarkAsRead}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

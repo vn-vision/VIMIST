@@ -1,4 +1,4 @@
-
+import { MdDeleteForever, MdEdit } from "react-icons/md";
 
 interface DataTableProps {
   headers: string[];
@@ -56,16 +56,16 @@ function DynamicTable({ headers, data, onDelete, onEdit }: DataTableProps) {
               ))}
               <td className="vn-flex vn-gap-2">
                 <button
-                  className="vn-border vn-border-green-500"
+                  className="vn-border vn-rounded-lg vn-bg-green-200"
                   onClick={() => handleEdit(row.id)}
                 >
-                  Edit
+                  <MdEdit />
                 </button>
                 <button
-                  className="vn-border vn-border-red-500"
+                  className="vn-border vn-rounded-lg vn-bg-red-200"
                   onClick={() => handleDelete(row.id)}
                 >
-                  Delete
+                  <MdDeleteForever />
                 </button>
               </td>
             </tr>

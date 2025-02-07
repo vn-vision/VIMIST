@@ -201,7 +201,8 @@ const DynamicGraph = ({
   // Update graph data when API data or selected date changes
   useEffect(() => {
     if (periodState === "succeeded" && periodicData) {
-      const filteredData = selectDate ? filterDataByDate(periodicData)
+      const filteredData = selectDate
+        ? filterDataByDate(periodicData)
         : periodicData;
       setGraphData(transformData(filteredData));
     }
@@ -209,52 +210,56 @@ const DynamicGraph = ({
 
   // Rendered Component
   return (
-    <div className="vn-flex vn-flex-col vn-gap-5 vn-max-w-[80%] vn-max-h-full vn-mx-auto">
+    <div className="vn-flex vn-flex-col vn-w-full vn-h-[100%]">
       {periodError && <p className="vn-text-red-500">{periodError}</p>}
+
       {/* Controls for selecting date and graph type */}
-      <div className="vn-flex vn-gap-5">
-        {["line", "bar", "pie"].map((type) => (
-          <button
-            key={type}
-            onClick={() => setGraphType(type as "bar" | "line" | "pie")}
-            className={`vn-px-4 vn-py-2 vn-rounded ${
-              graphType === type
-                ? "vn-bg-blue-600 vn-text-white"
-                : "vn-bg-gray-200 vn-text-black"
-            }`}
-          >
-            {type.charAt(0).toUpperCase() + type.slice(1)}
-          </button>
-        ))}
-      </div>
-
-      {/* Timeline control buttons */}
-      <div className="vn-flex vn-gap-5">
-        {["weekly", "monthly", "yearly"].map((period) => (
-          <button
-            key={period}
-            onClick={() =>
-              setTimeline(period as "weekly" | "monthly" | "yearly")
+      <div className="vn-bg-white vn-shadow-md vn-rounded-lg vn-flex vn-gap-6 vn-items-center vn-justify-between">
+        {/* Graph Type Dropdown */}
+        <div className="vn-flex vn-items-center vn-gap-1">
+          <select
+            id="graphType"
+            value={graphType}
+            onChange={(e) =>
+              setGraphType(e.target.value as "bar" | "line" | "pie")
             }
-            className={`vn-px-4 vn-py-2 vn-rounded ${
-              timeline === period
-                ? "vn-bg-green-600 vn-text-white"
-                : "vn-bg-gray-200 vn-text-black"
-            }`}
+            className="vn-px-4 vn-py-2 vn-rounded-md vn-border vn-border-blue-500 vn-bg-white vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-orange-500 focus:vn-outline-none"
           >
-            {period.charAt(0).toUpperCase() + period.slice(1)}
-          </button>
-        ))}
+            {["line", "bar", "pie"].map((type) => (
+              <option key={type} value={type}>
+                {type.charAt(0).toUpperCase() + type.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <div className="vn-flex  vn-flex-col vn-m-auto vn-border-2 vn-border-blue-300 vn-text-center vn-rounded-md vn-bg-blue-500">
-        <label htmlFor="date" className="vn-text-sm vn-font-medium">
-          Change Date
-        </label>
-        <input
-          type="date"
-          value={selectDate}
-          onChange={(e) => setSelectDate(e.target.value)}
-        />
+        {/* Timeline Dropdown */}
+        <div className="vn-flex vn-flex-col vn-gap-1">
+          <select
+            id="timeline"
+            value={timeline}
+            onChange={(e) =>
+              setTimeline(e.target.value as "weekly" | "monthly" | "yearly")
+            }
+            className="vn-px-4 vn-py-2 vn-rounded-md vn-border vn-border-blue-500 vn-bg-white vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-green-500 focus:vn-outline-none"
+          >
+            {["weekly", "monthly", "yearly"].map((period) => (
+              <option key={period} value={period}>
+                {period.charAt(0).toUpperCase() + period.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Date Picker */}
+        <div className="vn-flex vn-flex-col vn-gap-1">
+          <input
+            type="date"
+            id="date"
+            value={selectDate}
+            onChange={(e) => setSelectDate(e.target.value)}
+            className="vn-p-1 vn-w-[90%] vn-rounded-md vn-border vn-border-blue-500 vn-bg-gray-100 vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-red-00 focus:vn-outline-none"
+          />
         </div>
       </div>
 

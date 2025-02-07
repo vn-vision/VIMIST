@@ -1,67 +1,82 @@
 import { useDisplayProducts } from "../features/products/inventoryHook";
-// import TopNavbar from "../components/TopNavbar";
 import DynamicGraph from "../components/Graphs";
 import { useFetchSalesByPeriod } from "../features/sales/salesHook";
 import { useFetchPurchasesByPeriod } from "../features/purchases/purchaseHook";
 
 const Dashboard = () => {
- 
   const AllProducts = useDisplayProducts();
-  const {data: periodSalesData, status: periodSalesStatus, error: periodSalesError} = useFetchSalesByPeriod();
-  const {data: periodPurchaseData, status: periodPurchaseStatu, error: periodPurchaseError} = useFetchPurchasesByPeriod();
+  const { data: periodSalesData, status: periodSalesStatus, error: periodSalesError } = useFetchSalesByPeriod();
+  const { data: periodPurchaseData, status: periodPurchaseStatus, error: periodPurchaseError } = useFetchPurchasesByPeriod();
 
-    return (
-        <div className="vn-flex vn-flex-col vn-h-full vn-gap-5 vn-mt-5">
-          <h1>Dashboard</h1>
-          {/* Top Navbar */}
-          {/* <TopNavbar /> */}
-  
-          {/* Responsive Grid */}
-          <div className="vn-grid vn-grid-cols-1 md:vn-grid-cols-2 vn-grid-rows-4 md:vn-grid-rows-2 vn-flex-grow">
-            {/* Sales Section */}
-            <div className="vn-bg-blue-100 vn-flex vn-flex-col vn-justify-center vn-items-center vn-p-4 vn-overflow-hidden">
-              <h2 className="vn-text-lg vn-font-semibold vn-mb-2">Sales</h2>
-              <div className="vn-h-full vn-w-full">
-                <DynamicGraph data={periodSalesData} dataFor='Sales' status={periodSalesStatus} error={periodSalesError} />
-              </div>
-            </div>
-  
-            {/* Purchases Section */}
-            <div className="vn-bg-green-100 vn-flex vn-flex-col vn-justify-center vn-items-center vn-p-4 vn-overflow-hidden">
-              <h2 className="vn-text-lg vn-font-semibold vn-mb-2">Purchases</h2>
-              <div className="vn-h-full vn-w-full">
-                <DynamicGraph data={periodPurchaseData} dataFor="Purchases" status={periodPurchaseStatu} error={periodPurchaseError}/>
-              </div>
-            </div>
-  
-            {/* Stock Section */}
-            <div className="vn-bg-yellow-100 vn-flex vn-flex-col vn-justify-center vn-items-center vn-p-4 vn-overflow-hidden">
-              <h2 className="vn-text-lg vn-font-semibold vn-mb-2">Stock</h2>
-              <div className="vn-h-full vn-w-full">
-                {/* <DynamicGraph /> */}
-              </div>
-            </div>
-  
-            {/* Stock Level Section */}
-            <div className="vn-bg-red-100 vn-flex vn-flex-col vn-justify-center vn-items-center vn-p-4 vn-overflow-auto">
-              <h2 className="vn-text-lg vn-font-semibold vn-mb-2">Stock Level</h2>
-              <ul className="vn-list-disc vn-list-inside vn-text-sm vn-text-gray-800">
-                {AllProducts.data.map((product) => (
-                  <li key={product.id}>
-                    <span className="vn-font-medium">{product.name}</span>:{" "}
-                    {product.quantity_in_stock} units
-                  </li>
-                ))}
-              </ul>
-            </div>
+  return (
+    <div className="vn-flex vn-flex-col vn-h-full vn-gap-6 vn-p-6 vn-bg-gray-50">
+      <h1 className="vn-text-3xl vn-font-bold vn-text-gray-900">Dashboard</h1>
 
-            <div>
-              <h2> stock levels by period</h2>
-
-            </div>
+      {/* Responsive Grid Layout */}
+      <div className="vn-grid vn-grid-cols-1 md:vn-grid-cols-2 lg:vn-grid-cols-3 vn-gap-6">
+        {/* Sales Section */}
+        <div className="vn-bg-white vn-shadow-md vn-rounded-lg vn-p-5 vn-flex vn-flex-col vn-justify-center vn-items-center vn-border vn-border-blue-300">
+          <h2 className="vn-text-xl vn-font-semibold vn-text-blue-700">Sales</h2>
+          <div className="vn-h-60 vn-w-full">
+            {periodSalesStatus === "loading" ? (
+              <p className="vn-text-gray-500">Loading sales data...</p>
+            ) : periodSalesError ? (
+              <p className="vn-text-red-500">Error loading sales data</p>
+            ) : (
+              <DynamicGraph data={periodSalesData} dataFor="Sales" status={periodSalesStatus} error={periodSalesError} />
+            )}
           </div>
         </div>
-    );  
+
+        {/* Purchases Section */}
+        <div className="vn-bg-white vn-shadow-md vn-rounded-lg vn-p-5 vn-flex vn-flex-col vn-justify-center vn-items-center vn-border vn-border-green-300">
+          <h2 className="vn-text-xl vn-font-semibold vn-text-green-700">Purchases</h2>
+          <div className="vn-h-60 vn-w-full">
+            {periodPurchaseStatus === "loading" ? (
+              <p className="vn-text-gray-500">Loading purchase data...</p>
+            ) : periodPurchaseError ? (
+              <p className="vn-text-red-500">Error loading purchase data</p>
+            ) : (
+              <DynamicGraph data={periodPurchaseData} dataFor="Purchases" status={periodPurchaseStatus} error={periodPurchaseError} />
+            )}
+          </div>
+        </div>
+
+        {/* Stock Section */}
+        <div className="vn-bg-white vn-shadow-md vn-rounded-lg vn-p-5 vn-flex vn-flex-col vn-justify-center vn-items-center vn-border vn-border-yellow-300">
+          <h2 className="vn-text-xl vn-font-semibold vn-text-yellow-700">Stock</h2>
+          <div className="vn-h-60 vn-w-full">
+            {/* Placeholder for stock graph */}
+            <p className="vn-text-gray-500">Stock data visualization coming soon...</p>
+          </div>
+        </div>
+
+        {/* Stock Level Section */}
+        <div className="vn-bg-white vn-shadow-md vn-rounded-lg vn-p-5 vn-flex vn-flex-col vn-justify-start vn-items-center vn-border vn-border-red-300">
+          <h2 className="vn-text-xl vn-font-semibold vn-text-red-700">Stock Level</h2>
+          <div className="vn-h-40 vn-overflow-y-auto vn-w-full">
+            <ul className="vn-list-disc vn-list-inside vn-text-gray-800 vn-text-sm">
+              {AllProducts?.data?.length > 0 ? (
+                AllProducts.data.map((product) => (
+                  <li key={product.id} className="vn-border-b vn-py-2 vn-text-gray-700">
+                    <span className="vn-font-medium">{product.name}</span>: {product.quantity_in_stock} units
+                  </li>
+                ))
+              ) : (
+                <p className="vn-text-gray-500">No products available</p>
+              )}
+            </ul>
+          </div>
+        </div>
+
+        {/* Stock Levels by Period */}
+        <div className="vn-bg-white vn-shadow-md vn-rounded-lg vn-p-5 vn-flex vn-flex-col vn-justify-center vn-items-center vn-border vn-border-purple-300">
+          <h2 className="vn-text-xl vn-font-semibold vn-mb-3 vn-text-purple-700">Stock Levels by Period</h2>
+          <p className="vn-text-gray-500">Coming soon...</p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Dashboard;

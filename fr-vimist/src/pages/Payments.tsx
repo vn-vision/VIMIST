@@ -42,14 +42,11 @@ const Payments = () => {
   };
   
   return (
-    <div className="vn-gap-5 vn-mt-5">
-      <h1 className="vn-text-2xl vn-font-bold vn-mb-5">Payments</h1>
-
+    <div className="vn-flex vn-flex-col vn-gap-5 vn-p-5">
+      <h1 className="vn-text-2xl vn-font-bold">Payments</h1>
       {/* top nav bar */}
       <TopNavbar onSearch={handleSearch}/>
-      <div className="vn-flex">
-        <button> Filter</button>
-      </div>
+
       {/* Payments Section */}
       <DynamicTable
       headers={headers}

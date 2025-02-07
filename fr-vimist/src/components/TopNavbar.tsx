@@ -17,7 +17,7 @@ function TopNavbar({onSearch}: {onSearch: (query: number | string)=>void}) {
   };
 
   return (
-    <div className='vn-flex vn-flex-col sm:vn-flex-row vn-max-h-40 vn-w-full vn-justify-between vn-px-4'>
+    <div className='vn-flex vn-flex-col sm:vn-flex-row vn-max-h-40 vn-w-full vn-justify-between'>
       <div className='vn-flex vn-w-full sm:vn-w-auto vn-mb-4 sm:vn-mb-0'>
         <input
           type='text'
