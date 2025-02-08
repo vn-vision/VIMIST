@@ -210,20 +210,20 @@ const DynamicGraph = ({
 
   // Rendered Component
   return (
-    <div className="vn-flex vn-flex-col vn-w-full vn-h-[100%]">
+    <div className="vn-flex vn-flex-col vn-w-[100%] vn-h-[100%]">
       {periodError && <p className="vn-text-red-500">{periodError}</p>}
 
       {/* Controls for selecting date and graph type */}
-      <div className="vn-bg-white vn-shadow-md vn-rounded-lg vn-flex vn-gap-6 vn-items-center vn-justify-between">
+      <div className="vn-bg-white vn-shadow-md vn-rounded-lg vn-flex vn-items-center vn-justify-evenly vn-gap-1">
         {/* Graph Type Dropdown */}
-        <div className="vn-flex vn-items-center vn-gap-1">
+        <div className="vn-flex vn-items-center vn-gap-1 ">
           <select
             id="graphType"
             value={graphType}
             onChange={(e) =>
               setGraphType(e.target.value as "bar" | "line" | "pie")
             }
-            className="vn-px-4 vn-py-2 vn-rounded-md vn-border vn-border-blue-500 vn-bg-white vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-orange-500 focus:vn-outline-none"
+            className="vn-p-2 vn-rounded-md vn-border vn-border-blue-500 vn-bg-white vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-orange-500 focus:vn-outline-none"
           >
             {["line", "bar", "pie"].map((type) => (
               <option key={type} value={type}>
@@ -241,7 +241,7 @@ const DynamicGraph = ({
             onChange={(e) =>
               setTimeline(e.target.value as "weekly" | "monthly" | "yearly")
             }
-            className="vn-px-4 vn-py-2 vn-rounded-md vn-border vn-border-blue-500 vn-bg-white vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-green-500 focus:vn-outline-none"
+            className="vn-p-2 vn-rounded-md vn-border vn-border-blue-500 vn-bg-white vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-green-500 focus:vn-outline-none"
           >
             {["weekly", "monthly", "yearly"].map((period) => (
               <option key={period} value={period}>
@@ -258,7 +258,7 @@ const DynamicGraph = ({
             id="date"
             value={selectDate}
             onChange={(e) => setSelectDate(e.target.value)}
-            className="vn-p-1 vn-w-[90%] vn-rounded-md vn-border vn-border-blue-500 vn-bg-gray-100 vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-red-00 focus:vn-outline-none"
+            className="vn-p-1 vn-max-w-[70%] vn-rounded-md vn-border vn-border-blue-500 vn-bg-gray-100 vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-red-00 focus:vn-outline-none"
           />
         </div>
       </div>

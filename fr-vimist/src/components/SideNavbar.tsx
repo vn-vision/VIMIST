@@ -3,14 +3,15 @@ import {
   MdOutlineInventory,
   MdPayments,
   MdSettings,
+  MdHome,
+  MdShoppingBag,
 } from "react-icons/md";
 import { FcSalesPerformance } from "react-icons/fc";
 import { BiSolidPurchaseTag, BiLogOut, BiLogIn } from "react-icons/bi";
 import { TbReportSearch } from "react-icons/tb";
 import logo from "../assets/images/logo.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLogout } from "../features/authentication/authHook";
-import { useNavigate } from "react-router-dom";
 
 interface SideNavbarProps {
   collapsed: boolean;
@@ -19,88 +20,217 @@ interface SideNavbarProps {
 
 const SideNavbar = ({ collapsed, toggleNavbar }: SideNavbarProps) => {
   const navigate = useNavigate();
-  // check login status
-  const myToken = sessionStorage.getItem('accessToken');
-  const { logout} = useLogout();
+  const myToken = sessionStorage.getItem("accessToken");
+  const myRole = sessionStorage.getItem("role");
+  const { logout } = useLogout();
 
   return (
-    <div
-      className={`vn-fixed vn-top-0 vn-left-0 vn-flex vn-flex-col vn-min-h-screen vn-justify-between vn-border-2 vn-border-indigo-600 vn-overflow-hidden ${
-        collapsed ? "vn-w-[10%]" : "vn-w-[2%]"
-      }`}
-    >
-      <div className="vn-flex vn-flex-col vn-gap-5">
-        <div className="vn-flex vn-mt-5 vn-gap-5">
+    <>
+      {/* 📱 Mobile Navbar - Visible Only on Small Screens */}
+      <div className="md:vn-hidden vn-fixed vn-top-0 vn-left-0 vn-w-full vn-bg-white vn-shadow-md vn-border-b vn-border-indigo-600">
+        <div className="vn-flex vn-gap-2 vn-max-w-[100%] vn-justify-evenly vn-items-center">
+          <div className="vn-flex vn-flex-col vn-items-center vn-justify-between vn-px-2 vn-py-2 vn-w-[10%]">
+            <img
+              src={logo}
+              alt="logo"
+              className="vn-w-10 vn-h-10 vn-rounded-full"
+            />
+            <h1 className="vn-text-lg vn-font-bold">VIMIST</h1>
+          </div>
+          <div className="vn-flex vn-justify-between vn-w-[80%]">
+            {/* Scrollable Navbar Items */}
+            <div className="vn-overflow-x-auto vn-whitespace-nowrap vn-py-2 vn-w-[80%]">
+              <ul className="vn-flex vn-gap-4">
+                {myToken ? myRole === "Admin" && (
+                <span>
+                <NavItem to="/dashboard" icon={<MdDashboard />} label="Dashboard" />
+                <NavItem
+                  to="/inventory"
+                  icon={<MdOutlineInventory />}
+                  label="Inventory"
+                />
+                <NavItem
+                  to="/sales"
+                  icon={<FcSalesPerformance />}
+                  label="Sales"
+                />
+                <NavItem
+                  to="/purchases"
+                  icon={<BiSolidPurchaseTag />}
+                  label="Purchases"
+                />
+                <NavItem
+                  to="/payments"
+                  icon={<MdPayments />}
+                  label="Payments"
+                />
+                <NavItem
+                  to="/reports"
+                  icon={<TbReportSearch />}
+                  label="Reports"
+                />
+                <NavItem
+                  to="/settings"
+                  icon={<MdSettings />}
+                  label="Settings"
+                />
+                </span>
+                ):(
+                <span className="vn-flex vn-gap-2 vn-items-center">
+                <NavItem to="/" icon={<MdHome />} label="Home" />
+                <NavItem
+                  to="/catalogue"
+                  icon={<MdShoppingBag />}
+                  label="Catalogue"
+                />
+                </span>
+                )}
+              </ul>
+            </div>
+            {/* Login/Logout Button */}
+            <div className="vn-flex vn-w-[10%] vn-items-center vn-justify-center">
+              <button
+                className="vn-flex vn-items-center vn-border vn-rounded-lg vn-bg-gray-200 hover:vn-bg-gray-300 vn-px-2 vn-h-10"
+                onClick={() => (myToken ? logout() : navigate("/login"))}
+              >
+                {myToken ? <BiLogOut /> : <BiLogIn />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 🖥 Desktop Sidebar - Visible Only on Large Screens */}
+      <div
+        className={`vn-hidden md:vn-block vn-fixed vn-top-0 vn-left-0 vn-border-r vn-border-indigo-600 vn-overflow-hidden vn-transition-all vn-duration-300 
+          ${
+            collapsed ? "vn-w-[60px] vn-h-screen" : "vn-w-[200px] vn-h-screen"
+          }`}
+      >
+        {/* Logo & Toggle */}
+        <div className="vn-flex vn-flex-col vn-items-center vn-pt-6">
           <img
             src={logo}
             alt="logo"
-            className="vn-w-10 vn-h-10 vn-rounded-[50%]"
+            className="vn-w-10 vn-h-10 vn-rounded-full"
           />
-          <h1>VIMIST</h1>
+          <h1
+            className={`${
+              collapsed ? "vn-hidden" : "vn-block"
+            } vn-text-lg vn-font-bold`}
+          >
+            VIMIST
+          </h1>
+          <button
+            onClick={toggleNavbar}
+            className="vn-text-xl vn-cursor-pointer vn-mt-4"
+          >
+            {collapsed ? ">>>>" : "✖"}
+          </button>
         </div>
-        <p
-          className={`${collapsed ? "vn-ml-5" : "vn-m-0"}`}
-          onClick={toggleNavbar}
-        >
-          {collapsed ? "<<<<" : ">>"}
-        </p>
-        <ul className="vn-m-auto vn-flex vn-flex-col vn-justify-evenly vn-gap-3">
-          <li>
-            <Link className="vn-flex vn-gap-3" to="/">
-              <MdDashboard /> Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link className="vn-flex vn-gap-3" to="/inventory">
-              <MdOutlineInventory /> Inventory
-            </Link>
-          </li>
-          <li>
-            <Link className="vn-flex vn-gap-3" to="/sales">
-              <FcSalesPerformance /> Sales
-            </Link>
-          </li>
-          <li>
-            <Link className="vn-flex vn-gap-3" to="/purchases">
-              <BiSolidPurchaseTag /> Purchases
-            </Link>
-          </li>
-          <li>
-            <Link className="vn-flex vn-gap-3" to="/payments">
-              <MdPayments /> Payments
-            </Link>
-          </li>
-          <li>
-            <Link className="vn-flex vn-gap-3" to="/reports">
-              <TbReportSearch /> Reports
-            </Link>
-          </li>
-          <li>
-            <Link className="vn-flex vn-gap-3" to="/settings">
-              <MdSettings /> Settings
-            </Link>
-          </li>
-        </ul>
-      </div>
-      <div className="vn-flex vn-flex-col vn-gap-5">
-      <button
-        className="vn-flex vn-gap-3 vn-mx-auto"
-        onClick={() => {
-          if (myToken) {
-            logout();
-          } else {
-            navigate("/login");
-          }
-        }
-        }
-      >
-        {myToken ?  <BiLogOut /> : <BiLogIn />}
-        {myToken ? "Logout" : "Login"}
 
-      </button>
+        {/* Navigation */}
+        <ul className="vn-flex vn-flex-col vn-gap-3 vn-mt-4">
+          {/* Admin Navbar */}
+          {myToken ? myRole === "Admin" && (
+          <span>
+            <NavItem
+              to="/dashboard"
+              icon={<MdDashboard />}
+              label="Dashboard"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/inventory"
+              icon={<MdOutlineInventory />}
+              label="Inventory"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/sales"
+              icon={<FcSalesPerformance />}
+              label="Sales"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/purchases"
+              icon={<BiSolidPurchaseTag />}
+              label="Purchases"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/payments"
+              icon={<MdPayments />}
+              label="Payments"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/reports"
+              icon={<TbReportSearch />}
+              label="Reports"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/settings"
+              icon={<MdSettings />}
+              label="Settings"
+              collapsed={collapsed}
+            />
+          </span>
+          ):(
+          <span>
+            <NavItem
+              to="/"
+              icon={<MdHome />}
+              label="Home"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/catalogue"
+              icon={<MdShoppingBag />}
+              label="Catalogue"
+              collapsed={collapsed}
+            />
+          </span>
+          )}
+        </ul>
+
+        {/* Login/Logout Button */}
+        <div className="vn-absolute vn-bottom-5 vn-w-full vn-text-center">
+          <button
+            className="vn-flex vn-items-center vn-gap-2 vn-mx-auto vn-px-3 vn-py-1 vn-border vn-rounded-lg vn-bg-gray-200 hover:vn-bg-gray-300"
+            onClick={() => (myToken ? logout() : navigate("/login"))}
+          >
+            {myToken ? <BiLogOut /> : <BiLogIn />}
+            {!collapsed && (myToken ? "Logout" : "Login")}
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
+
+// Reusable NavItem component
+const NavItem = ({
+  to,
+  icon,
+  label,
+  collapsed,
+}: {
+  to: string;
+  icon: JSX.Element;
+  label: string;
+  collapsed?: boolean;
+}) => (
+  <li>
+    <Link
+      to={to}
+      className="vn-flex vn-items-center vn-gap-3 vn-px-4 vn-py-2 hover:vn-bg-indigo-200 vn-rounded-md vn-transition-all vn-duration-300"
+    >
+      {icon}
+      {collapsed === undefined || !collapsed ? <span>{label}</span> : null}
+    </Link>
+  </li>
+);
 
 export default SideNavbar;

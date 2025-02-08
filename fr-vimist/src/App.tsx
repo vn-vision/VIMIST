@@ -25,7 +25,7 @@ const App: React.FC = () => {
     <Provider store={store}>
         <Layout>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/sales" element={<Sales />} />
           <Route path="/customers" element={<Customers />} />
@@ -36,8 +36,8 @@ const App: React.FC = () => {
           <Route path="register/admin" element={<RegisterAdmin />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/user/landing" element={<LandingPage />} />
-          <Route path="/user/catalogue" element={<ViewCatalogue />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/catalogue" element={<ViewCatalogue />} />
           
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
