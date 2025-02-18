@@ -1,8 +1,9 @@
 import React from "react";
 import { Product } from "../utils/api/inventoryAPI";
 import logo from "../assets/images/logo.jpg";
-import { useAddNewSale } from "../features/sales/salesHook";
+import { useAddNewSale, useClearMessages } from "../features/sales/salesHook";
 import { useDisplayCustomers } from "../features/customers/customerHook";
+import AlertMessage from "./AlertMessage";
 
 type CartItem = {
   product: Product;
@@ -24,7 +25,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   onRemoveFromCart,
 }) => {
   // fetch add sale function
-  const { addSale } = useAddNewSale();
+  const { addSale, error: saleError, message: saleMessage} = useAddNewSale();
+  const {clsMessages} = useClearMessages();
+  
+
   // filter customer by contact
   const { data: customerData } = useDisplayCustomers();
 
@@ -77,9 +81,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   };
 
   return (
-    <div className="vn-min-h-screen vn-bg-orange-100 vn-p-4 vn-flex vn-flex-col vn-min-w-[40%]">
+    <div className="vn-min-h-screen vn-text-secondary vn-p-4 vn-flex vn-flex-col vn-min-w-[40%]">
+      {saleMessage && <AlertMessage message={saleMessage} type="success" onClose={clsMessages}/>}
+      {saleError && <AlertMessage message={saleError} type="error" onClose={clsMessages}/>}
       <h2 className="vn-text-2xl vn-font-bold vn-mb-4">Cart Summary</h2>
-
       {cart.length > 0 && (
         <div>
           <ul className="space-y-4">
@@ -153,7 +158,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
               Mpesa
             </button>
             <button
-              className="vn-flex-1 vn-bg-blue-500 vn-text-white vn-rounded vn-py-2 hover:vn-bg-blue-600"
+              className="vn-flex-1 vn-bg-primary vn-text-white vn-rounded vn-py-2 hover:vn-bg-primary"
               onClick={() => setLogPayment("Cash")}
             >
               Cash
@@ -166,9 +171,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({
             </button>
           </div>
           <button
-            className="vn-w-full vn-bg-blue-500 vn-text-white vn-rounded vn-py-3 vn-mt-4 hover:bg-blue-600"
-            onClick={() => handleRecordSale(logPayment)}
-          >
+            className="vn-w-full vn-bg-primary vn-text-white vn-rounded vn-py-3 vn-mt-4 hover:bg-blue-600"
+            onClick={() => handleRecordSale(logPayment)}>
             Checkout
           </button>
         </div>

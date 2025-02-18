@@ -14,7 +14,7 @@ function ViewModeButtons({ viewMode, onViewChange }: ViewModeButtonsProps) {
         onClick={() => onViewChange("single")}
         aria-label="Single column view"
         className={`vn-px-3 vn-py-2 vn-rounded-lg vn-text-sm vn-border ${
-          viewMode === "single" ? "vn-bg-blue-500 vn-text-white" : "vn-bg-white vn-border-gray-300"
+          viewMode === "single" ? "vn-bg-primary vn-text-white" : "vn-bg-white vn-border-gray-300"
         }`}
       >
         []
@@ -23,7 +23,7 @@ function ViewModeButtons({ viewMode, onViewChange }: ViewModeButtonsProps) {
         onClick={() => onViewChange("double")}
         aria-label="Double column view"
         className={`vn-px-3 vn-py-2 vn-rounded-lg vn-text-sm vn-border ${
-          viewMode === "double" ? "vn-bg-blue-500 vn-text-white" : "vn-bg-white vn-border-gray-300"
+          viewMode === "double" ? "vn-bg-primary vn-text-white" : "vn-bg-white vn-border-gray-300"
         }`}
       >
         [|]
@@ -32,7 +32,7 @@ function ViewModeButtons({ viewMode, onViewChange }: ViewModeButtonsProps) {
         onClick={() => onViewChange("grid")}
         aria-label="Grid view"
         className={`vn-px-3 vn-py-2 vn-rounded-lg vn-text-sm vn-border ${
-          viewMode === "grid" ? "vn-bg-blue-500 vn-text-white" : "vn-bg-white vn-border-gray-300"
+          viewMode === "grid" ? "vn-bg-primary vn-text-white" : "vn-bg-white vn-border-gray-300"
         }`}
       >
         [-|-]

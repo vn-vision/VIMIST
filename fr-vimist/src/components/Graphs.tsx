@@ -223,7 +223,7 @@ const DynamicGraph = ({
             onChange={(e) =>
               setGraphType(e.target.value as "bar" | "line" | "pie")
             }
-            className="vn-p-2 vn-rounded-md vn-border vn-border-blue-500 vn-bg-white vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-orange-500 focus:vn-outline-none"
+            className="vn-p-2 vn-rounded-md vn-border vn-text-primary vn-bg-white vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-text-secondary focus:vn-outline-none"
           >
             {["line", "bar", "pie"].map((type) => (
               <option key={type} value={type}>
@@ -241,7 +241,7 @@ const DynamicGraph = ({
             onChange={(e) =>
               setTimeline(e.target.value as "weekly" | "monthly" | "yearly")
             }
-            className="vn-p-2 vn-rounded-md vn-border vn-border-blue-500 vn-bg-white vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-green-500 focus:vn-outline-none"
+            className="vn-p-2 vn-rounded-md vn-border vn-text-primary vn-bg-white vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-green-500 focus:vn-outline-none"
           >
             {["weekly", "monthly", "yearly"].map((period) => (
               <option key={period} value={period}>
@@ -258,7 +258,7 @@ const DynamicGraph = ({
             id="date"
             value={selectDate}
             onChange={(e) => setSelectDate(e.target.value)}
-            className="vn-p-1 vn-max-w-[70%] vn-rounded-md vn-border vn-border-blue-500 vn-bg-gray-100 vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-red-00 focus:vn-outline-none"
+            className="vn-p-1 vn-max-w-[70%] vn-rounded-md vn-border vn-text-primary vn-bg-gray-100 vn-text-gray-800 hover:vn-bg-gray-200 focus:vn-border-red-00 focus:vn-outline-none"
           />
         </div>
       </div>

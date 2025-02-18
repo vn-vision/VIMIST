@@ -34,7 +34,7 @@ function Reports() {
 
         <div className="vn-relative vn-cursor-pointer">
           {unreadCount > 0 ? (
-            <IoNotifications className="vn-text-blue-600 vn-text-2xl" />
+            <IoNotifications className="vn-text-primary vn-text-2xl" />
           ) : (
             <IoNotificationsOutline className="vn-text-gray-400 vn-text-2xl" />
           )}
@@ -51,7 +51,7 @@ function Reports() {
 
         {/* Back Button */}
         <button
-          className="vn-text-orange-500 vn-font-medium vn-hover:underline"
+          className="vn-bg-secondary vn-font-medium vn-hover:underline"
           onClick={() => navigate("/")}
         >
           {"<<<<"} Back

@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAddNewProduct, useUpdateProduct } from "../features/products/inventoryHook";
+import {
+  useAddNewProduct,
+  useUpdateProduct,
+} from "../features/products/inventoryHook";
 import { Product } from "../utils/api/inventoryAPI";
-
+import AlertMessage from "./AlertMessage";
+import { useClearMessages } from "../features/products/inventoryHook";
 interface AddInventoryProps {
   reset: () => void;
   itemId: number | null;
@@ -63,7 +67,9 @@ const ProductForm = ({
     <input
       type="number"
       value={product.unit_price}
-      onChange={(e) => handleChange("unit_price", parseFloat(e.target.value) || 0)}
+      onChange={(e) =>
+        handleChange("unit_price", parseFloat(e.target.value) || 0)
+      }
       required
       className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
     />
@@ -72,7 +78,9 @@ const ProductForm = ({
     <input
       type="number"
       value={product.quantity_in_stock}
-      onChange={(e) => handleChange("quantity_in_stock", parseInt(e.target.value, 10) || 0)}
+      onChange={(e) =>
+        handleChange("quantity_in_stock", parseInt(e.target.value, 10) || 0)
+      }
       required
       className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
     />
@@ -81,7 +89,9 @@ const ProductForm = ({
     <input
       type="number"
       value={product.reorder_level}
-      onChange={(e) => handleChange("reorder_level", parseInt(e.target.value, 10) || 0)}
+      onChange={(e) =>
+        handleChange("reorder_level", parseInt(e.target.value, 10) || 0)
+      }
       required
       className="vn-border vn-border-gray-300 vn-rounded vn-p-2"
     />
@@ -105,7 +115,9 @@ const ProductForm = ({
 
     <button
       type="submit"
-      className={`vn-col-span-2 vn-bg-blue-500 vn-text-white vn-rounded vn-py-2 vn-font-bold vn-hover:bg-blue-600 ${isSubmitting && "vn-bg-blue-300"}`}
+      className={`vn-col-span-2 vn-bg-primary vn-text-white vn-rounded vn-py-2 vn-font-bold vn-hover:bg-blue-600 ${
+        isSubmitting && "vn-bg-blue-300"
+      }`}
       disabled={isSubmitting}
     >
       {isSubmitting ? "Saving..." : buttonLabel}
@@ -123,8 +135,18 @@ const ProductForm = ({
 
 function AddInventory({ reset, itemId }: AddInventoryProps) {
   const navigate = useNavigate();
-  const { addProduct, status: addStatus, error: addError } = useAddNewProduct();
-  const { updateProduct, status: updateStatus, error: updateError } = useUpdateProduct();
+  const {
+    addProduct,
+    status: addStatus,
+    error: addError,
+    message: addMessage,
+  } = useAddNewProduct();
+  const {
+    updateProduct,
+    status: updateStatus,
+    error: updateError,
+  } = useUpdateProduct();
+  const { clsMessages } = useClearMessages();
 
   const [product, setProduct] = useState<Product>(defaultProductState);
   const [productImage, setProductImage] = useState<File | null>(null);
@@ -133,7 +155,11 @@ function AddInventory({ reset, itemId }: AddInventoryProps) {
   // if the id is provide, fetch the product details and set the state
   // this is to allow updating of the product
   const handleInputChange = (field: string, value: string | number) => {
-    setProduct((prev) => ({...prev, ...(itemId ? {id: itemId}:{}) , [field]: value }));
+    setProduct((prev) => ({
+      ...prev,
+      ...(itemId ? { id: itemId } : {}),
+      [field]: value,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -151,34 +177,61 @@ function AddInventory({ reset, itemId }: AddInventoryProps) {
       const formData = new FormData();
 
       // append to the form Data for submission
-      formData.append('category', product.category);
-      formData.append('name', product.name);
-      formData.append('unit_price', product.unit_price.toString());
-      formData.append('quantity_in_stock', product.quantity_in_stock.toString());
-      formData.append('reorder_level', product.reorder_level.toString());
-      formData.append('image', productImage);
+      formData.append("category", product.category);
+      formData.append("name", product.name);
+      formData.append("unit_price", product.unit_price.toString());
+      formData.append(
+        "quantity_in_stock",
+        product.quantity_in_stock.toString()
+      );
+      formData.append("reorder_level", product.reorder_level.toString());
+      formData.append("image", productImage);
 
       addProduct(formData);
-
       if (addStatus === "succeeded") {
+        addMessage && alert(addMessage);
         navigate("/inventory");
       }
     } else {
       updateProduct(product);
-      if (updateStatus === "succeeded"){
+      if (updateStatus === "succeeded") {
         navigate("/inventory");
       }
     }
-
     setProduct(defaultProductState);
     setProductImage(null);
     setIsSubmitting(false);
   };
-
+  
   return (
     <div className="vn-flex vn-justify-center vn-items-center vn-flex-col vn-bg-gray-100 vn-h-full">
-      <button className="vn-text-2xl vn-font-bold vn-text-orange-500" onClick={() => reset()}>{'<<'} Back</button>
-      <h1 className="vn-text-2xl vn-font-bold vn-mb-5 vn-text-red-500">{addError ? addError.toString() : updateError ? updateError.toString(): ""}</h1>
+           {addError && (
+        <AlertMessage
+          message={addError.toString()}
+          type="error"
+          onClose={clsMessages}
+        />
+      )}
+      {addMessage && (
+        <AlertMessage
+          message={addMessage}
+          type="success"
+          onClose={clsMessages}
+        />
+      )}
+      <button
+        className="vn-text-2xl vn-font-bold vn-bg-secondary"
+        onClick={() => reset()}
+      >
+        {"<<"} Back
+      </button>
+      <h1 className="vn-text-2xl vn-font-bold vn-mb-5 vn-text-red-500">
+        {addError
+          ? addError.toString()
+          : updateError
+          ? updateError.toString()
+          : ""}
+      </h1>
       <ProductForm
         product={product}
         handleChange={handleInputChange}

@@ -12,6 +12,7 @@ import {
 interface ProductState {
   products: Product[];
   status: "idle" | "loading" | "succeeded" | "failed";
+  message: string;
   error: string | null;
 }
 
@@ -24,7 +25,7 @@ export const loadProducts = createAsyncThunk<Product[], void>(
       return response.Product;
     } catch (error: any) {
       console.log("Error:", error);
-      return error || 'Failed to load products';
+      return error || "Failed to load products";
     }
   }
 );
@@ -38,16 +39,17 @@ export const fetchProductById = createAsyncThunk<
     const response = await getProductbyId(id);
     console.log("Product by id:", response);
     return response;
-
   } catch (error: any) {
     console.log("Error:", error);
-    return rejectWithValue(error.response?.request.statusText|| "An error occurred");
+    return rejectWithValue(
+      error.response?.request.statusText || "An error occurred"
+    );
   }
 });
 
 // Add a new product
 export const addNewProduct = createAsyncThunk<
-Product,
+  Product,
   FormData,
   { rejectValue: string }
 >("products/addNewProduct", async (product, { rejectWithValue }) => {
@@ -57,7 +59,9 @@ Product,
     return response;
   } catch (error: any) {
     console.log("Error:", error);
-    return rejectWithValue(error.response?.request.statusText || "An error occurred");
+    return rejectWithValue(
+      error.response?.request.statusText || "An error occurred"
+    );
   }
 });
 
@@ -73,7 +77,9 @@ export const modifyProduct = createAsyncThunk<
     return response;
   } catch (error: any) {
     console.log("Error:", error);
-    return rejectWithValue(error.response?.request.statusText || "An error occurred");
+    return rejectWithValue(
+      error.response?.request.statusText || "An error occurred"
+    );
   }
 });
 
@@ -89,15 +95,25 @@ export const removeProduct = createAsyncThunk<
     return response;
   } catch (error: any) {
     console.log("Error:", error);
-    return rejectWithValue(error.response?.request.statusText || "An error occurred");
+    return rejectWithValue(
+      error.response?.request.statusText || "An error occurred"
+    );
   }
 });
 
+// clear messages
+export const clearMessages = createAsyncThunk<void, void>(
+  "settings/clearMessages",
+  async () => {
+      return;
+  }
+);
 
 // Define the initial state using that type
 const initialState: ProductState = {
   products: [] as Product[],
   status: "idle",
+  message: "",
   error: null,
 };
 
@@ -112,9 +128,11 @@ const productsSlice = createSlice({
         state.status = "loading";
       })
       .addCase(loadProducts.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        console.log("Inventory []:", action.payload);
         state.products = action.payload;
+        if (state.products){
+          state.status = "succeeded";
+          state.message = "success";
+        }
       })
       .addCase(loadProducts.rejected, (state, action) => {
         state.status = "failed";
@@ -122,16 +140,21 @@ const productsSlice = createSlice({
       })
 
       // Handle geting a specific product
-      .addCase(fetchProductById.pending, (state)=>{
-        state.status = 'loading';
+      .addCase(fetchProductById.pending, (state) => {
+        state.status = "loading";
       })
-      .addCase(fetchProductById.fulfilled, (state, action)=>{
-        state.status = 'succeeded';
-        state.products = state.products.filter((product) => product === action.payload);
+      .addCase(fetchProductById.fulfilled, (state, action) => {
+        state.products = state.products.filter(
+          (product) => product === action.payload
+        );
+        if (state.products){
+        state.status = "succeeded";
+        state.message = "success";
+        }
       })
-      .addCase(fetchProductById.rejected, (state, action)=>{
-        state.status = 'failed'
-        state.error = action.error.message || 'Failed to fetch the product';
+      .addCase(fetchProductById.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Failed to fetch the product";
       })
 
       // Handle creating product
@@ -140,6 +163,7 @@ const productsSlice = createSlice({
       })
       .addCase(addNewProduct.fulfilled, (state, action) => {
         state.products.push(action.payload);
+        state.message = "success";
       })
       .addCase(addNewProduct.rejected, (state, action) => {
         state.error = (action.payload as string) || "Failed to add product";
@@ -156,6 +180,7 @@ const productsSlice = createSlice({
         if (index !== -1) {
           state.products[index] = action.payload;
         }
+        if (state.products){state.message = "success";}
       })
       .addCase(modifyProduct.rejected, (state, action) => {
         state.error = (action.payload as string) || "Failed to update product";
@@ -169,9 +194,24 @@ const productsSlice = createSlice({
         state.products = state.products.filter(
           (product) => product.id !== action.payload
         );
+        if (state.products){state.message = "success";}
       })
       .addCase(removeProduct.rejected, (state, action) => {
         state.error = (action.payload as string) || "Failed to delete product";
+      })
+
+      // handle clear messages
+      .addCase(clearMessages.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(clearMessages.fulfilled, (state) => {
+        state.status = "idle";
+        state.message = "";
+        state.error = "";
+      })
+      .addCase(clearMessages.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Could not clear Messages";
       });
   },
 });

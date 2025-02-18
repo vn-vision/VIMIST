@@ -64,7 +64,7 @@ const Inventory = () => {
           className="vn-flex vn-justify-around"
           onClick={() => addItem(!item)}
         >
-          <button className="vn-flex vn-gap-3 vn-items-center vn-border vn-border-blue-500 hover:vn-border-orange-500 vn-px-3 vn-py-2 vn-rounded-lg">
+          <button className="vn-flex vn-gap-3 vn-items-center vn-border vn-text-primary hover:vn-text-secondary vn-px-3 vn-py-2 vn-rounded-lg">
             <div className="flex items-center gap-1">
               <FaPlus className="text-green-500" />
               <FaBoxOpen className="text-blue-500" />

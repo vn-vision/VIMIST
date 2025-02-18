@@ -2,10 +2,11 @@ import { useState } from "react";
 import DynamicTable from "../components/DynamicTable";
 import TopNavbar from "../components/TopNavbar";
 import AddSaleComponent from "../components/AddSale";
-import { useFetchSales, useDeleteSale } from "../features/sales/salesHook";
+import { useFetchSales, useDeleteSale, useClearMessages } from "../features/sales/salesHook";
 import CreditSaleComponent from "../components/CreditSaleComponent";
 import EditSales from "../components/EditSales";
 import { FaDollarSign } from "react-icons/fa";
+import AlertMessage from "../components/AlertMessage";
 
 const headers = [
   "ID",
@@ -30,8 +31,8 @@ const Sales = () => {
   };
 
   // Delete sale hook
-  const { deleteSale } = useDeleteSale();
-
+  const { deleteSale, message: delMessage, error: delError } = useDeleteSale();
+  const { clsMessages } = useClearMessages();
   // View switching logic
   const handleViewChange = (newView: "table" | "addSale" | "creditSale") => {
     setView((currentView) => (currentView === newView ? "table" : newView));
@@ -54,6 +55,8 @@ const Sales = () => {
 
   return (
     <div className="vn-flex vn-flex-col vn-gap-5 vn-p-5">
+      {delError && <AlertMessage message={delError} type="error" onClose={clsMessages} />}
+      {delMessage && <AlertMessage message={delMessage} type="success" onClose={clsMessages} />}
       <h1 className="vn-text-2xl vn-font-bold">Sales Management</h1>
 
       {/* Search Bar (Only in Table View) */}
@@ -65,8 +68,8 @@ const Sales = () => {
             key={option}
             className={`vn-px-5 vn-py-2 vn-rounded-lg vn-font-medium vn-transition-all vn-border ${
               view === option
-                ? "vn-border-orange-500 vn-text-black vn-shadow-md"
-                : "vn-border-blue-500 vn-text-gray-700"
+                ? "vn-text-secondary vn-text-black vn-shadow-md"
+                : "vn-text-primary vn-text-gray-700"
             }`}
             onClick={() => handleViewChange(option as "table" | "addSale" | "creditSale")}
           >

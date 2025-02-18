@@ -20,6 +20,7 @@ urlpatterns = [
         path('payments/', include('payments.urls')),
         path('purchases/', include('purchases.urls')),
         path('users/', include('users.urls')),
+        path('config/', include('config.urls')),
     ])),
     # DRF's Built-in Documentation
     path('docs/', get_schema_view(title='V-APIs', version=1.0, description='API for all views'),

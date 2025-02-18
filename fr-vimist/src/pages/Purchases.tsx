@@ -69,7 +69,7 @@ const Purchases = () => {
         <div className="vn-flex vn-justify-around">
           <button
             onClick={() => addItem(!item)}
-            className="vn-flex vn-gap-3 vn-items-center vn-border vn-border-blue-500 hover:vn-border-orange-500 vn-rounded-lg vn-px-3 vn-py-2"
+            className="vn-flex vn-gap-3 vn-items-center vn-border vn-text-primary hover:vn-text-secondary vn-rounded-lg vn-px-3 vn-py-2"
           >
             <FaShoppingCart className="text-green-500" />
             Make Purchase

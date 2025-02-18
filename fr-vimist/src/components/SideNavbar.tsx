@@ -12,7 +12,8 @@ import { TbReportSearch } from "react-icons/tb";
 import logo from "../assets/images/logo.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogout } from "../features/authentication/authHook";
-
+import { useFetchSettings } from "../features/settings/settingsHook";
+import { useEffect } from "react";
 interface SideNavbarProps {
   collapsed: boolean;
   toggleNavbar: () => void;
@@ -24,6 +25,17 @@ const SideNavbar = ({ collapsed, toggleNavbar }: SideNavbarProps) => {
   const myRole = sessionStorage.getItem("role");
   const { logout } = useLogout();
 
+  const { data: confData } = useFetchSettings();
+  console.log(confData[0]);
+  useEffect(() =>{
+    if (confData){
+
+      document.documentElement.style.setProperty('--primary-color', confData[0]?.primary_color, 'important');
+      document.documentElement.style.setProperty('--secondary-color', confData[0]?.secondary_color, 'important');
+      document.title = confData[0]?.system_name;
+    }
+  }, [confData]);
+
   return (
     <>
       {/* 📱 Mobile Navbar - Visible Only on Small Screens */}
@@ -31,18 +43,18 @@ const SideNavbar = ({ collapsed, toggleNavbar }: SideNavbarProps) => {
         <div className="vn-flex vn-gap-2 vn-max-w-[100%] vn-justify-evenly vn-items-center">
           <div className="vn-flex vn-flex-col vn-items-center vn-justify-between vn-px-2 vn-py-2 vn-w-[10%]">
             <img
-              src={logo}
+              src={confData.length > 0 ? confData[0]?.logo : logo}
               alt="logo"
               className="vn-w-10 vn-h-10 vn-rounded-full"
             />
-            <h1 className="vn-text-lg vn-font-bold">VIMIST</h1>
+            <h1 className="vn-text-lg vn-font-bold">{confData ? confData[0]?.system_name : "App Not Configured"}</h1>
           </div>
           <div className="vn-flex vn-justify-between vn-w-[80%]">
             {/* Scrollable Navbar Items */}
             <div className="vn-overflow-x-auto vn-whitespace-nowrap vn-py-2 vn-w-[80%]">
-              <ul className="vn-flex vn-gap-4">
+              <ul>
                 {myToken ? myRole === "Admin" && (
-                <span>
+                <span className="vn-flex vn-gap-4">
                 <NavItem to="/dashboard" icon={<MdDashboard />} label="Dashboard" />
                 <NavItem
                   to="/inventory"
@@ -110,7 +122,7 @@ const SideNavbar = ({ collapsed, toggleNavbar }: SideNavbarProps) => {
         {/* Logo & Toggle */}
         <div className="vn-flex vn-flex-col vn-items-center vn-pt-6">
           <img
-            src={logo}
+            src={confData.length > 0 ? confData[0]?.logo : logo}
             alt="logo"
             className="vn-w-10 vn-h-10 vn-rounded-full"
           />
@@ -119,7 +131,7 @@ const SideNavbar = ({ collapsed, toggleNavbar }: SideNavbarProps) => {
               collapsed ? "vn-hidden" : "vn-block"
             } vn-text-lg vn-font-bold`}
           >
-            VIMIST
+            {confData ? confData[0]?.system_name : "App Not Configured"}
           </h1>
           <button
             onClick={toggleNavbar}

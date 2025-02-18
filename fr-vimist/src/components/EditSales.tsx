@@ -145,7 +145,7 @@ function EditSales({ reset, itemId }: EditSalesProps) {
         <div className="vn-mb-4">
           <button
             type="submit"
-            className="vn-w-full vn-py-2 vn-bg-blue-500 vn-text-white vn-rounded"
+            className="vn-w-full vn-py-2 vn-bg-primary vn-text-white vn-rounded"
           >
             Update Sale
           </button>

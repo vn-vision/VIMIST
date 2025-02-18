@@ -119,7 +119,7 @@ function ViewCatalogue() {
         <div className="lg:vn-hidden vn-w-full vn-text-center vn-mb-4">
           <button
             onClick={() => setShowCartSummary(!showCartSummary)}
-            className="vn-bg-blue-500 vn-text-white vn-py-2 vn-px-4 vn-rounded"
+            className="vn-bg-primary vn-text-white vn-py-2 vn-px-4 vn-rounded"
           >
             {showCartSummary ? "Back to Catalogue" : "View Cart"}
           </button>

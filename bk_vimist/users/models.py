@@ -12,7 +12,7 @@ class User(AbstractUser):
         ('Customer', 'Customer'),
     )
     role = models.CharField(choices=ROLE_CHOICES, max_length=10, default='Customer')
-    contact = models.CharField(max_length=50, blank=False, null=False, default='required field', unique=True)
+    contact = models.CharField(max_length=50, blank=False, null=False, default='required field')
     is_superadmin = models.BooleanField(default=False)
 
     groups = models.ManyToManyField(

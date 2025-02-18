@@ -13,7 +13,7 @@ function Notification({ id, type, message, read_at, onMarkAsRead }: Notification
   return (
     <div
       className={`vn-flex vn-items-center vn-justify-between vn-border vn-rounded-lg vn-p-4 vn-shadow-md vn-w-full ${
-        read_at ? "vn-bg-white" : "vn-bg-orange-100"
+        read_at ? "vn-bg-white" : "vn-bg-secondary"
       }`}
     >
       <div className="vn-flex vn-flex-col vn-gap-1 vn-w-full">
@@ -34,7 +34,7 @@ function Notification({ id, type, message, read_at, onMarkAsRead }: Notification
       {/* Mark as Read Button */}
       {!read_at && (
         <button
-          className="vn-text-blue-600 vn-hover:text-blue-800 vn-transition"
+          className="vn-text-primary vn-hover:text-blue-800 vn-transition"
           onClick={() => onMarkAsRead(id, type, message)}
           title="Mark as Read"
         >

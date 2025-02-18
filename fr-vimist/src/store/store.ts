@@ -7,6 +7,7 @@ import notificationsSlice from "../features/notifications/notificationsSlice";
 import creditSlice from "../features/creditsales/creditSlice";
 import customersSlice from "../features/customers/customersSlice";
 import authSlice from "../features/authentication/authSlice";
+import settingsSlice from "../features/settings/settingsSlice";
 
 const store = configureStore({
     reducer: {
@@ -19,6 +20,7 @@ const store = configureStore({
         notifications: notificationsSlice,
         credit: creditSlice,
         customers: customersSlice,
+        config: settingsSlice,
     },
 });
 

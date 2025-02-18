@@ -58,6 +58,14 @@ export const logoutUser = createAsyncThunk("logout/user", async () => {
   return null;
 });
 
+// clear messages
+export const clearMessages = createAsyncThunk<void, void>(
+  "settings/clearMessages",
+  async () => {
+    return;
+  }
+);
+
 // create a slice to handle authentication/
 
 // create type for the slice
@@ -65,6 +73,7 @@ interface authState {
   user: User;
   status: "idle" | "loading" | "succeed" | "failed";
   error: string | null;
+  message: string;
 }
 
 const initialState: authState = {
@@ -78,6 +87,7 @@ const initialState: authState = {
   },
   status: "idle",
   error: null,
+  message: ""
 };
 
 const authSlice = createSlice({
@@ -92,8 +102,8 @@ const authSlice = createSlice({
         state.status = "loading";
       })
       .addCase(registerAdmin.fulfilled, (state, action) => {
-        state.status = "succeed";
         state.user = action.payload;
+        if (state.user){state.message = "you're In"};
       })
       .addCase(registerAdmin.rejected, (state, action) => {
         state.status = "failed";
@@ -105,8 +115,8 @@ const authSlice = createSlice({
         state.status = "loading";
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.status = "succeed";
         state.user = action.payload;
+        if (state.user){state.message = "You're In"};
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = "failed";
@@ -121,6 +131,7 @@ const authSlice = createSlice({
         state.status = "succeed";
         state.user.access = action.payload.access;
         state.user.refresh = action.payload.refresh;
+        if (state.user.access){state.message = "Login Success "};
         sessionStorage.setItem("accessToken", action.payload.access);
 
         const expiryTime = Date.now() + 1800 * 1000; // 30 min in milliseconds
@@ -132,7 +143,7 @@ const authSlice = createSlice({
           sessionStorage.removeItem("accessToken");
           sessionStorage.removeItem("tokenExpiry");
           sessionStorage.removeItem("role");
-          sessionStorage.removeItem('contact');
+          sessionStorage.removeItem("contact");
           state.user.access = "";
         }
 
@@ -168,6 +179,19 @@ const authSlice = createSlice({
       .addCase(logoutUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to logout user";
+      })
+      // handle clear messages
+      .addCase(clearMessages.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(clearMessages.fulfilled, (state) => {
+        state.status = "idle";
+        state.message = "";
+        state.error = "";
+      })
+      .addCase(clearMessages.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Could not clear Messages";
       });
   },
 });

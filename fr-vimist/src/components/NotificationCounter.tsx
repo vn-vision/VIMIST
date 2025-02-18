@@ -16,7 +16,7 @@ function CounterNotification() {
   return (
     <div className="vn-relative vn-cursor-pointer" onClick={()=>navigate("/reports")}>
     {unreadCount > 0 ? (
-      <IoNotifications className="vn-text-blue-600 vn-text-2xl" />
+      <IoNotifications className="vn-text-primary vn-text-2xl" />
     ) : (
       <IoNotificationsOutline className="vn-text-gray-400 vn-text-2xl" />
     )}

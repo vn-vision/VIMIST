@@ -117,7 +117,7 @@ function AddPurchase({ reset, itemId }: AddPurchaseProps) {
 
   return (
     <div className="vn-p-4 vn-max-w-md vn-mx-auto">
-      <button className="vn-text-orange-500" onClick={reset}>
+      <button className="vn-bg-secondary" onClick={reset}>
         {"<< "}Back
       </button>
       {addError && <h1 className="vn-text-red-500">{addError.toString()}</h1>}
@@ -187,7 +187,7 @@ function AddPurchase({ reset, itemId }: AddPurchaseProps) {
         {success && <div className="vn-text-green-500">{success}</div>}
 
         {/* Submit Button */}
-        <button type="submit" className="vn-bg-blue-500 vn-text-white vn-px-4 vn-py-2 vn-rounded">
+        <button type="submit" className="vn-bg-primary vn-text-white vn-px-4 vn-py-2 vn-rounded">
           Submit
         </button>
       </form>
