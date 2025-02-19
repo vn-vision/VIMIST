@@ -6,14 +6,16 @@ import {
   useClearMessages,
 } from "../features/settings/settingsHook";
 import { useFetchSettings } from "../features/settings/settingsHook";
+import AlertMessage from "./AlertMessage";
+import { useNavigate } from "react-router-dom";
 
 function SettingsComponent() {
   // send form data to the server
-  const { addSettings, status: addStatus, error: addError } = useAddSettings();
-  const { updateSettings, status: updStatus, error: updError } = useUpdateSettings();
-  const { data: confData, status: fetchStatus, error: fetchError } = useFetchSettings();
+  const { addSettings, message: addMsg, error: addError } = useAddSettings();
+  const { updateSettings, message: updMsg, error: updError } = useUpdateSettings();
+  const { data: confData,} = useFetchSettings();
   const { clsMessages } = useClearMessages();
-
+  const navigate = useNavigate();
 
   const defaultLogo = confData ? confData[0]?.logo : vmLogo;
   // State for form fields
@@ -82,6 +84,11 @@ function SettingsComponent() {
       className="vn-bg-white vn-border vn-border-gray-200 vn-shadow-md vn-flex vn-flex-col vn-m-auto vn-p-6 vn-w-full md:vn-w-1/2 vn-rounded-xl vn-gap-5"
       onSubmit={handleUpdate}
     >
+      {updMsg && <AlertMessage message={updMsg} type="success" onClose={clsMessages} />}
+      {updError && <AlertMessage message={updError} type="error" onClose={clsMessages} />}
+      {addError && <AlertMessage message={addError} type="error" onClose={clsMessages} />}
+      {addMsg && <AlertMessage message={addMsg} type="success" onClose={clsMessages} />}
+      {/* System Name Field */}
       {/* Logo Preview and File Upload */}
       <div className="vn-flex vn-justify-center vn-items-center vn-rounded-full vn-shadow-md vn-mx-auto">
         <img

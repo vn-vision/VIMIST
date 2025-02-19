@@ -191,7 +191,7 @@ const salesSlice = createSlice({
       .addCase(addNewSale.fulfilled, (state, action) => {
         state.sales.push(action.payload);
         state.status = "succeeded";
-        state.message = "Success";
+        state.message = "Sales Added";
       })
       .addCase(addNewSale.rejected, (state, action) => {
         state.error = (action.payload as string) || "Failed to add sale";
@@ -210,7 +210,7 @@ const salesSlice = createSlice({
         }
         if (state.sales) {
           state.status = "succeeded";
-          state.message = "Success";
+          state.message = "Sales Updated";
         }
       })
       .addCase(modifySale.rejected, (state, action) => {
@@ -224,7 +224,7 @@ const salesSlice = createSlice({
       .addCase(removeSale.fulfilled, (state, action) => {
         state.sales = state.sales.filter((sale) => sale.id !== action.payload);
           state.status = "succeeded";
-          state.message = "Deletion Successful";
+          state.message = "Sale Deleted";
       })
       .addCase(removeSale.rejected, (state, action) => {
         state.error = (action.payload as string) || "Failed to delete sale";

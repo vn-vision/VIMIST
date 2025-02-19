@@ -12,7 +12,6 @@ export interface Purchase {
 }
 
 const baseUrl = "http://localhost:8000/api/purchases/purchases";
-const myToken = sessionStorage.getItem("accessToken");
 
 // get all purchases
 export const getPurchases = async () => {
@@ -38,6 +37,7 @@ export const getPurchaseById = async (id: number) => {
 // add a new purchase
 export const postPurchase = async (purchase: Purchase) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.post(`${baseUrl}/`, purchase, {
       headers: {
         Authorization: `Bearer ${myToken}`,
@@ -54,6 +54,7 @@ export const postPurchase = async (purchase: Purchase) => {
 // update an existing purchase
 export const updatePurchase = async (purchase: Purchase) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.put(`${baseUrl}/${purchase.id}/`, purchase, {
       headers: {
         Authorization: `Bearer ${myToken}`,
@@ -70,6 +71,7 @@ export const updatePurchase = async (purchase: Purchase) => {
 // delete an existing purchase
 export const deletePurchase = async (id: number) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.delete(`${baseUrl}/${id}/`, {
       headers: {
         Authorization: `Bearer ${myToken}`,

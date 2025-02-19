@@ -116,22 +116,27 @@ const settingsSlice = createSlice({
                 state.status = "loading";
             })
             .addCase(fetchSettings.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.message = "Settings fetched successfully";
                 state.settings = state.settings.concat(action.payload);
+                if (state.settings){
+                    state.status = "succeeded";
+                    state.message = "Settings Fetched";
+                }
             })
             .addCase(fetchSettings.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message || null;
             })
+
             // handle fetch settings by ID
             .addCase(fetchSettingsById.pending, (state) => {
                 state.status = "loading";
             })
             .addCase(fetchSettingsById.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.message = "Settings fetched successfully";
                 state.settings = state.settings.filter((settings) => settings.id === action.payload);
+                if (state.settings){
+                    state.status = "succeeded";
+                    state.message = "Setting Fetched";
+                }
             })
             .addCase(fetchSettingsById.rejected, (state, action) => {
                 state.status = "failed";
@@ -143,9 +148,9 @@ const settingsSlice = createSlice({
                 state.status = "loading";
             })
             .addCase(addNewSettings.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.message = "Settings added successfully";
                 state.settings.push(action.payload);
+                state.status = "succeeded";
+                state.message = "Settings Added";
             })
             .addCase(addNewSettings.rejected, (state, action) => {
                 state.status = "failed";
@@ -157,11 +162,13 @@ const settingsSlice = createSlice({
                 state.status = "loading";
             })
             .addCase(updateSettingsById.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.message = "Settings updated successfully";
                 state.settings = state.settings.map((settings) =>
                     settings.id === action.payload.id ? action.payload : settings
                 );
+                if (state.settings){
+                    state.status = "succeeded";
+                    state.message = "Settings Updated";
+                }
             })
             .addCase(updateSettingsById.rejected, (state, action) => {
                 state.status = "failed";
@@ -173,9 +180,11 @@ const settingsSlice = createSlice({
                 state.status = "loading";
             })
             .addCase(deleteSettingsById.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.message = "Settings deleted successfully";
                 state.settings = state.settings.filter((settings) => settings.id !== action.payload);
+                if (state.settings) {
+                    state.status = "succeeded";
+                    state.message = "Settings Deleted";
+                }
             })
             .addCase(deleteSettingsById.rejected, (state, action) => {
                 state.status = "failed";

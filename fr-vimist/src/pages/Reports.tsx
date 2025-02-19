@@ -4,12 +4,15 @@ import { useNavigate } from "react-router-dom";
 import {
   useDisplayNotifications,
   useUpdateNotification,
+  useClearMessages
 } from "../features/notifications/notificationsHook";
 import Notification from "../components/Notification";
+import AlertMessage from "../components/AlertMessage";
 
 function Reports() {
   const { data: NotificationData } = useDisplayNotifications();
-  const { updateNotification } = useUpdateNotification();
+  const { updateNotification, message: updMsg, error: updErr} = useUpdateNotification();
+  const { clsMessages } = useClearMessages();
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -29,9 +32,10 @@ function Reports() {
 
   return (
     <div className="vn-min-h-full  vn-p-5">
+      {updErr && <AlertMessage message={updErr} type="error" onClose={clsMessages} />}
+      {updMsg && <AlertMessage message={updMsg} type="success" onClose={clsMessages} />}
       <div className="vn-flex vn-items-center vn-justify-between">
         <h1 className="vn-text-2xl vn-font-bold">Reports</h1>
-
         <div className="vn-relative vn-cursor-pointer">
           {unreadCount > 0 ? (
             <IoNotifications className="vn-text-primary vn-text-2xl" />

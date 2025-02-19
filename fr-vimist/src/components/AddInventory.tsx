@@ -137,13 +137,11 @@ function AddInventory({ reset, itemId }: AddInventoryProps) {
   const navigate = useNavigate();
   const {
     addProduct,
-    status: addStatus,
     error: addError,
     message: addMessage,
   } = useAddNewProduct();
   const {
     updateProduct,
-    status: updateStatus,
     error: updateError,
   } = useUpdateProduct();
   const { clsMessages } = useClearMessages();
@@ -188,15 +186,8 @@ function AddInventory({ reset, itemId }: AddInventoryProps) {
       formData.append("image", productImage);
 
       addProduct(formData);
-      if (addStatus === "succeeded") {
-        addMessage && alert(addMessage);
-        navigate("/inventory");
-      }
     } else {
       updateProduct(product);
-      if (updateStatus === "succeeded") {
-        navigate("/inventory");
-      }
     }
     setProduct(defaultProductState);
     setProductImage(null);
@@ -208,6 +199,20 @@ function AddInventory({ reset, itemId }: AddInventoryProps) {
            {addError && (
         <AlertMessage
           message={addError.toString()}
+          type="error"
+          onClose={clsMessages}
+        />
+      )}
+      {addMessage && (
+        <AlertMessage
+          message={addMessage}
+          type="success"
+          onClose={clsMessages}
+        />
+      )}
+      {updateError && (
+        <AlertMessage
+          message={updateError.toString()}
           type="error"
           onClose={clsMessages}
         />

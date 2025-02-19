@@ -11,7 +11,6 @@ export interface Payment {
 }
 
 const baseUrl = "http://localhost:8000/api/payments/payments";
-const myToken = sessionStorage.getItem("accessToken");
 
 // get all payments
 export const getPayments = async (): Promise<Payment[]> => {
@@ -36,6 +35,7 @@ export const getPaymentById = async (id: number): Promise<Payment> => {
 // post a payment
 export const postPayment = async (payment: Payment): Promise<Payment> => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.post(`${baseUrl}/`, payment, {
       headers: {
         Authorization: `Bearer ${myToken}`,
@@ -51,6 +51,7 @@ export const postPayment = async (payment: Payment): Promise<Payment> => {
 // update a payment
 export const updatePayment = async (payment: Payment): Promise<Payment> => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.put(`${baseUrl}/${payment.id}/`, payment, {
       headers: {
         Authorization: `Bearer ${myToken}`,
@@ -66,6 +67,7 @@ export const updatePayment = async (payment: Payment): Promise<Payment> => {
 // delete a payment
 export const deletePayment = async (id: number) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.delete(`${baseUrl}/${id}`, {
       headers: {
         Authorization: `Bearer ${myToken}`,

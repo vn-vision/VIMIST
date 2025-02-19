@@ -12,7 +12,6 @@ export interface Sale {
   payment_type: string;
 }
 
-const myToken = sessionStorage.getItem("accessToken");
 
 export const getSales = async () => {
   try {
@@ -37,6 +36,7 @@ export const getSaleById = async (id: number) => {
 
 export const postSale = async (sale: Sale) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.post(`${baseUrl}/`, sale, {
       headers: {
         Authorization: `Bearer ${myToken}`,
@@ -52,6 +52,7 @@ export const postSale = async (sale: Sale) => {
 
 export const updateSale = async (sale: Sale) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.put(`${baseUrl}/${sale.id}/`, sale, {
       headers: {
         Authorization: `Bearer ${myToken}`,
@@ -67,6 +68,7 @@ export const updateSale = async (sale: Sale) => {
 
 export const deleteSale = async (id: number) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.delete(`${baseUrl}/${id}/`, {
       headers: {
         Authorization: `Bearer ${myToken}`,

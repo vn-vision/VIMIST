@@ -9,7 +9,7 @@ export interface Notification {
 }
 
 const baseUrl = "http://localhost:8000/api/notifications/notifications";
-const myToken = sessionStorage.getItem("accessToken");
+
 
 // get all notifications
 export const getNotifications = async () => {
@@ -35,6 +35,7 @@ export const getNotificationById = async (id: number) => {
 
 export const postNotification = async (notification: Notification) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.post(`${baseUrl}/`, notification, {
       headers: {
         Authorization: `Bearer ${myToken}`,
@@ -50,6 +51,7 @@ export const postNotification = async (notification: Notification) => {
 
 export const updateNotification = async (notification: Notification) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.put(
       `${baseUrl}/${notification.id}/`,
       notification,
@@ -69,6 +71,7 @@ export const updateNotification = async (notification: Notification) => {
 
 export const deleteNotification = async (id: number) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.delete(`${baseUrl}/${id}/`, {
       headers: {
         Authorization: `Bearer ${myToken}`,

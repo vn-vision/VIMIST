@@ -11,7 +11,6 @@ export interface Product {
 }
 
 const baseUrl = "http://127.0.0.1:8000/api/inventory/products";
-const myToken = sessionStorage.getItem("accessToken");
 
 // fetch all products
 export const getProducts = async () => {
@@ -38,6 +37,7 @@ export const getProductbyId = async (id: number) => {
 // post a product
 export const postProduct = async (product: FormData) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.post(`${baseUrl}/`, product, {
       headers: {
         Authorization: `Bearer ${myToken}`,
@@ -54,6 +54,7 @@ export const postProduct = async (product: FormData) => {
 // update a product
 export const updateProduct = async (product: Product) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.put(`${baseUrl}/${product.id}/`, product, {
       headers: {
         Authorization: `Bearer ${myToken}`,
@@ -69,6 +70,7 @@ export const updateProduct = async (product: Product) => {
 // delete a product
 export const deleteProduct = async (id: number) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.delete(`${baseUrl}/${id}/`, {
       headers: {
         Authorization: `Bearer ${myToken}`,

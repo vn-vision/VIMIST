@@ -23,10 +23,10 @@ const AlertMessage = ({ message, type = "info", onClose }: AlertMessageProps) =>
 
   // Alert type colors
   const alertStyles = {
-    success: "bg-green-500 text-white",
-    error: "bg-red-500 text-white",
-    warning: "bg-yellow-500 text-black",
-    info: "bg-blue-500 text-white",
+    success: "vn-bg-green-500 vn-text-white",
+    error: "vn-bg-red-500 vn-text-white",
+    warning: "vn-bg-yellow-500 vn-text-black",
+    info: "vn-bg-blue-500 vn-text-white",
   };
 
   return (

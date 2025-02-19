@@ -12,8 +12,6 @@ export interface Settings {
     threshold:number;
 }
 
-const myToken = sessionStorage.getItem("accessToken");
-
 export const getSettings = async () => {
     try {
         const response = await axios.get(`${baseUrl}/`);
@@ -40,6 +38,7 @@ export const getSettingById = async (id: number) => {
 // add settings
 export const postSettings = async (Settings: FormData) => {
     try {
+        const myToken = sessionStorage.getItem("accessToken");
         const response = await axios.post(`${baseUrl}/`, Settings, {
             headers: {
                 Authorization: `Bearer ${myToken}`,
@@ -57,6 +56,7 @@ export const postSettings = async (Settings: FormData) => {
 // update settings
 export const updateSettings = async (Settings: FormData) => {
     try{
+        const myToken = sessionStorage.getItem("accessToken");
         const id = Settings.get("id") as string;
         if (!id){
             throw new Error("ID not Found in Settings");
@@ -78,6 +78,7 @@ export const updateSettings = async (Settings: FormData) => {
 // delete settings
 export const deleteSettings = async (id: number) => {
     try {
+        const myToken = sessionStorage.getItem("accessToken");
         const response = await axios.delete(`${baseUrl}/${id}/`, {
             headers: {
                 Authorization: `Bearer ${myToken}`,

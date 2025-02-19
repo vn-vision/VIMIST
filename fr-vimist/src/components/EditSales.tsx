@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useFetchSaleById, useUpdateSale } from "../features/sales/salesHook";
+import { useFetchSaleById, useUpdateSale, useClearMessages } from "../features/sales/salesHook";
 import { Sale } from "../utils/api/salesAPI";
+import AlertMessage from "./AlertMessage";
 
 // create interface for the props
 interface EditSalesProps {
@@ -24,10 +25,11 @@ function EditSales({ reset, itemId }: EditSalesProps) {
   const [editError, setError] = useState<Record<string, string>>({});
   // create constant to get the sale by id
 
-  const { data: singleSale } = useFetchSaleById(itemId!);
+  const { data: singleSale, message: saleMsg, error: saleErr } = useFetchSaleById(itemId!);
 
   // create constant to update the sale
-  const { updateSale } = useUpdateSale();
+  const { updateSale, message: updMsg, error: updErr } = useUpdateSale();
+  const { clsMessages } = useClearMessages();
 
   // set state for the sale
   useEffect(() => {
@@ -58,6 +60,11 @@ function EditSales({ reset, itemId }: EditSalesProps) {
 
   return (
     <div className="vn-p-4 vn-max-w-md vn-mx-auto">
+      {saleErr && <AlertMessage message={saleErr.toString()} type="error" onClose={clsMessages} />}
+      {saleMsg && <AlertMessage message={saleMsg} type="success" onClose={clsMessages} />}
+      {updErr && <AlertMessage message={updErr.toString()} type="error" onClose={clsMessages} />}
+      {updMsg && <AlertMessage message={updMsg} type="success" onClose={clsMessages} />}
+      
       <h2 className="vn-text-center vn-text-lg vn-font-bold vn-mb-4">
         Edit Sale
       </h2>

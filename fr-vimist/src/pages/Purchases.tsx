@@ -5,9 +5,11 @@ import AddPurchase from "../components/AddPurchase";
 import {
   useDisplayPurchases,
   useDeletePurchases,
+  useClearMessages
 } from "../features/purchases/purchaseHook";
 import { useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
+import AlertMessage from "../components/AlertMessage";
 
 const headers = [
   "ID",
@@ -26,12 +28,12 @@ const Purchases = () => {
 
   const navigate = useNavigate();
   // fetch purchase data from hook
-  const { data, status, error: displayError } = useDisplayPurchases();
-
+  const { data, status } = useDisplayPurchases();
+  const { clsMessages } = useClearMessages();
   // delete data from hook
   const {
     deletePurchase,
-    status: deleteStatus,
+    message: deleteMessage,
     error: deleteError,
   } = useDeletePurchases();
 
@@ -64,7 +66,8 @@ const Purchases = () => {
   return (
     <div className="vn-flex vn-flex-col vn-gap-5 vn-p-5">
       <h1 className="vn-text-2xl vn-font-bold">Purchases</h1>
-
+      {deleteError && <AlertMessage message={deleteError} type="error" onClose={clsMessages}/>}
+      {deleteMessage && <AlertMessage message={deleteMessage} type="success" onClose={clsMessages}/>}
       {!item ? (
         <div className="vn-flex vn-justify-around">
           <button

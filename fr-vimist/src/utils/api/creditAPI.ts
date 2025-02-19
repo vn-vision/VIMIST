@@ -11,7 +11,6 @@ export interface CreditSale {
 }
 
 const baseUrl = "http://localhost:8000/api/credit_sales/credit_sales/";
-const myToken = sessionStorage.getItem("accessToken");
 
 // fetch all credit sales
 export const getCreditSales = async () => {
@@ -38,6 +37,7 @@ export const getCreditSaleById = async (id: number) => {
 // add a credit sale
 export const postCreditSale = async (creditSale: CreditSale) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.post(`${baseUrl}`, creditSale, {
       headers: {
         Authorization: `Bearer ${myToken}`,
@@ -54,6 +54,7 @@ export const postCreditSale = async (creditSale: CreditSale) => {
 // update a credit sale
 export const updateCreditSale = async (creditSale: CreditSale) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.put(
       `${baseUrl}${creditSale.id}/`,
       creditSale,
@@ -74,6 +75,7 @@ export const updateCreditSale = async (creditSale: CreditSale) => {
 // delete a credit sale
 export const deleteCreditSale = async (id: number) => {
   try {
+    const myToken = sessionStorage.getItem("accessToken");
     const response = await axios.delete(`${baseUrl}${id}/`, {
       headers: {
         Authorization: `Bearer ${myToken}`,

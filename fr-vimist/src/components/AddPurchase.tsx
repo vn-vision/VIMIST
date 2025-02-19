@@ -4,9 +4,10 @@ import {
   useDisplayPurchases,
   useAddNewPurchase,
   useUpdatePurchase,
+  useClearMessages,
 } from "../features/purchases/purchaseHook";
-import { Product } from "../utils/api/inventoryAPI";
 import { Purchase } from "../utils/api/purchasesAPI";
+import AlertMessage from "./AlertMessage";
 
 interface AddPurchaseProps {
   reset: () => void;
@@ -15,8 +16,9 @@ interface AddPurchaseProps {
 
 function AddPurchase({ reset, itemId }: AddPurchaseProps) {
   const { data: products } = useDisplayProducts();
-  const { addPurchase, error: addError } = useAddNewPurchase();
-  const { updatePurchase, error: updateError } = useUpdatePurchase();
+  const { addPurchase, error: addError, message: addMsg } = useAddNewPurchase();
+  const { updatePurchase, error: updateError, message: updMsg } = useUpdatePurchase();
+  const {clsMessages} = useClearMessages();
   const { data: allPurchases } = useDisplayPurchases();
 
   // Memoize selected purchase
@@ -120,8 +122,11 @@ function AddPurchase({ reset, itemId }: AddPurchaseProps) {
       <button className="vn-bg-secondary" onClick={reset}>
         {"<< "}Back
       </button>
-      {addError && <h1 className="vn-text-red-500">{addError.toString()}</h1>}
-      {updateError && <h1 className="vn-text-red-500">{updateError.toString()}</h1>}
+      {addError && <AlertMessage message={addError.toString()} type="error" onClose={clsMessages}/> }
+      {addMsg && <AlertMessage message={addMsg} type="success" onClose={clsMessages}/> }
+      
+      {updateError && <AlertMessage message={updateError.toString()} type="error" onClose={clsMessages}/> }
+      {updMsg && <AlertMessage message={updMsg} type="success" onClose={clsMessages}/> }
 
       <form onSubmit={handleSubmit}>
         {/* Product Selection */}

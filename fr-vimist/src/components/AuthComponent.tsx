@@ -18,10 +18,6 @@ type AuthComponentProps = {
   regAs: "admin" | "user" | null;
 };
 
-type ThisMessage = {
-  message: string;
-  class: string;
-};
 
 function AuthComponent({ mode, regAs }: AuthComponentProps) {
   const { data: confData } = useFetchSettings();
@@ -33,8 +29,6 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
     contact: "" || null,
   });
 
-  const [entryError, setError] = useState<ThisMessage>();
-  const [entrySuccess, setSuccess] = useState<ThisMessage>();
   const [customa, setCustoma] = useState<Customer>({
     id: 0,
     name: "",
@@ -42,17 +36,15 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
   });
 
   // use the custom hooks to handle the user registration and login
-  const { authUser, status: loginStatus, error: loginError, message: loginMessage } = useAuth();
+  const { authUser, error: loginError, message: loginMessage } = useAuth();
   const {clsMessages} = useClearMessages();
   const {
     addNewAdmin,
-    status: addAdminStatus,
     error: addAdminError,
     message: adminMessage
   } = useAddNewAdmin();
   const {
     addNewUser,
-    status: addUserStatus,
     error: addUserError,
     message: userMessage
   } = useAddNewUser();
@@ -71,30 +63,8 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
             navigate("/");
           }, 2000);
         }
-
-        if (loginStatus === "idle" || loginStatus === "loading") {
-          setError({
-            message: "Loading...",
-            class:
-              "vn-border-2 vn-text-primary vn-shadow-md vn-text-blue-200",
-          });
-        } else if (loginStatus === "succeed") {
-          setSuccess({
-            message: "Success. Redirecting in 3...2..1.",
-            class: "vn-border-2 vn-border-green-500 vn-shadow-md",
-          });
-        } else if (loginStatus === "failed") {
-          setError({
-            message: `Login Failed ${loginError?.toString()}`,
-            class: "vn-border-2 vn-border-red-500 vn-shadow-md",
-          });
-        }
       } catch (error) {
         console.error("Login failed", error);
-        setError({
-          message: "Login Failed",
-          class: "vn-border-2 vn-border-red-500 vn-shadow-md",
-        });
       }
     } else {
       if (regAs === "admin") {
@@ -103,20 +73,8 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
           if (result) {
             await addCustomer(customa);
             setTimeout(() => {
-              navigate("/");
+              navigate("/login");
             }, 2000);
-          }
-
-          if (addAdminStatus === "succeed") {
-            setSuccess({
-              message: "Admin Registered Successfully",
-              class: "vn-border-2 vn-border-green-500 vn-shadow-md",
-            });
-          } else if (addAdminStatus === "failed") {
-            setError({
-              message: `Admin registration Failed ${addAdminError?.toString()}`,
-              class: "vn-border-2 vn-border-red-500 vn-shadow-md",
-            });
           }
         } catch (error) {
           console.error("Admin registration failed", error);
@@ -127,23 +85,8 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
           if (result) {
             await addCustomer(customa);
             setTimeout(() => {
-              navigate("/");
+              navigate("/login");
             }, 2000);
-          }
-
-          if (addUserStatus === "succeed") {
-            setSuccess({
-              message: "User Registered Successfully",
-              class: "vn-border-2 vn-border-green-500 vn-shadow-md",
-            });
-            setTimeout(() => {
-              navigate("/");
-            }, 2000);
-          } else if (addUserStatus === "failed") {
-            setError({
-              message: `User registration Failed ${addUserError?.toString()}`,
-              class: "vn-border-2 vn-border-red-500 vn-shadow-md",
-            });
           }
         } catch (error) {
           console.error("User registration failed", error);
@@ -178,10 +121,6 @@ function AuthComponent({ mode, regAs }: AuthComponentProps) {
     {loginMessage && <AlertMessage message={loginMessage} type="success" onClose={clsMessages}/>}
     {adminMessage && <AlertMessage message={adminMessage} type="success" onClose={clsMessages}/> }
     {userMessage && <AlertMessage message={userMessage} type="success" onClose={clsMessages}/> }
-
-    {loginError && <h2 className="vn-text-red-500 vn-text-sm md:vn-text-base">{loginError}</h2>}
-    {entryError && <h2 className="vn-text-red-500 vn-text-sm md:vn-text-base">{entryError?.message}</h2>}
-    {entrySuccess && <h2 className="vn-text-green-500 vn-text-sm md:vn-text-base">{entrySuccess?.message}</h2>}
 
     <form
       onSubmit={handleSubmit}

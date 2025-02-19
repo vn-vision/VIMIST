@@ -7,6 +7,7 @@ interface PaymentState {
     Payments: Payment[];
     status: "idle" | "loading" | "succeeded" | "failed";
     error: string | null;
+    message: string;
 }
 
 
@@ -79,12 +80,20 @@ export const fetchPayments = createAsyncThunk<Payment[], void>(
       }
   );
   
+  // clear the status message
+  export const clearMessages = createAsyncThunk(
+    "Payments/clearMessages",
+    async () => {
+        return;
+    }
+  );
   
   // create the initial state
   const initialState: PaymentState = {
     Payments: [],
     status: 'idle',
     error: null,
+    message: ''
   };
   
   // create the payments slice
@@ -101,8 +110,11 @@ export const fetchPayments = createAsyncThunk<Payment[], void>(
               state.status = 'loading';
           })
           .addCase(fetchPayments.fulfilled, (state, action) => {
-              state.status = 'succeeded';
               state.Payments = action.payload;
+              if (state.Payments){
+                state.status = 'succeeded';
+                state.message = 'Payments loaded';
+              }
           })
           .addCase(fetchPayments.rejected, (state, action) => {
               state.status = 'failed';
@@ -114,8 +126,11 @@ export const fetchPayments = createAsyncThunk<Payment[], void>(
               state.status = 'loading';
           })
           .addCase(fetchPaymentById.fulfilled, (state, action) => {
-              state.status = 'succeeded';
               state.Payments = [action.payload];
+              if (state.Payments){
+                state.status = 'succeeded';
+                state.message = 'Payment loaded';
+              }
           })
           .addCase(fetchPaymentById.rejected, (state, action) => {
               state.status = 'failed';
@@ -127,8 +142,9 @@ export const fetchPayments = createAsyncThunk<Payment[], void>(
               state.status = 'loading';
           })
           .addCase(addNewPayment.fulfilled, (state, action) => {
-              state.status = 'succeeded';
               state.Payments.push(action.payload);
+              state.status = 'succeeded';
+              state.message = 'Payment added';
           })
           .addCase(addNewPayment.rejected, (state, action) => {
               state.status = 'failed';
@@ -140,10 +156,13 @@ export const fetchPayments = createAsyncThunk<Payment[], void>(
               state.status = 'loading';
           })
           .addCase(modifyPayment.fulfilled, (state, action) => {
-              state.status = 'succeeded';
               const index = state.Payments.findIndex((Payment) => Payment.id === action.payload.id);
               if (index !== -1) {
                   state.Payments[index] = action.payload;
+              }
+              if (state.Payments){
+                state.status = 'succeeded';
+                state.message = 'Payment updated';
               }
           })
           .addCase(modifyPayment.rejected, (state, action) => {
@@ -156,13 +175,30 @@ export const fetchPayments = createAsyncThunk<Payment[], void>(
               state.status = 'loading';
           })
           .addCase(removePayment.fulfilled, (state, action) => {
-              state.status = 'succeeded';
               state.Payments = state.Payments.filter((Payment) => Payment.id !== action.payload);
+                if (state.Payments){
+                    state.status = 'succeeded';
+                    state.message = 'Payment deleted';
+                }
           })
           .addCase(removePayment.rejected, (state, action) => {
               state.status = 'failed';
               state.error = action.error.message || 'Failed to delete payment';
           })
+
+      // handle clear messages
+      .addCase(clearMessages.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(clearMessages.fulfilled, (state) => {
+        state.status = "idle";
+        state.message = "";
+        state.error = "";
+      })
+      .addCase(clearMessages.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Could not clear Messages";
+      });
       }
   });
   

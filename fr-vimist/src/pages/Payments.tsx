@@ -1,7 +1,8 @@
 import { useState } from "react";
 import DynamicTable from "../components/DynamicTable";
 import TopNavbar from "../components/TopNavbar";
-import { useDisplayPayments, useDeletePayment } from "../features/payments/paymentsHook";
+import { useDisplayPayments, useDeletePayment, useClearMessages } from "../features/payments/paymentsHook";
+import AlertMessage from "../components/AlertMessage";
 
 // Payment headers
 const headers =["Id", "Payment_For", "payment_method", "Payment_method", "Amount_Paid", "related"]
@@ -24,8 +25,8 @@ const Payments = () => {
   }
 
   // delete a payment
-  const { deletePayment } = useDeletePayment();
-
+  const { deletePayment, error: delErr, message: delMsg } = useDeletePayment();
+  const { clsMessages } = useClearMessages();
   // search for sale by ID, payment date, payment_method, service paid for
   const handleSearch = (query: string | number) => {
     setSearchQuery(query);
@@ -43,6 +44,8 @@ const Payments = () => {
   
   return (
     <div className="vn-flex vn-flex-col vn-gap-5 vn-p-5">
+      {delErr && <AlertMessage message={delErr} type="error" onClose={clsMessages}/>}
+      {delMsg && <AlertMessage message={delMsg} type="success" onClose={clsMessages}/>}
       <h1 className="vn-text-2xl vn-font-bold">Payments</h1>
       {/* top nav bar */}
       <TopNavbar onSearch={handleSearch}/>

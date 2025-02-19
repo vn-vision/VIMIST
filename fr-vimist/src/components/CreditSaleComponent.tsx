@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import DynamicTable from '../components/DynamicTable';
-import { useDisplayCreditSales, useDeleteCreditSale } from '../features/creditsales/creditHook';
+import { useDisplayCreditSales, useDeleteCreditSale, useClearMessages } from '../features/creditsales/creditHook';
+import AlertMessage from './AlertMessage';
 
 
 // set headers
@@ -18,19 +19,25 @@ function CreditSaleComponent() {
   const [editItemId, setEditItemId] = useState<number | null>(0);
   
   // get data to display
-  const { data: creditSalesData } = useDisplayCreditSales();
-  console.log("Credit ", creditSalesData);
+  const { data: creditSalesData, message: displayMsg, error: displayErr } = useDisplayCreditSales();
   // delete a credit Sale
-  const { deleteCreditSale } = useDeleteCreditSale();
+  const { deleteCreditSale, message:deleteMsg, error:deleteErr } = useDeleteCreditSale();
+  const { clsMessages } = useClearMessages();
 
   // handle edit
   const handleEdit = (id: number) => {
+    alert(`Edit item with id: ${editItemId}`);
     setEditItemId(id);
-    console.log(`Editing credit sale ${editItemId}`);
   }
 
   return (
     <div>
+      {displayErr && <AlertMessage message={displayErr} type="error" onClose={clsMessages}/>}
+      {displayMsg && <AlertMessage message={displayMsg} type="success" onClose={clsMessages}/>}
+
+      {deleteErr && <AlertMessage message={deleteErr} type="error" onClose={clsMessages}/>}
+      {deleteMsg && <AlertMessage message={deleteMsg} type="success" onClose={clsMessages}/>}
+      
       <DynamicTable
       headers={headers}
       data={ Array.isArray(creditSalesData) && creditSalesData.length > 0 ? creditSalesData : []}

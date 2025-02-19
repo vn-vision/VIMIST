@@ -93,19 +93,29 @@ export const fetchPeriodicPurchases = createAsyncThunk<Period[], void>(
   }
 )
 
+// clear  Messages
+export const clearMessages = createAsyncThunk(
+  "Purchases/clearMessages",
+  async () => {
+    return;
+  }
+);
+
 // Define type for the slice state
 interface PurchasesState {
   purchases: Purchase[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   period: Period[];
+  message: string;
 }
 
 const initialState: PurchasesState = {
   purchases: [],
   status: "idle",
   error: null,
-  period: []
+  period: [],
+  message: ""
 };
 
 const purchasesSlice = createSlice({
@@ -119,8 +129,11 @@ const purchasesSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchPurchases.fulfilled, (state, action) => {
-        state.status = "succeeded";
         state.purchases = action.payload;
+        if (state.purchases) {
+          state.status = "succeeded";
+          state.message = "Purchases loaded";
+        }
       })
       .addCase(fetchPurchases.rejected, (state, action) => {
         state.status = "failed";
@@ -132,8 +145,11 @@ const purchasesSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchPurchaseById.fulfilled, (state, action) => {
-        state.status = "succeeded";
         state.purchases = [action.payload];
+        if (state.purchases) {
+          state.status = "succeeded";
+          state.message = "Purchase loaded";
+        }
       })
       .addCase(fetchPurchaseById.rejected, (state, action) => {
         state.status = "failed";
@@ -145,8 +161,9 @@ const purchasesSlice = createSlice({
         state.status = "loading";
       })
       .addCase(addNewPurchase.fulfilled, (state, action) => {
-        state.status = "succeeded";
         state.purchases.push(action.payload);
+        state.status = "succeeded";
+        state.message = "Purchase added";
       })
       .addCase(addNewPurchase.rejected, (state, action) => {
         state.status = "failed";
@@ -158,12 +175,15 @@ const purchasesSlice = createSlice({
         state.status = "loading";
       })
       .addCase(modifyPurchase.fulfilled, (state, action) => {
-        state.status = "succeeded";
         const index = state.purchases.findIndex(
           (purchase) => purchase.id === action.payload.id
         );
         if (index !== -1) {
           state.purchases[index] = action.payload;
+        }
+        if (state.purchases) {
+          state.status = "succeeded";
+          state.message = "Purchase updated";
         }
       })
       .addCase(modifyPurchase.rejected, (state, action) => {
@@ -176,10 +196,13 @@ const purchasesSlice = createSlice({
         state.status = "loading";
       })
       .addCase(removePurchase.fulfilled, (state, action) => {
-        state.status = "succeeded";
         state.purchases = state.purchases.filter(
           (purchase) => purchase.id !== action.payload
         );
+        if (state.purchases) {
+          state.status = "succeeded";
+          state.message = "Purchase deleted";
+        }
       })
       .addCase(removePurchase.rejected, (state, action) => {
         state.status = "failed";
@@ -191,12 +214,30 @@ const purchasesSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchPeriodicPurchases.fulfilled, (state, action) =>{
-        state.status = 'succeeded';
         state.period = action.payload;
+        if (state.period){
+          state.status = "succeeded";
+          state.message = "Periodic Purchases loaded";
+        }
       })
       .addCase(fetchPeriodicPurchases.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to fetch Purchases by period';
+      })
+
+
+      // handle clear messages
+      .addCase(clearMessages.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(clearMessages.fulfilled, (state) => {
+        state.status = "idle";
+        state.message = "";
+        state.error = "";
+      })
+      .addCase(clearMessages.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Could not clear Messages";
       });
   },
 });
