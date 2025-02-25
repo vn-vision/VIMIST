@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { Product } from "../utils/api/inventoryAPI";
 import logo from "../assets/images/logo.jpg";
 import { useAddNewSale, useClearMessages } from "../features/sales/salesHook";
 import { useDisplayCustomers } from "../features/customers/customerHook";
 import AlertMessage from "./AlertMessage";
+import { useInitiateMpesaPayment } from "../features/payments/paymentsHook";
 
 type CartItem = {
   product: Product;
@@ -27,10 +28,14 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   // fetch add sale function
   const { addSale, error: saleError, message: saleMessage} = useAddNewSale();
   const {clsMessages} = useClearMessages();
-  
+  const [phoneNumber, setPhoneNum] = useState('254');
+  const [err, setError] = useState('');
 
   // filter customer by contact
   const { data: customerData } = useDisplayCustomers();
+
+  // initiate 
+  const {initiateMpesa, error: MpesaError, message: MpesaMsg} = useInitiateMpesaPayment();
 
   const customa = customerData
     ? customerData.filter(
@@ -62,10 +67,43 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const calculateTotal = () => {
     const subtotal = parseFloat(calculateSubtotal());
     const tax = parseFloat(calculateTax(subtotal));
-    return (subtotal + tax).toFixed(2);
+    return (subtotal + tax).toFixed(0);
   };
 
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    let input = e.target.value.replace(/\D/g, '');
+
+    if (!input.startsWith('254')){
+      input = '254';
+    }
+
+    if (input.length > 12){
+      input = input.slice(0, 12);
+    }
+    setPhoneNum(input);
+
+    // validation error message
+    if (input.length < 12){
+      setError('Phone must be 12 digits (254XXXXXXXXX)');
+    } else {
+      setError('');
+    }
+  }, []);
+
+  console.log(calculateTotal())
+  console.log(phoneNumber)
+  const handleMpesaPayment = () => {
+    const payment = {
+      phone_number: phoneNumber,
+      amount: calculateTotal(),
+    };
+
+    initiateMpesa(payment);
+  }
   const handleRecordSale = (paymentType: string) => {
+    if (paymentType === "Mpesa"){
+      handleMpesaPayment();
+    }
     cart
       .map((item, index) => ({
         id: index,
@@ -84,6 +122,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     <div className="vn-min-h-screen vn-text-secondary vn-p-4 vn-flex vn-flex-col vn-min-w-[40%]">
       {saleMessage && <AlertMessage message={saleMessage} type="success" onClose={clsMessages}/>}
       {saleError && <AlertMessage message={saleError} type="error" onClose={clsMessages}/>}
+      {MpesaError && <AlertMessage message={MpesaError} type="error" onClose={clsMessages}/>}
+      {MpesaMsg && <AlertMessage message={MpesaMsg} type="success" onClose={clsMessages}/>}
+      
       <h2 className="vn-text-2xl vn-font-bold vn-mb-4">Cart Summary</h2>
       {cart.length > 0 && (
         <div>
@@ -153,7 +194,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           <div className="vn-flex vn-gap-3 vn-mt-4">
             <button
               className="vn-flex-1 vn-bg-green-500 vn-text-white vn-rounded vn-py-2 hover:vn-bg-green-600"
-              onClick={() => setLogPayment("Mpesa")}
+              onClick={() => {
+                setLogPayment("Mpesa");
+              }}
             >
               Mpesa
             </button>
@@ -170,6 +213,20 @@ const CartSummary: React.FC<CartSummaryProps> = ({
               Credit
             </button>
           </div>
+          <>
+          {logPayment === 'Mpesa' &&  phoneNumber.length !== 12 && (
+            <div>
+              <input type='text'
+              placeholder="254XXXXXXXXX"
+              value={phoneNumber}
+              onChange={handleChange}
+              maxLength={12}
+              className={`border ${err ? 'border-red-500' : 'border-gray-300'} p-2 rounded`}
+              />
+              {err && <p className="text-red-500 text-sm">{err}</p>}
+            </div>
+          )}
+          </>
           <button
             className="vn-w-full vn-bg-primary vn-text-white vn-rounded vn-py-3 vn-mt-4 hover:bg-blue-600"
             onClick={() => handleRecordSale(logPayment)}>

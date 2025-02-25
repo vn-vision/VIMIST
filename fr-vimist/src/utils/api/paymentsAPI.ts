@@ -8,6 +8,21 @@ export interface Payment {
   payment_date: string;
   payment_method: string;
   service: string;
+  phone_number: string | null;
+  mpesa_receipt_number: string | null;
+  transaction_status: string | null;
+}
+export interface MpesaPaymentRequest {
+  phone_number: string;
+  amount: string;
+}
+
+export interface MpesaPaymentResponse {
+  MerchantRequestID: string;
+  CheckoutRequestID: string;
+  ResponseCode: string;
+  ResponseDescription: string;
+  CustomerMessage: string;
 }
 
 const baseUrl = "http://localhost:8000/api/payments/payments";
@@ -79,3 +94,21 @@ export const deletePayment = async (id: number) => {
     throw new Error(error.response.data);
   }
 };
+
+  export const initiateMpesaPayment = async (payment: MpesaPaymentRequest): Promise<MpesaPaymentResponse> => {
+    try {
+      const myToken = sessionStorage.getItem("accessToken");
+      const response = await axios.post(`${baseUrl}/../mpesa/initiate/`, payment,
+        {
+          headers: {
+            Authorization: `Bearer ${myToken}`,
+            "Content-Type": "application/json",
+          }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error initiating Mpesa payment", error);
+      throw error;
+    }
+  }

@@ -28,7 +28,7 @@ function LandingPage() {
         {/* Image */}
         <div className="vn-w-full lg:vn-w-1/2 vn-p-6">
           <img
-            src={landing}
+            src={confData[0] ? confData[0].logo : landing}
             alt="landing"
             className="vn-w-full vn-h-auto vn-max-h-[50vh] lg:vn-max-h-[55vh] vn-object-cover vn-rounded-lg lg:vn-rounded-xl"
           />

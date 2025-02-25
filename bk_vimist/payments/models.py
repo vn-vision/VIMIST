@@ -17,9 +17,15 @@ class Payment(models.Model):
     payment_date = models.DateField(default=now)
     payment_method = models.CharField(max_length=20, choices=[('Cash', 'Cash'), ('Mpesa', 'Mpesa'), ('Credit', 'Credit')])
     payment_for = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='Unknown')
+        
+    # specific to Mpesa
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    mpesa_receipt_number = models.CharField(max_length=50, blank=True, null=True)    
+    transaction_status = models.CharField(max_length=20, choices=[("pending", "pending"), ("success", "success"), ("fail", "fail")],
+                                          default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
         return f'Payment of {self.amount_paid} for {self.payment_for} ID {self.related}'
 

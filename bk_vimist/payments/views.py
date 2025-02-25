@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from payments.models import Payment
 from payments.serializer import PaymentSerializer
 from payments.pagination import PaymentsPagination
@@ -11,6 +11,8 @@ from purchases.models import Purchases
 from sales.models import Sale
 from rest_framework.response import Response
 from django.db.models import F
+from.mpesa import MpesaAPI
+from rest_framework.decorators import action
 
 # Create your views here.
 class PaymentViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
@@ -85,3 +87,16 @@ class PaymentViewSet(viewsets.ModelViewSet, RoleBasedAccessMixin):
             return Response({'error': 'Payment not found'}, status=404)
         except (Sale.DoesNotExist, Purchases.DoesNotExist):
             return Response({'error': 'Related object not found'}, status=404)
+    
+    # initiate mpesa payment
+    @action(detail=False, methods=["post"])
+    def initiate_mpesa_payment(self, request):
+        phone_number = request.data.get("phone_number")
+        amount = request.data.get("amount")
+        
+        if not amount or not phone_number:
+            return Response({"error": "Phone number and amount are required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        mpesa_api = MpesaAPI()
+        response = mpesa_api.stk_push(phone_number, amount)
+        return Response(response)

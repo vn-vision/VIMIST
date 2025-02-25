@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
-import { Payment } from "../../utils/api/paymentsAPI";
-import { fetchPaymentById, fetchPayments, addNewPayment, modifyPayment, removePayment, clearMessages } from "./paymentsSlice";
+import { Payment, MpesaPaymentRequest } from "../../utils/api/paymentsAPI";
+import { fetchPaymentById, fetchPayments, addNewPayment, modifyPayment, removePayment, clearMessages, initiateMobilePayment } from "./paymentsSlice";
 
 // Hook to display payments
 export const useDisplayPayments = () => {
@@ -80,6 +80,20 @@ export const useDeletePayment = () => {
 
   return { deletePayment, status, error, message };
 };
+
+// Hook to initiate Mpesa Payment
+export const useInitiateMpesaPayment = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const status = useSelector((state: RootState) => state.payments.status);
+  const error = useSelector((state: RootState) => state.payments.error);
+  const message = useSelector((state: RootState) => state.payments.message);
+
+  const initiateMpesa = (payment: MpesaPaymentRequest) => {
+    dispatch(initiateMobilePayment(payment));
+  }
+
+  return {initiateMpesa, status, error, message};
+}
 
 // Hook to clear messages
 export const useClearMessages = () => {
