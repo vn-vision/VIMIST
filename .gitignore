@@ -1,0 +1,47 @@
+# DJANGO FILES TO IGNORE
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+db.sqlite3
+.env
+
+# Django
+*.log
+staticfiles/
+media/
+
+# REACT FILES TO IGNORE
+# Typescript
+*.tsbuildinfo
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Build output
+build/
+dist/
+
+# DEV FILES TO IGNORE
+# IDEs and Editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# MySQL ignore
+# dump files
+*.dump
+
+# ignore general sql files but keep those in db directory
+*.sql
+!_db/*.sql

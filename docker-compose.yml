@@ -1,0 +1,45 @@
+# Simplify multi-container setups (DB + Django + React) with Docker Compose
+# used both in dev and CI/CD
+
+services:
+  db:  # MySQL service, using environment variables from .env file
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${VIMIST_DB_NAME}
+      MYSQL_USER: ${VIMIST_DB_USER}
+      MYSQL_PASSWORD: ${VIMIST_DB_PASS}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  backend:  # Django + Gunicorn, mounts local code for hot reloading
+    build: ./bk_vimist
+    command: gunicorn bk_vimist.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./bk_vimist:/app
+    ports:
+      - "8000:8000"
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  frontend:  # React app, built and served by Nginx
+    build: ./fr-vimist
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:  # stores MySQL data for persistence
+  mysql_data:
+
+# depends_on: ensures services are started in correct order
+#             that the frontend services waits for backend: backend service waits for the db service to be healthy before starting.
