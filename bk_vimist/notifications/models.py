@@ -1,19 +1,17 @@
 from django.db import models
+from core.models import TimestampedModel
+from core.constants import NOTIFICATION_TYPE
 
-# This model represents the notifications table schema
-# It records system notifications like low stock alerts and payment reminders
-class Notification(models.Model):
-    NOTIFICATION_TYPES = [
-        ('Low Stock', 'Low Stock'),
-        ('Payment Due', 'Payment Due'),
-        ('Top-Up Reminder', 'Top-Up Reminder'),
-        ('Reorder Stock', 'Reorder Stock'),
-        ('Restocked', 'Restocked')
-    ]
-    type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
-    message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+# Create your models here.
+
+class Notification(TimestampedModel):
+    type = models.CharField(max_length=20, choices=NOTIFICATION_TYPE, default='')
+    payload = models.JSONField(null=True, blank=True)
+    sent_at = models.DateTimeField(auto_now_add=True)
     read_at = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        db_table = 'Notifications'
+    
     def __str__(self):
-        return f"Notification: {self.type}"
+        return f"({self.pk}) ({self.type}) ({self.payload if self.payload else 'No message'})"

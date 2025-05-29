@@ -1,36 +1,27 @@
 from django.db import models
-from django.utils.timezone import now
-from sales.models import Sale
-from purchases.models import Purchases
-from uuid import uuid4
+from core.models import TimestampedModel
+from core.constants import PAYMENT_TYPE
 
-class Payment(models.Model):
-    PAYMENT_CHOICES = [
-        ('Unknown', 'Unknown'),
-        ('Sale', 'Sale'),
-        ('Purchase', 'Purchase'),
+# Create your models here.
+class Payment(TimestampedModel):
+    STATUS_TYPE = [
+    ('Pending', 'Pending'),
+    ('Failed', 'Failed'),
+    ('Success', 'Success')
     ]
 
-    def_key = int(uuid4())
-    related = models.IntegerField(default=def_key)
-    amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_date = models.DateField(default=now)
-    payment_method = models.CharField(max_length=20, choices=[('Cash', 'Cash'), ('Mpesa', 'Mpesa'), ('Credit', 'Credit')])
-    payment_for = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='Unknown')
-        
-    # specific to Mpesa
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
-    mpesa_receipt_number = models.CharField(max_length=50, blank=True, null=True)    
-    transaction_status = models.CharField(max_length=20, choices=[("pending", "pending"), ("success", "success"), ("fail", "fail")],
-                                          default="pending")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return f'Payment of {self.amount_paid} for {self.payment_for} ID {self.related}'
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    method = models.CharField(max_length=10, choices=PAYMENT_TYPE, default='Cash')
+    status = models.CharField(max_length=10, choices=STATUS_TYPE, default='Pending')
+    sale = models.ForeignKey('sales.Sale', on_delete=models.PROTECT, null=True, blank=True, related_name='payment_sale')
+    purchase = models.ForeignKey('purchases.Purchase', on_delete=models.PROTECT, null=True, blank=True, related_name='payment_purchase')
+    credit_account = models.ForeignKey('credit.CreditAccount', on_delete=models.PROTECT, null=True, blank=True, related_name='payment_credit')
+    reference_code = models.CharField(max_length=100, null=True, blank=True)
+    paid_at = models.DateTimeField(auto_now_add=True)
 
-    def get_related_object(self):
-        if self.payment_for == 'Sale':
-            return Sale.objects.get(id=self.related)
-        elif self.payment_for == 'Purchase':
-            return Purchases.objects.get(id=self.related)
+
+    class Meta:
+        db_table = 'payments'
+
+    def __str__(self):
+        return f"({self.pk}) ({self.sale if self.safe else self.purchase if self.purchase else ''})"

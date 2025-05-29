@@ -45,15 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # additional apps
-    'inventory.apps.InventoryConfig',
-    'sales.apps.SalesConfig',
-    'customers.apps.CustomersConfig',
-    'payments.apps.PaymentsConfig',
-    'credit_sales.apps.CreditsalesConfig',
-    'notifications.apps.NotificationsConfig',
-    'purchases.apps.PurchasesConfig',
-    'users.apps.UsersConfig',
-    'config',
+    'core',
+    'inventory',
+    'sales',
+    'purchases',
+    'payments',
+    'credit',
+    'notifications',
     # rest framework
     'rest_framework',
     'rest_framework_simplejwt',
@@ -72,7 +70,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
+    # custom
+    'core.middleware.AuditMiddleware',
 ]
 
 ROOT_URLCONF = 'bk_vimist.urls'
@@ -105,7 +104,7 @@ DATABASES = {
         'NAME': os.getenv('VIMIST_DB_NAME'),
         'USER': os.getenv('VIMIST_DB_USER'),
         'PASSWORD': os.getenv('VIMIST_DB_PASS'),
-        'HOST': os.getenv('VIMIST_DB_HOST', 'db'),
+        'HOST': os.getenv('VIMIST_DB_HOST', 'localhost'),
         'PORT': os.getenv('VIMIST_DB_PORT', '3306'),
     }
 }
@@ -143,7 +142,8 @@ REST_FRAMEWORK = {
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
-AUTH_USER_MODEL = 'users.User'
+
+AUTH_USER_MODEL = 'core.User'
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -159,7 +159,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 AUTHENTICATION_BACKENDS = [
-    'users.backends.CustomAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 

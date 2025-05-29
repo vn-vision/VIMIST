@@ -11,20 +11,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include([
-        path('inventory/', include('inventory.urls')),
-        path('customers/', include('customers.urls')),
-        path('sales/', include('sales.urls')),
-        path('credit_sales/', include('credit_sales.urls')),
-        path('notifications/', include('notifications.urls')),
-        path('payments/', include('payments.urls')),
-        path('purchases/', include('purchases.urls')),
-        path('users/', include('users.urls')),
-        path('config/', include('config.urls')),
-    ])),
-    # DRF's Built-in Documentation
-    path('docs/', get_schema_view(title='V-APIs', version=1.0, description='API for all views'),
-         name='Vimist-schema')
 ]
 
 # media to use in dev mode: use AWS/CDN on production
