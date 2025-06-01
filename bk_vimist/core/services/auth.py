@@ -58,7 +58,7 @@ def onboard_user(
     if company_data and not Company.objects.filter(subdomain=company_data['subdomain']).exists():
         # first-time flow
         company, admin = register_comp_and_admin(
-            company_data, {'email':email, 'password': password, 'first_name':first_name, 'last_name':'last_name'}, creator
+            company_data, {'email':email, 'password': password, 'first_name':first_name, 'last_name':last_name}, creator
         )
         return {'company':company, 'user':admin}
     user = User.objects.create_user(

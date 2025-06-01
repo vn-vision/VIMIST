@@ -26,23 +26,22 @@ def assign_group_permissions(sender, instance, created, **kwargs):
     instance.groups.add(group)
     # permissions can be assigned to the group via a data
 
-@receiver(post_save, sender=User)
-def create_credit_account_and_notify(sender, instance, created, **kwargs):
-    if not created:
-        return
+# @receiver(post_save, sender=User)
+# def create_credit_account_and_notify(sender, instance, created, **kwargs):
+#     if not created:
+#         return
     
-    #. create a credit account for new users
-    CreditAccount.objects.create(
-        customer = instance.id,
-        current_balance=0,
-        status='active',
-        created_by=instance,
-        updated_by=instance
-    )
+#     #. create a credit account for new users
+#     CreditAccount.objects.create(
+#         customer = instance.id,
+#         current_balance=0,
+#         status='active',
+#         created_by=instance,
+#         updated_by=instance
+#     )
 
     # create a welcome notification
     Notification.objects.create(
-        user=instance,
         type='system_alert',
         payload={'message':'Welcome to Vimist! Your account is ready'}
     )

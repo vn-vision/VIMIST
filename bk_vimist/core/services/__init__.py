@@ -1,2 +1,2 @@
-from .auth import register_comp_and_admin
+from .auth import onboard_user
 from .customization import update_branding

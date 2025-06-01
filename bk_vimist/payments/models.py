@@ -19,7 +19,6 @@ class Payment(TimestampedModel):
     reference_code = models.CharField(max_length=100, null=True, blank=True)
     paid_at = models.DateTimeField(auto_now_add=True)
 
-
     class Meta:
         db_table = 'payments'
 

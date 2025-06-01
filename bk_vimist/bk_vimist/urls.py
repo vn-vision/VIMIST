@@ -11,6 +11,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('core/', include('core.urls'))
 ]
 
 # media to use in dev mode: use AWS/CDN on production
