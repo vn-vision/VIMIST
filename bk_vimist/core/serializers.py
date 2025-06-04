@@ -59,7 +59,6 @@ class RegistrationSerializer(serializers.Serializer):
             - create new Company + Config + Admin if needed
             - Or Create new user under existing company
         '''
-        print(f"DEBUG CREATE() WITH {validated_data}")
         user = self.context['request'].user # might be unathenticated on first-run
         Company_data = {}
         subdomain = validated_data.get('subdomain', '').strip()
@@ -91,3 +90,27 @@ class RegistrationSerializer(serializers.Serializer):
 
         # onboard_user returns dict {company: , user: } or {user: }
         return result['user']
+    
+
+class CompanySerializer(serializers.ModelSerializer):
+    '''
+    Expose Company: Name, Logo, subdomain
+    '''
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+    class Meta:
+        model = Company
+        fields = ['id', 'name', 'logo', 'subdomain', 'created_at', 'updated_at']
+        read_only_fields = ['subdomain'] # don't change once set
+
+
+class ConfigSerializer(serializers.ModelSerializer):
+    '''
+    Expose Company's configurations: system_name, pri/sec-color
+    '''
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+    class Meta:
+        model = Config
+        fields = ['system_name', 'primary_color', 'secondary_color', 'created_at', 'updated_at']
+

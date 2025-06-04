@@ -1,6 +1,6 @@
 from rest_framework import generics, viewsets, status, permissions
-from .serializers import UserSerializer, RegistrationSerializer
-from .models import User
+from .serializers import UserSerializer, RegistrationSerializer, CompanySerializer, ConfigSerializer
+from .models import User, Company, Config
 from rest_framework.response import Response
 
 # User
@@ -57,3 +57,41 @@ class RegistrationView(generics.CreateAPIView):
             'token':token.key
         }
         return Response(data, status=status.HTTP_201_CREATED)
+    
+
+class CompanyDetailView(generics.RetrieveUpdateAPIView):
+    '''
+    Expose company details for viewing/updating
+    '''
+    serializer_class = CompanySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        # Each user belongs to exactly one company
+        return self.request.user.company
+    
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            # only admin can update
+            if self.request.user.role != 'Admin':
+                self.permission_denied(self.request, message="Only Admin ma update company")
+        return super().get_permissions()
+
+
+class ConfigDetailView(generics.RetrieveUpdateAPIView):
+    '''
+    Expose config details for viewing/updating
+    '''
+    serializer_class = ConfigSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        # Each company has only one configuration
+        return self.request.user.company.config
+    
+    def get_permissions(self):
+        # only admins can alter configurations
+        if self.request.method in ['PUT', 'PATCH']:
+            if self.request.user.role != 'Admin':
+                self.permission_denied(self.request, message='Onl Admin may update config')
+        return super().get_permissions()
