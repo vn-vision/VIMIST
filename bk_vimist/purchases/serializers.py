@@ -29,7 +29,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
         items_data = validated_data.pop('purchase_item')
         user = validated_data.get('created_by')
         # computed total amount
-        total = sum(item['quantity']*float(item['cost_price']) for item in items_data)
+        total = sum(item['quantity']* item['cost_price'] for item in items_data)
         validated_data['total_amount'] = total
 
         # create parent Purchase instance

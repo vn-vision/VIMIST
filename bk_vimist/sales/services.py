@@ -1,5 +1,6 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import transaction
+from django.db.models import F
 from django.utils import timezone
 
 from inventory.models import Inventory
@@ -8,12 +9,30 @@ from credit.models import CreditAccount, CreditTransaction
 from notifications.models import Notification
 
 from .models import Sale
+from decimal import Decimal
+
 
 def validate_credit_limit(sale):
+    '''
+    Ensure that credit sales don't exceed the customers set credit_limit
+    Raises Validation Error if:
+        - there is not credit account for this customer
+        - the new balance exceeds a customer's limit
+    '''
+
     if sale.payment_type == 'Credit' and sale.customer:
-        acct = sale.customer.credit_account
-        if acct.current_balance + sale.total_amount > sale.customer.credit_limit:
+        try:
+            acct = CreditAccount.objects.get(customer=sale.customer)
+        except ObjectDoesNotExist:
+            raise ValidationError("No credit account found for this customer.")
+        
+        limit = sale.customer.credit_limit or Decimal('0')
+        current = Decimal(str(acct.current_balance))
+        proposed = current + Decimal(str(sale.total_amount))
+
+        if proposed > Decimal(str(limit)):
             raise ValidationError("Credit limit would be exceeded")
+        
 
 @transaction.atomic
 def process_sale(sale: Sale):
@@ -52,10 +71,17 @@ def process_sale(sale: Sale):
         )
         # if mpesa, trigger external confirmation here ...
     else:
-        acct = CreditAccount.objects.select_for_update().get(customer=sale.customer)
-        acct.current_balance += sale.total_amount
+        try:
+            acct = CreditAccount.objects.select_for_update().get(customer=sale.customer)
+        except ObjectDoesNotExist:
+            raise ValidationError("No credit account found for this customer.")
+        
+        # database side calculations under lock
+        acct.current_balance = F('current_balance') + Decimal(str(sale.total_amount))
         acct.updated_by = sale.created_by
         acct.save(update_fields=['current_balance', 'updated_by'])
+        acct.refresh_from_db(fields=['current_balance'])
+        
         CreditTransaction.objects.create(
             credit_account=acct,
             sale=sale,
@@ -75,7 +101,7 @@ def process_sale(sale: Sale):
                 payload={
                     'product_id':item.product.id,
                     'product_name':inv.product.name,
-                    'current_quantity':inv.quantity
+                    'current_quantity':str(inv.quantity)
                 },
                 created_by=sale.created_by,
                 updated_by=sale.created_by

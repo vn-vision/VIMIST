@@ -10,9 +10,8 @@ def on_credit_payment(sender, instance: Payment, created, **kwargs):
     Whenever a payment linked to a credit account is saved with status='success'
     apply it to the credit account
     '''
-    # only trigger on newly created / when status transitions to success
-    if not created:
-        return
-    
+   
     if instance.credit_account and instance.status == 'Success':
-        apply_credit_payment(instance)
+        # ensure it's triggered once
+        if not instance.applied_to_credit:
+            apply_credit_payment(instance)

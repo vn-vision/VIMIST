@@ -30,6 +30,10 @@ def apply_credit_payment(payment: Payment):
     acct.updated_by = payment.updated_by
     acct.save(update_fields=['current_balance', 'status', 'updated_by'])
 
+    # Mark Payment as applied to avoid duplicate entries
+    payment.applied_to_credit = True
+    payment.save(update_fields=['applied_to_credit'])
+
     # create ledger entry
     CreditTransaction.objects.create(
         credit_account=acct,

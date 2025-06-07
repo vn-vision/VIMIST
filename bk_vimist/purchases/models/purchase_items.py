@@ -10,7 +10,7 @@ class PurchaseItem(TimestampedModel):
     '''
     purchase = models.ForeignKey('purchases.Purchase', on_delete=models.CASCADE, related_name='purchase_item')
     product = models.ForeignKey('inventory.Product', on_delete=models.CASCADE, related_name='product_purchase')
-    quantity = models.IntegerField(validators=[MinValueValidator(0)])
+    quantity = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     cost_price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
 
     class Meta:

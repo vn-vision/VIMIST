@@ -49,13 +49,13 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     # additional apps
-    'core',
-    'inventory',
-    'sales',
-    'purchases',
-    'payments',
-    'credit',
-    'notifications',
+    'core.apps.CoreConfig',
+    'inventory.apps.InventoryConfig',
+    'sales.apps.SalesConfig',
+    'purchases.apps.PurchasesConfig',
+    'payments.apps.PaymentsConfig',
+    'credit.apps.CreditConfig',
+    'notifications.apps.NotificationsConfig',
     # django filters
     'django_filters',
     # cross origin headers

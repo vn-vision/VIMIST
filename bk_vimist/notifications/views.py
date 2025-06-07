@@ -19,7 +19,6 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         return Notification.objects.filter(
             deleted_at__isnull=True,
-            user=self.request.user
         ).order_by('-sent_at')
     
     @action(detail=True, methods=['post'])

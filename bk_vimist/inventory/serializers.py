@@ -20,7 +20,7 @@ class ProductSerializer(serializers.ModelSerializer):
     updated_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
-        models = Product
+        model = Product
         fields = ['id', 'name', 'description', 'unit_price', 'category', 'category_name', 'reorder_level', 'created_at', 'updated_at']
         read_only = ['created_at', 'updated_at']
     
